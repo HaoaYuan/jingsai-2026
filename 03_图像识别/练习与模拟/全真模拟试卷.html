@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2026年人工智能素养实践活动 · 图形识别全真模拟冲刺卷</title>
+<style>
+  :root { --brand:#0b5fff; --ink:#1c2b3a; --mut:#5f6368; --line:#dce3ed; --bg:#f4f7fc; --ok:#137333; --okbg:#e6f4ea; --bad:#c5221f; --badbg:#fce8e6; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif; background:var(--bg); color:var(--ink); line-height:1.6; }
+  
+  /* 顶部计时栏 */
+  .top-bar { position:sticky; top:0; z-index:100; background:#fff; border-bottom:1px solid var(--line); padding:10px 24px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 2px 8px rgba(0,0,0,.04); }
+  .exam-info { font-size:14px; color:var(--mut); }
+  .exam-info b { color:var(--ink); font-size:16px; margin-right:8px; }
+  .timer-box { display:flex; align-items:center; gap:12px; }
+  .timer-digits { font-family:Consolas,monospace; font-size:22px; font-weight:bold; color:var(--brand); background:#eef4ff; padding:3px 12px; border-radius:6px; border:1px solid #c9dcff; }
+  .timer-btn { background:#fff; border:1px solid var(--line); border-radius:6px; padding:6px 12px; font-size:13px; cursor:pointer; font-family:inherit; }
+  .timer-btn:hover { border-color:var(--brand); color:var(--brand); }
+  .btn-submit { background:var(--brand); color:#fff; border-color:var(--brand); font-weight:bold; }
+  .btn-submit:hover { background:#004be5; color:#fff; }
+
+  main { max-width:920px; margin:24px auto 60px; padding:0 20px; }
+  .paper-header { background:#fff; border-radius:12px; border:1px solid var(--line); padding:28px 32px 20px; text-align:center; margin-bottom:20px; box-shadow:0 4px 16px rgba(0,0,0,.02); }
+  .paper-header h1 { margin:0 0 8px; font-size:24px; color:#0e366e; }
+  .paper-header p { margin:4px 0; font-size:14px; color:var(--mut); }
+  .meta-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:16px; padding-top:16px; border-top:1px dashed var(--line); font-size:13px; text-align:left; }
+  .meta-grid span b { color:var(--brand); }
+
+  .section-card { background:#fff; border-radius:12px; border:1px solid var(--line); padding:22px 24px; margin-bottom:20px; box-shadow:0 4px 16px rgba(0,0,0,.02); }
+  .sec-title { font-size:18px; font-weight:bold; color:#0e366e; margin:0 0 12px; display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #eef4ff; padding-bottom:8px; }
+  .sec-score { font-size:14px; color:var(--brand); font-weight:normal; }
+  
+  .instruction { background:#fff8ec; border:1px solid #ffe0b0; color:#8a5a00; border-radius:8px; padding:10px 14px; font-size:13.5px; margin-bottom:16px; }
+
+  /* 客观题 */
+  .q-item { padding:14px 0; border-bottom:1px solid #f0f3f8; }
+  .q-item:last-child { border-bottom:none; }
+  .q-stem { font-size:14.5px; font-weight:500; margin-bottom:8px; }
+  .q-code { background:#1e1e1e; color:#d4d4d4; font-family:Consolas,monospace; font-size:13px; padding:8px 12px; border-radius:6px; margin:6px 0; overflow-x:auto; }
+  .opts-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  @media (max-width:680px) { .opts-row { grid-template-columns:1fr; } }
+  .opt-label { display:flex; align-items:center; gap:8px; padding:7px 10px; border:1px solid var(--line); border-radius:6px; cursor:pointer; font-size:13.5px; transition:all .15s; }
+  .opt-label:hover { background:#f7f9fd; border-color:var(--brand); }
+  .opt-label input { margin:0; }
+  .q-feedback { margin-top:8px; padding:8px 12px; border-radius:6px; font-size:13px; display:none; }
+  .q-feedback.ok { background:var(--okbg); color:var(--ok); border:1px solid #a8dab5; }
+  .q-feedback.bad { background:var(--badbg); color:var(--bad); border:1px solid #f5b7b1; }
+
+  /* 编程题 */
+  .code-req { font-size:14px; color:#2c3e50; }
+  .code-req ul { margin:6px 0 12px 20px; padding:0; }
+  .code-editor { width:100%; height:260px; font-family:Consolas,monospace; font-size:13.5px; padding:12px; border:1px solid #c9dcff; border-radius:8px; background:#fafcff; line-height:1.45; resize:vertical; }
+  .code-toolbar { display:flex; gap:10px; margin-top:8px; align-items:center; }
+  .code-toolbar button { background:#fff; border:1px solid var(--line); border-radius:6px; padding:6px 14px; font-size:13px; cursor:pointer; font-family:inherit; }
+  .code-toolbar button:hover { border-color:var(--brand); color:var(--brand); }
+  .code-tip { font-size:12.5px; color:var(--mut); }
+
+  /* 流程图与答辩 */
+  .flow-box { display:grid; grid-template-columns:1.2fr 1fr; gap:16px; align-items:start; }
+  @media (max-width:760px) { .flow-box { grid-template-columns:1fr; } }
+  .flow-sample { background:#1e1e1e; color:#a9b7c6; font-family:Consolas,monospace; font-size:12px; padding:12px; border-radius:8px; white-space:pre; overflow-x:auto; }
+  .rubric-list { font-size:13.5px; color:#333; margin:0; padding-left:18px; }
+  .rubric-list li { margin-bottom:6px; }
+
+  /* 成绩单浮层 */
+  #score-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.5); z-index:999; justify-content:center; align-items:center; }
+  .modal-content { background:#fff; border-radius:14px; max-width:540px; width:90%; padding:26px 28px; box-shadow:0 12px 36px rgba(0,0,0,.2); }
+  .score-banner { text-align:center; padding:16px 0 20px; border-bottom:1px solid var(--line); }
+  .big-score { font-size:46px; font-weight:bold; color:var(--brand); line-height:1; }
+  .score-breakdown { margin:16px 0; font-size:14px; }
+  .score-row { display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px dashed #eee; }
+  .btn-close-modal { width:100%; padding:10px; background:var(--brand); color:#fff; border:none; border-radius:8px; font-size:15px; font-weight:bold; cursor:pointer; }
+
+  @media print {
+    .top-bar, .code-toolbar, .btn-submit, #score-modal, .q-feedback { display:none !important; }
+    body { background:#fff; color:#000; }
+    .section-card, .paper-header { border:1px solid #888; box-shadow:none; break-inside:avoid; }
+    .code-editor { height:180px; border:1px solid #888; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="exam-info">
+    <b>2026 图形识别全真模拟考试</b>
+    <span>限时 40 分钟 · 闭卷实测</span>
+  </div>
+  <div class="timer-box">
+    <span>剩余时间</span>
+    <span class="timer-digits" id="timer">40:00</span>
+    <button class="timer-btn" id="btn-timer-toggle">暂停</button>
+    <button class="timer-btn" onclick="window.print()">打印试卷</button>
+    <button class="timer-btn btn-submit" id="btn-submit">交卷评分</button>
+  </div>
+</div>
+
+<main>
+  <div class="paper-header">
+    <h1>2026年青少年人工智能素养实践活动 · 模拟卷</h1>
+    <p>考核项目：图形识别（初中组） · 满分：100 分 · 时长：40 分钟</p>
+    <div class="meta-grid">
+      <span>考场：<b>第 1 机房</b></span>
+      <span>队伍编号：<b>TEAM-202601</b></span>
+      <span>选手姓名：<b>模拟考生</b></span>
+      <span>考核要求：<b>B套真题标准</b></span>
+    </div>
+  </div>
+
+  <div class="instruction">
+    <b>考生须知：</b>本场考试严格模拟真实赛场流程。禁止联网，禁止调用大模型；包含客观题、编程实操与流程图三大模块；代码在本地环境运行，结果需逐字符合输出模板。
+  </div>
+
+  <!-- 模块一：客观题 -->
+  <div class="section-card">
+    <div class="sec-title">
+      <span>第一部分：基础与算法客观题（单选题）</span>
+      <span class="sec-score">共 10 题 · 每题 3 分 · 满分 30 分</span>
+    </div>
+
+    <div id="mcq-container"></div>
+  </div>
+
+  <!-- 模块二：现场编程题 -->
+  <div class="section-card">
+    <div class="sec-title">
+      <span>第二部分：程序编写与现场识别</span>
+      <span class="sec-score">满分 50 分</span>
+    </div>
+    
+    <div class="code-req">
+      <p><b>任务要求：</b></p>
+      <ul>
+        <li>读取 <code>data</code> 文件夹下的 <code>图形1.txt</code>、<code>图形2.txt</code>、<code>图形3.txt</code>。</li>
+        <li>准确识别出三个图形的类别：<b>圆形、正五边形、等腰三角形</b>。</li>
+        <li>严格按照要求模板输出（注意文件名后两个空格、英文冒号）：<br>
+          <code>图形1.txt  识别为: 圆形</code><br>
+          <code>图形2.txt  识别为: 等腰三角形</code><br>
+          <code>图形3.txt  识别为: 正五边形</code>
+        </li>
+        <li>代码保存为：<code>队伍编号_姓名1_姓名2.py</code>。</li>
+      </ul>
+      <p><b>答题区（默写 Python 代码）：</b></p>
+    </div>
+
+    <textarea class="code-editor" id="student-code" placeholder="# 请在此默写识别程序（四段结构：load -> row_widths -> classify -> 主程序循环）
+# 可直接在本地 IDLE 中编写并运行验证，验证通过后粘贴到此处..."></textarea>
+
+    <div class="code-toolbar">
+      <button onclick="checkCodeFormat()">格式与关键字自查</button>
+      <button onclick="fillSkeleton()">填入骨架代码提示</button>
+      <button onclick="showReferenceCode()">查看标准参考答案</button>
+      <span class="code-tip" id="code-check-msg">建议先在机房 IDLE 独立默写并 F5 跑通三件套。</span>
+    </div>
+  </div>
+
+  <!-- 模块三：流程图与答辩 -->
+  <div class="section-card">
+    <div class="sec-title">
+      <span>第三部分：程序流程图与答辩自评</span>
+      <span class="sec-score">满分 20 分（流程图 14 分 + 答辩 6 分）</span>
+    </div>
+    
+    <div class="flow-box">
+      <div>
+        <p><b>手绘流程图考核要求（14 分）：</b></p>
+        <ul class="rubric-list">
+          <li><b>框形规范（4 分）</b>：圆角矩形（开始/结束）、平行四边形（输入/输出）、矩形（数据处理/特征提取）、菱形（条件判断）。</li>
+          <li><b>分支标注（5 分）</b>：菱形必须标注“是”与“否”，循环判断回流箭头清晰无歧义。</li>
+          <li><b>逻辑闭环（5 分）</b>：准确表达“顶宽&ge;10判五边形 &rarr; 行宽变小判圆形 &rarr; 否则三角形”的代码逻辑。</li>
+        </ul>
+        <div style="margin-top:14px;">
+          <label style="font-size:13.5px; cursor:pointer;">
+            <input type="checkbox" id="chk-flow"> <b>考生确认：</b>已在评委下发的草稿纸上手绘完成，且图元与逻辑规范。
+          </label>
+        </div>
+      </div>
+      <div>
+        <p><b>流程图手绘标准参考样张：</b></p>
+        <div class="flow-sample">(开始)
+  ↓
+[输入: data/图形N.txt]
+  ↓
+[处理: strip去换行, 存入二维网格]
+  ↓
+[处理: 找上下边界, 算每行宽度 widths]
+  ↓
+&lt;widths[0] &gt;= 10?&gt; ──是──► [输出: 正五边形]
+  ↓ 否                        │
+&lt;行宽存在变小?&gt; ──是──► [输出: 圆形]
+  ↓ 否                        │
+[输出: 等腰三角形]            │
+  ↓                           │
+  ├───────────────────────────┘
+  ↓
+&lt;3个文件处理完毕?&gt; ──否──► (回到输入)
+  ↓ 是
+(结束)</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- 成绩单弹窗 -->
+<div id="score-modal">
+  <div class="modal-content">
+    <div class="score-banner">
+      <div style="font-size:14px; color:var(--mut);">模拟考试最终得分</div>
+      <div class="big-score" id="total-score">0</div>
+      <div style="font-size:13px; color:var(--mut); margin-top:4px;" id="eval-grade">待评价</div>
+    </div>
+    <div class="score-breakdown">
+      <div class="score-row"><span>客观题得分（满分 30）：</span><b id="s-mcq">0 分</b></div>
+      <div class="score-row"><span>编程题得分（满分 50）：</span><b id="s-code">0 分</b></div>
+      <div class="score-row"><span>流程图得分（满分 20）：</span><b id="s-flow">0 分</b></div>
+      <div class="score-row"><span>考试耗时：</span><b id="s-time">0 分钟</b></div>
+    </div>
+    <div id="score-advice" style="font-size:13px; color:#555; background:#f8f9fa; padding:10px; border-radius:6px; margin-bottom:16px;"></div>
+    <button class="btn-close-modal" onclick="closeModal()">返回查看试卷解析</button>
+  </div>
+</div>
+
+<script>
+// 10道精选客观题（覆盖网格下标、//%、文件读取副作用、特征计算、规则顺序扰动、模板格式、考场规则、剖面认形、邻域边界、规则系统答辩）
+const EXAM_MCQS = [
+  {
+    n: 1,
+    stem: "100 列的网格中，一维下标 k = 237（从 0 开始数）的像素在第几行第几列？",
+    opts: ["第 2 行第 37 列", "第 3 行第 37 列", "第 2 行第 63 列", "第 237 行第 0 列"],
+    ans: "A",
+    exp: "237 // 100 = 2，237 % 100 = 37。注意行列编号均从 0 开始计数。"
+  },
+  {
+    n: 2,
+    stem: "已知一行像素数据为纯文本。小芳用 f.readlines() 读取后没有执行 strip()，直接打印 len(lines[0])，对于实际有 100 个字符的行，其输出结果是：",
+    opts: ["100", "101", "99", "0"],
+    ans: "B",
+    exp: "readlines() 会完整保留行尾的换行符 \\n，100 个有效像素 + 1 个换行符 = 101。"
+  },
+  {
+    n: 3,
+    stem: "某图形外接框高度为 70 行，宽度为 79 列，图形中 1 的总像素为 2770。其外接框填充率最接近：",
+    opts: ["0.501", "0.277", "2.001", "0.790"],
+    ans: "A",
+    exp: "填充率 = 面积 ÷ (高 × 宽) = 2770 ÷ (70 × 79) ≈ 0.501（此为真题等腰三角形实测数据）。"
+  },
+  {
+    n: 4,
+    stem: "在图形识别程序中，如果将判断规则的顺序改为：① 行宽中途出现变小判为圆形；② 顶部行宽 >= 10 判为正五边形；③ 否则为三角形。在真题三件套上运行，会导致：",
+    opts: ["判定结果完全不受影响", "正五边形被误判为圆形，其余不变", "圆形被误判为正五边形", "三个图形全部判错"],
+    ans: "B",
+    exp: "正五边形顶部有一条平边，但整体也有先增后减的趋势（行宽存在变小段）。若先判圆形，正五边形会先触发变小规则而被误判。"
+  },
+  {
+    n: 5,
+    stem: "赛场上程序输出如下结果：`图形1.txt 识别为: 圆形`。对照竞赛正式考核模板，存在的主要失分点是：",
+    opts: ["图形类别判断错误", "文件名后少了一个空格（要求两个空格）", "冒号必须使用全角中文冒号", "不应该输出 txt 后缀"],
+    ans: "B",
+    exp: "考核模板明确要求：`图形1.txt  识别为: 圆形`，文件名后为两个半角空格、英文冒号后为一个空格。"
+  },
+  {
+    n: 6,
+    stem: "依据现场考核管理规范，下列哪项操作是明确允许的？",
+    opts: ["携带存有参考代码的私用 U 盘进入赛场", "现场编写程序，保存为 队伍编号_姓名1_姓名2.py 拷入空白 U 盘提交", "提前在草稿纸上画好流程图带入赛场", "使用手机热点查阅 Python 官方文档"],
+    ans: "B",
+    exp: "考场禁止携带通讯设备、禁止携带存有代码的介质，只能使用现场空白 U 盘提交规范命名的 .py 文件。"
+  },
+  {
+    n: 7,
+    stem: "某图形从上到下统计的水平行宽序列为：首行宽 5，随后持续递增，中间出现持续多行宽度为 61 的平坦平台，随后对称递减，末行宽 5。该图形最可能是：",
+    opts: ["等腰三角形", "圆形", "正六边形", "等腰梯形"],
+    ans: "C",
+    exp: "首尾对称平边、中部有长平台垂直边、上下带斜边，典型为正向放置的正六边形（高中真题实测数据）。"
+  },
+  {
+    n: 8,
+    stem: "网格宽度为 w 列（下标 0 到 w-1）。在访问当前点 (r, c) 的右侧邻居 (r, c+1) 之前，防止越界的正确前置判断是：",
+    opts: ["不需要判断", "if c + 1 < w:", "if c + 1 <= w:", "if r < w:"],
+    ans: "B",
+    exp: "最右侧合法列下标为 w-1，因此新坐标 c+1 必须严格小于 w。<= 会在最右列引发 IndexError。"
+  },
+  {
+    n: 9,
+    stem: "当答辩评委提问：“你们的 27 行代码没有使用神经网络，能算人工智能吗？”最规范的回答是：",
+    opts: ["不算，这只是普通的 Python 算术", "算，这是典型的人工智能规则系统（专家系统），通过总结特征规则由机器自动化推理", "只有使用了深度学习库才能叫人工智能", "算，因为我们用了 100x100 的高分辨率图像"],
+    ans: "B",
+    exp: "规则系统是经典符号主义人工智能的核心形态，人写规则、机器执行推理，完全属于人工智能学科范畴。"
+  },
+  {
+    n: 10,
+    stem: "在验证算法鲁棒性时，我们将 3 个原图进行了平移（±10 像素）和缩放（0.7~1.2倍），共生成 36 个样例进行测试。这 36 个变体在流程中扮演的角色是：",
+    opts: ["训练集", "测试集（检验泛化能力）", "标签数据", "噪声干扰项"],
+    ans: "B",
+    exp: "变体未参与初始规则制定，专门用于在非原图数据上检验模型的泛化能力与容错边界，扮演测试集角色。"
+  }
+];
+
+// 渲染客观题
+function renderMCQs() {
+  const container = document.getElementById("mcq-container");
+  container.innerHTML = EXAM_MCQS.map(q => `
+    <div class="q-item" id="qitem-${q.n}">
+      <div class="q-stem"><b>${q.n}.</b> ${q.stem}</div>
+      <div class="opts-row">
+        ${q.opts.map((opt, i) => {
+          const l = ["A","B","C","D"][i];
+          return `
+            <label class="opt-label" id="lbl-${q.n}-${l}">
+              <input type="radio" name="mcq-${q.n}" value="${l}">
+              <span><b>${l}.</b> ${opt}</span>
+            </label>
+          `;
+        }).join("")}
+      </div>
+      <div class="q-feedback" id="fb-${q.n}"></div>
+    </div>
+  `).join("");
+}
+
+// 倒计时逻辑
+let timeLeft = 40 * 60; // 40分钟
+let timerId = null;
+let timerRunning = true;
+
+function startTimer() {
+  timerId = setInterval(() => {
+    if (timeLeft > 0) {
+      timeLeft--;
+      updateTimerDisplay();
+    } else {
+      clearInterval(timerId);
+      alert("考试时间已到！系统将自动提交。");
+      submitExam();
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(timeLeft / 60);
+  const s = timeLeft % 60;
+  document.getElementById("timer").textContent = 
+    `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  if (timeLeft < 5 * 60) {
+    document.getElementById("timer").style.color = "#c5221f";
+    document.getElementById("timer").style.borderColor = "#c5221f";
+  }
+}
+
+document.getElementById("btn-timer-toggle").addEventListener("click", function() {
+  if (timerRunning) {
+    clearInterval(timerId);
+    this.textContent = "继续";
+    timerRunning = false;
+  } else {
+    startTimer();
+    this.textContent = "暂停";
+    timerRunning = true;
+  }
+});
+
+// 代码自查与参考
+function checkCodeFormat() {
+  const code = document.getElementById("student-code").value;
+  const msg = document.getElementById("code-check-msg");
+  if (!code.trim()) {
+    msg.textContent = "提示：答题框为空，请先默写代码。";
+    msg.style.color = "var(--bad)";
+    return;
+  }
+  const issues = [];
+  if (code.includes("，") || code.includes("；") || code.includes("（") || code.includes("）")) {
+    issues.push("检测到中文标点符号（，；（）等）");
+  }
+  if (!code.includes("def load")) issues.push("缺少 load 函数");
+  if (!code.includes("def row_widths")) issues.push("缺少 row_widths 函数");
+  if (!code.includes("def classify")) issues.push("缺少 classify 函数");
+  if (!code.includes("strip()")) issues.push("建议检查是否对每一行进行了 strip()");
+  if (!code.includes("识别为:")) issues.push("输出模板中缺少 '识别为:'");
+  
+  if (issues.length === 0) {
+    msg.textContent = "✓ 基础结构完整，未发现常见语法或标点问题！";
+    msg.style.color = "var(--ok)";
+  } else {
+    msg.textContent = "⚠️ 注意事项: " + issues.join("；");
+    msg.style.color = "var(--bad)";
+  }
+}
+
+function fillSkeleton() {
+  if (document.getElementById("student-code").value.trim() && !confirm("确定要用骨架覆盖现有代码吗？")) return;
+  document.getElementById("student-code").value = 
+`def load(name):
+    # TODO 读入数据并过滤空行
+    pass
+
+def row_widths(g):
+    # TODO 统计外接框每一行的像素宽度
+    pass
+
+def classify(widths):
+    # TODO 顺序判断：顶宽>=10五边形 -> 行宽变小圆形 -> 否则三角形
+    pass
+
+for i in (1, 2, 3):
+    name = "图形" + str(i) + ".txt"
+    # TODO 按模板打印输出
+`;
+}
+
+function showReferenceCode() {
+  if (!confirm("模拟考试期间建议脱稿独立完成。确定查看参考代码？")) return;
+  document.getElementById("student-code").value =
+`def load(name):
+    grid = []
+    with open("data/" + name, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                grid.append(line)
+    return grid
+
+def row_widths(g):
+    rows = []
+    for r in range(len(g)):
+        if "1" in g[r]:
+            rows.append(r)
+    widths = []
+    for r in range(rows[0], rows[-1] + 1):
+        widths.append(g[r].count("1"))
+    return widths
+
+def classify(widths):
+    if widths[0] >= 10:
+        return "正五边形"
+    for i in range(len(widths) - 1):
+        if widths[i] > widths[i + 1]:
+            return "圆形"
+    return "等腰三角形"
+
+for i in (1, 2, 3):
+    name = "图形" + str(i) + ".txt"
+    print(name + "  识别为: " + classify(row_widths(load(name))))
+`;
+}
+
+// 交卷与综合评分
+function submitExam() {
+  clearInterval(timerId);
+  
+  // 1. 客观题判分 (30分)
+  let mcqScore = 0;
+  EXAM_MCQS.forEach(q => {
+    const sel = document.querySelector(`input[name="mcq-${q.n}"]:checked`);
+    const val = sel ? sel.value : null;
+    const fb = document.getElementById(`fb-${q.n}`);
+    fb.style.display = "block";
+    if (val === q.ans) {
+      mcqScore += 3;
+      fb.className = "q-feedback ok";
+      fb.innerHTML = `<b>✓ 回答正确 (+3分)</b>：${q.exp}`;
+    } else {
+      fb.className = "q-feedback bad";
+      fb.innerHTML = `<b>✗ 回答错误 (0分)</b>。你选了 ${val || "未作答"}，正确答案是 <b>${q.ans}</b>。<br>${q.exp}`;
+    }
+  });
+
+  // 2. 编程题评分 (50分启发式评估)
+  let codeScore = 0;
+  const code = document.getElementById("student-code").value;
+  if (code.includes("def load")) codeScore += 10;
+  if (code.includes("strip()")) codeScore += 5;
+  if (code.includes("def row_widths")) codeScore += 10;
+  if (code.includes("def classify")) codeScore += 10;
+  if (code.includes("正五边形") && code.includes("等腰三角形") && code.includes("圆形")) codeScore += 10;
+  if (code.includes("识别为:")) codeScore += 5;
+
+  // 3. 流程图与答辩自评 (20分)
+  let flowScore = document.getElementById("chk-flow").checked ? 20 : 0;
+
+  const total = mcqScore + codeScore + flowScore;
+  const elapsedMin = Math.round((40 * 60 - timeLeft) / 60);
+
+  document.getElementById("total-score").textContent = total;
+  document.getElementById("s-mcq").textContent = `${mcqScore} / 30 分`;
+  document.getElementById("s-code").textContent = `${codeScore} / 50 分`;
+  document.getElementById("s-flow").textContent = `${flowScore} / 20 分`;
+  document.getElementById("s-time").textContent = `${elapsedMin} 分钟`;
+
+  let grade = "需加紧练习";
+  let advice = "薄弱项分析：建议重点默写 27 行标准程序并背诵答辩死穴！";
+  if (total >= 90) {
+    grade = "🏆 冲金水准（卓越）";
+    advice = "状态极佳！注意考场文件名命名与两个空格细节即可稳拿高分。";
+  } else if (total >= 80) {
+    grade = "🥈 冲银水准（良好）";
+    advice = "基本功过关，注意流程图框形规范与代码格式自查。";
+  } else if (total >= 60) {
+    grade = "🥉 达标水准（合格）";
+    advice = "存在明显失分点，请针对答错的客观题和未得满分的编程模块复查背代码手册。";
+  }
+
+  document.getElementById("eval-grade").textContent = grade;
+  document.getElementById("score-advice").textContent = advice;
+  document.getElementById("score-modal").style.display = "flex";
+}
+
+document.getElementById("btn-submit").addEventListener("click", function() {
+  if (confirm("确定现在提交试卷并进行全真评分？")) {
+    submitExam();
+  }
+});
+
+function closeModal() {
+  document.getElementById("score-modal").style.display = "none";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+renderMCQs();
+startTimer();
+</script>
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>02 大数分解 · 全课程与模拟一体化平台</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "Microsoft YaHei", "PingFang SC", sans-serif; background: #eef2f7; color: #24324a; font-size: 16px; line-height: 1.65; }
+.app { display: flex; min-height: 100vh; }
+.sidebar { width: 280px; flex: 0 0 280px; background: #fff; border-right: 1px solid #dce4ef; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.side-top { background: #24466e; color: #fff; padding: 16px; }
+.side-top a { color: rgba(255,255,255,.85); text-decoration: none; font-size: 12.5px; }
+.side-top h2 { font-size: 18px; margin: 6px 0 2px; }
+.side-top p { font-size: 12.5px; opacity: .88; }
+.nav-sec { font-size: 12px; font-weight: bold; color: #7a879e; padding: 10px 14px 4px; }
+.nav-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 14px; margin: 2px 8px; border-radius: 7px; cursor: pointer; font-size: 14px; }
+.nav-item:hover { background: #f0f4fa; }
+.nav-item.active { background: #e3eaf4; color: #24466e; font-weight: bold; }
+.main-area { flex: 1; min-width: 0; }
+header.site { background: #24466e; color: #fff; padding: 18px 20px 14px; }
+header.site h1 { font-size: 22px; }
+header.site .sub { font-size: 13px; opacity: .85; margin-top: 2px; }
+main { max-width: 860px; margin: 0 auto; padding: 16px 16px 48px; }
+.card { background: #fff; border-radius: 10px; padding: 16px 18px; margin-top: 16px; box-shadow: 0 1px 3px rgba(30, 50, 90, .12); }
+.card > h2 { font-size: 18px; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 2px solid #dce4ef; }
+.qcard { border: 1px solid #e2e8f2; border-radius: 8px; padding: 10px 12px; margin-top: 10px; }
+.qcard.right { border-color: #2e8b57; background: #f2fbf6; }
+.qcard.wrong { border-color: #c0392b; background: #fdf5f4; }
+.qnum { font-size: 13px; color: #7a879e; }
+.qtext { margin: 2px 0 6px; }
+label.opt { display: block; padding: 3px 6px; border-radius: 6px; cursor: pointer; }
+.blank { font-size: 16px; padding: 6px 8px; border: 1px solid #c3cdde; border-radius: 6px; width: 100%; font-family: Consolas, monospace; }
+.why { display: none; margin-top: 8px; padding: 8px 10px; background: #f4f7fc; border-radius: 6px; font-size: 14px; color: #3b4a63; }
+.row { display: flex; align-items: center; margin-top: 12px; flex-wrap: wrap; }
+.row > * + * { margin-left: 10px; }
+button { font-family: inherit; font-size: 15px; padding: 7px 14px; border: 1px solid #9db2cd; border-radius: 7px; background: #f7f9fc; color: #24324a; cursor: pointer; }
+button.primary { background: #24466e; border-color: #24466e; color: #fff; }
+.task { border: 1px solid #e2e8f2; border-radius: 8px; padding: 12px 14px; margin-top: 12px; }
+.badge { font-size: 12px; padding: 1px 8px; border-radius: 9px; background: #e3eaf4; color: #51607a; margin-left: 8px; }
+.badge.done { background: #2e8b57; color: #fff; }
+pre.io { font-family: Consolas, monospace; font-size: 14px; background: #f4f7fc; padding: 6px 10px; border-radius: 6px; white-space: pre-wrap; margin: 4px 0; }
+textarea { width: 100%; min-height: 110px; font-family: Consolas, monospace; font-size: 14px; padding: 8px; border: 1px solid #c3cdde; border-radius: 6px; margin-top: 6px; resize: vertical; }
+textarea.paste { min-height: 70px; }
+.hintbox { display: none; margin-top: 8px; padding: 8px 10px; background: #fff9ec; border-radius: 6px; font-size: 14px; white-space: pre-wrap; }
+.msg { margin-top: 8px; font-size: 14px; white-space: pre-wrap; }
+.msg.ok { color: #2e8b57; font-weight: bold; }
+.msg.bad { color: #c0392b; }
+@media (max-width: 820px) { .app { flex-direction: column; } .sidebar { width: 100%; height: auto; position: static; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="side-top">
+      <a href="index.html">← 大数分解主页</a> · <a href="../index.html">总入口</a>
+      <h2>02 大数分解全课程</h2>
+      <p>5 讲课程 + 模拟卷01 + 拓展卷01</p>
+    </div>
+    <div id="sideNav"></div>
+  </aside>
+  <div class="main-area">
+    <header class="site">
+      <h1 id="pageTitle"></h1>
+      <div class="sub" id="pageIntro"></div>
+    </header>
+    <main>
+      <div class="card">
+        <h2 id="objHeading">客观题</h2>
+        <div id="objHost"></div>
+        <div class="row">
+          <button id="submitObjBtn" class="primary">提交判分</button>
+          <span id="objScore" style="font-weight:bold;color:#24466e;"></span>
+        </div>
+      </div>
+      <div class="card">
+        <h2>程序任务（在 IDLE 运行后粘贴输出核对）</h2>
+        <div id="taskHost"></div>
+      </div>
+    </main>
+  </div>
+</div>
+<script id="ALL_DS_DATA" type="application/json">[{"nn": "01", "dirname": "Python基础速通", "title": "Python 基础速通", "intro": "这一讲从零开始：只要会开机打字，就能学会 Python 最常用的六个句型。比赛要用的分解程序，就是这六件事拼起来的。", "obj": [{"kind": "single", "q": "执行 print(\"2+3\")，屏幕上显示什么？（注意 2+3 外面有引号）", "opts": ["5", "2+3", "23", "报错"], "a": 1, "why": "引号里的内容会被原样显示，Python 不会帮你计算。想让它算出 5，要去掉引号写 print(2 + 3)。引号包住的叫字符串，只管显示；不带引号的才算数。"}, {"kind": "single", "q": "表达式 7 // 2 的值是？", "opts": ["3.5", "3", "2", "4"], "a": 1, "why": "// 是整除：取商、丢掉余数，7 // 2 = 3。余数用 % 算：7 % 2 = 1。分解程序里就靠这一对搭档：n % i == 0 判断「i 是不是 n 的因数」，n = n // i 表示「把因子 i 除掉」。"}, {"kind": "single", "q": "读入一行并把它变成整数 n，正确的写法是？", "opts": ["n = input()", "n = int(input())", "n = input(int())", "int n = input()"], "a": 1, "why": "input() 读到的永远是字符串（文字），字符串不能做算术。必须套一层 int() 把它变成整数，写 n = int(input())。"}, {"kind": "single", "q": "写 if n % 2 == 0 时行末忘了冒号，运行会怎样？", "opts": ["TypeError", "SyntaxError", "ZeroDivisionError", "不报错，正常运行"], "a": 1, "why": "冒号是 Python 语法的一部分，if、for、while、def 的行末都要有英文冒号，漏了会报 SyntaxError（语法错误）并指出那一行。缩进不对报 IndentationError，除以零报 ZeroDivisionError。"}, {"kind": "blank", "q": "让 i 从 1 数到 n（含 n），循环头写作 for i in ____（只写 range 那一段，不要空格）", "a": "range(1,n+1)", "accept": ["range(1,n+1)"], "why": "range(起, 止) 从「起」数到「止的前一个」，所以要数到 n 必须写 range(1, n + 1)。写 range(1, n) 会把 n 自己漏掉--枚举因数时 n 本身也是因数，漏不得。"}, {"kind": "blank", "q": "17 除以 5 的余数，用 Python 表达式写作____（不要空格）", "a": "17%5", "accept": ["17%5"], "why": "% 是取余：17 % 5 = 2。比较的结果是 True 或 False（首字母大写），print(17 % 5 == 2) 会显示 True。"}], "tasks": [{"id": "T1", "title": "和与差", "input": "10 3", "desc": "读入一行，里面有空格隔开的两个整数 a 和 b。第一行输出它们的和，第二行输出它们的差（a - b）。这一题练「输入 + 输出」两个句型。", "starter": "s = input()\na, b = s.split()\n# 第 1 步：把 a 和 b 都变成整数（用 int）\n# 第 2 步：第一行打印 a + b，第二行打印 a - b\n", "expect": "13\n7", "hints": ["split() 按空格把一行拆成两份，但拆出来的还是字符串（文字），文字不能做加法。", "a = int(a) 和 b = int(b)，各转一次。", "print(a + b) 和 print(a - b) 各写一行。"], "optional": false}, {"id": "T2", "title": "奇偶判断", "input": "8", "desc": "读入一个整数 n。如果它是偶数，输出 yes；否则输出 no。这一题练「判断」句型。", "starter": "n = int(input())\n# 第 1 步：用 % 判断 n 除以 2 余数是不是 0（余 0 就是偶数）\n# 第 2 步：偶数打印 yes，否则打印 no（记得行末冒号和缩进）\n", "expect": "yes", "hints": ["偶数就是能被 2 整除：n % 2 == 0。", "if n % 2 == 0: 下一行缩进 4 格，写 print(\"yes\")。", "else: 下一行缩进写 print(\"no\")。"], "optional": false}, {"id": "T3", "title": "1 到 n 求和（选做）", "input": "100", "desc": "读入整数 n，输出 1 + 2 + …… + n 的结果。这一题练「循环累加」句型--它就是分解程序的发动机。", "starter": "n = int(input())\ntotal = 0\n# 第 1 步：让 i 从 1 数到 n（用 range，注意数到 n 要 n + 1）\n# 第 2 步：每数一个 i，就把它加进 total\n# 循环结束后打印 total\n", "expect": "5050", "hints": ["for i in range(1, n + 1): 让 i 依次取 1, 2, 3, ……, n。", "循环体（缩进 4 格）里写 total = total + i。", "循环写完后（顶格），print(total)。"], "optional": true}]}, {"nn": "02", "dirname": "因数分解实战", "title": "因数分解实战", "intro": "上一讲学会了六大句型，这一讲把它们拼成真正的分解程序。先不急着写代码：什么是因数、什么是质数，先用手算弄明白，再让计算机替我们除。这一讲的胜负手是输出格式--评委按格式给分，多一个空格少一个 × 都扣分。", "obj": [{"kind": "single", "q": "试除法输出 n 的全部因数（含 1 和 n 本身），循环范围应该写成？", "opts": ["range(1, n)", "range(1, n + 1)", "range(2, n)", "range(n)"], "a": 1, "why": "n 本身也是 n 的因数，上界要取到 n + 1。range(n) 更危险：从 0 开始，第一次 n % 0 直接报 ZeroDivisionError。"}, {"kind": "single", "q": "质因数分解 180 = 2 × 2 × 3 × 3 × 5，循环里的正确做法是？", "opts": ["n % i == 0 时反复除 i，除不尽了才让 i 加 1", "n % i == 0 时除一次就马上让 i 加 1", "i 从 n 往下倒着除回来", "i 只需要试到 9 就够了"], "a": 0, "why": "除一次就 i 加 1 会漏掉重复因子：4 = 2 × 2，除掉一个 2 后还能再除一个 2。短除法的核心就是「同一个因子除到不能再除」。倒着除顺序错且慢；i 要试到 √n。"}, {"kind": "single", "q": "n = 360 = 2³ × 3² × 5，它的全部因数个数（含 1 和 360）是？", "opts": ["12", "24", "18", "360"], "a": 1, "why": "因数个数定理：(指数 + 1) 连乘 -- (3+1) × (2+1) × (1+1) = 4 × 3 × 2 = 24。也可写程序数一遍验证：枚举 1 到 360，是因数就计数，正好数出 24 个。数学公式和程序互相印证，评委问「怎么确认结果对」就这样答。"}, {"kind": "single", "q": "要统计 n 的所有因数中偶因数的个数，最直接的思路是？", "opts": ["枚举 i：n % i == 0 成立且 i % 2 == 0 时计数加 1", "枚举 i：只要 n % 2 == 0 就计数加 1", "把 n 除以 2，看还能除几次", "只枚举奇数 i，用总数减去它"], "a": 0, "why": "「n % i == 0」筛因数、「i % 2 == 0」筛偶性，两个条件同时满足才计数。B 判断的是 n 的奇偶不是因数的；C 数的是 2 的幂次；D 绕远路还容易错。"}, {"kind": "blank", "q": "质因数分解中，把因子 i 除掉后更新 n 的语句是：n = ____（不要空格）", "a": "n//i", "accept": ["n//i"], "why": "整除更新用 //。写成 n = n / i 会得到小数，后面的 % 运算全部报错。"}, {"kind": "blank", "q": "180 的所有因数中，最大的质因数是____（填数字）", "a": "5", "accept": ["5"], "why": "180 = 2 × 2 × 3 × 3 × 5，质因子有 2、3、5，最大是 5。注意最大质因数不等于最大因数（最大因数是 180 本身）。"}], "tasks": [{"id": "T1", "title": "质因数分解", "input": "180", "desc": "读入整数 n（2 ≤ n ≤ 10^9，可能是质数），输出一行质因数分解式，格式逐字符照抄：n = 因子1 × 因子2 × ……（因子从小到大，乘号两侧各一个空格）。", "starter": "n = int(input())\nm = n\nparts = []\ni = 2\nX = \" × \"\n# 第 1 步：写外层循环--只要 i * i 不超过 m 就继续找（while 条件自己写）\n\n\n# 第 2 步：写内层循环--m % i == 0 成立就反复除同一个 i：\n#         把 i 存进 parts（用 str(i) 存文字），再把 m 整除更新（// 不是 /）\n\n\n# 第 3 步：内层结束后换下一个候选：i 加 1（注意少一层缩进）\n# 第 4 步：外层结束后，m 还大于 1 就把 m 也存进 parts（质数边界）\n# 第 5 步：拼输出：print(str(n) + \" = \" + X.join(parts))\n", "expect": "180 = 2 × 2 × 3 × 3 × 5", "hints": ["先手算一遍 180：除 2 两次、除 3 两次、除 5 一次，正好除到 1。程序就是把这套动作自动化：外层循环负责「换下一个候选因子 i」，内层循环负责「把同一个 i 除到不能再除」。", "两个句型套起来用：外层 while i * i <= m:，内层 while m % i == 0:。内层循环体（缩进 8 格）写两行：parts.append(str(i)) 和 m = m // i；内层写完后退回 4 格写 i = i + 1。", "质数边界和输出：外层循环结束后（顶格）写 if m > 1: parts.append(str(m))，最后一行 print(str(n) + \" = \" + X.join(parts))。X 就是 starter 里的「 × 」，join 的意思是「用 X 把 parts 里的每一段连起来」。"], "optional": false}, {"id": "T2", "title": "成分提取与统计", "input": "180", "desc": "读入整数 n（2 ≤ n ≤ 10^6），输出三行：第一行是偶因数的个数，第二行是奇因数之和，第三行是最大质因数。", "starter": "n = int(input())\neven_count = 0\nodd_sum = 0\n# 第 1 部分：枚举 1 到 n，把因数挑出来分两类统计\n# 第 1 步：写循环 while i <= n:（别忘了先给 i 起始值 1）\n# 第 2 步：循环里先判断是不是因数：if n % i == 0:\n# 第 3 步：是因数再分偶奇：偶数（i % 2 == 0）计数加 1，否则加进奇因数和\n\n\n# 第 4 步：循环末尾让 i 加 1\n# 第 2 部分：短除法找最大质因数（T1 同款，只是不存每个因子）\nm = n\nmax_prime = 0\ni = 2\n\n\n# 第 5 步：写短除法双循环，内层里记 max_prime = i 并整除更新 m\n# 第 6 步：循环结束后 m > 1 就令 max_prime = m\n# 第 7 步：打印三行：even_count、odd_sum、max_prime\n", "expect": "12\n78\n5", "hints": ["分两部分做：第一部分用循环枚举 1 到 n 挑因数，偶的计数、奇的求和；第二部分把 T1 的短除法搬过来，只是不用存每个因子，只记住最后除掉的那个 i。", "第一部分：while i <= n: 里套 if n % i == 0:，里面再套 if i % 2 == 0: even_count = even_count + 1，else: odd_sum = odd_sum + i；循环末尾 i = i + 1。第二部分：while i * i <= m: 套 while m % i == 0:，内层写 max_prime = i 和 m = m // i。", "短除法结束后（顶格）写 if m > 1: max_prime = m。最后三行各打印一个：print(even_count)、print(odd_sum)、print(max_prime)。输入 180 应该输出 12、78、5。"], "optional": false}, {"id": "T3", "title": "因数个数与总和（选做）", "input": "180", "desc": "读入整数 n（2 ≤ n ≤ 10^6），输出两行：第一行是全部因数的个数，第二行是全部因数之和。", "starter": "n = int(input())\n# 枚举 1 到 n，是因数就计数并累加\n", "expect": "18\n546", "hints": ["两个累加器：count 和 total，n % i == 0 时同时更新。", "180 的因数有 18 个，总和 546，可以先对答案。", "想更快：只枚举到 √n，每找到一对因子 d 和 n // d 同时累加，注意 n 是完全平方数时 √n 只算一次。"], "optional": true}]}, {"nn": "03", "dirname": "双算法效率对比", "title": "双算法效率对比", "intro": "评分核心「算法效率探究与优化 20 分」的前半场：把三种试除法一版一版讲透--朴素、优化（√N、跳偶）、6k±1，每一版只改上一版的几行。三版都学会，再跑实验一给三档大数计时，用数据证明「快」。批处理与埃氏筛在下一讲。", "obj": [{"kind": "single", "q": "实验要客观记录程序耗时，Python 里推荐的计时函数是？", "opts": ["time.perf_counter()（高精度、不受系统时间调整影响）", "time.sleep()", "print() 自己的输出时间", "input() 等待输入的时间"], "a": 0, "why": "perf_counter 是专为测耗时设计的单调高精度时钟。time.time() 也能凑合，但系统时间被调整时它会跳，实验数据就不干净了。"}, {"kind": "single", "q": "「控制变量」在效率实验里具体指什么？", "opts": ["两种算法用同一组数字、同一台电脑、同样的重复次数，只有算法不同", "把测试数字控制得很小，免得跑太久", "两种算法的变量名保持一致", "每个数字只测一次，节省时间"], "a": 0, "why": "评分表原文要求「控制变量对比两种算法的效率差异」。任务相同、数据相同、环境相同，只留算法一个变量，快慢才能归因给算法本身。"}, {"kind": "single", "q": "分解 10^12 级别的质数，朴素试除要从 2 试到 n 本身，约 10^12 次除法。Python 每秒约几千万次运算，需要的耗时量级是？", "opts": ["几秒", "几分钟", "几小时到几天", "一百年"], "a": 2, "why": "10^12 ÷ 3×10^7 ≈ 33000 秒 ≈ 9 小时起步。所以大档位朴素版直接超时，如实记录「>30 秒未出结果」也是客观记录--这正是评分表要的「客观记录」。"}, {"kind": "single", "q": "同一任务同一电脑，优化版 0.08 秒、朴素版超过 30 秒没出结果。最规范的结论句是？", "opts": ["优化版快多了，肯定选它", "在 10^12 档位，优化试除 0.08 秒出结果，朴素试除超过 30 秒未出结果；原因是操作次数从约 10^12 降到约 10^6", "朴素算法是错误的算法", "Python 语言太慢了"], "a": 1, "why": "结论要有三要素：条件（档位、环境）、数据（双方耗时）、原因（操作次数差异）--对应评分表「总结优化策略及其数学原理，结论可信、数据真实」。A 没数据；C 错误--朴素版结果一样对，只是慢；D 归因错了。"}, {"kind": "blank", "q": "6k±1 试除中，处理完 i 和 i+2 两个位置后，i 要跳到下一个 6 的倍数：i = ____（写完整表达式，不要空格）", "a": "i=i+6", "accept": ["i=i+6", "i+=6"], "why": "两步铺垫：第一步先跳偶（i += 2）--除完 2 之后 n 是奇数，奇数不可能有偶数因子，候选 3,5,7,9… 每次迈 2 步。第二步再看数轴：9,15,21 是 3 的倍数、必已被 3 除过，所以候选只剩 6k−1 与 6k+1 两种位置，每轮检查 i 和 i+2 后 i = i + 6。"}, {"kind": "blank", "q": "同一组计时重复跑 3 次，应取其中____值作为该算法的耗时（填：最大 / 最小 / 平均）", "a": "最小", "accept": ["最小"], "why": "取最小值是为了排除系统偶发卡顿（后台程序、调度抖动）的干扰，最快那次最能代表算法本身的潜力。"}], "tasks": [{"id": "T1", "title": "优化试除判质数", "input": "1000000007", "desc": "读入整数 n（2 ≤ n ≤ 10^12）。用优化试除（先除 2，再只试 3、5、7…到 √n）判断它是质数还是合数：质数输出 yes，合数输出 no。这就是实验一的「优化版」本体，写对它再去跑三档计时。", "starter": "n = int(input())\nanswer = \"yes\"\n# n 是 2：直接 yes；n 是大于 2 的偶数：直接 no\n# 否则 i = 3, 5, 7, ... 试到 i * i <= n\n# 用 found 记录有没有找到因子，替代 break\n", "expect": "yes", "hints": ["先做两个特判：n 是 2 直接 yes；n 是大于 2 的偶数直接 no。剩下的 n 都是奇数，从 3 开始试。", "用「判断 + 循环」句型：while i * i <= n and not found:（只试到 √n，因为因子成对，小的那个总在 √n 以内）；里面 if n % i == 0: 就把 answer 改成 no、found 改成 True。", "循环末尾 i = i + 2（跳偶：奇数没有偶数因子，候选只走 3,5,7…）；循环结束后顶格 print(answer)。1000000007 要试到约 31623 才停。"], "optional": false}, {"id": "T2", "title": "6k±1 试除判质数", "input": "1000000007", "desc": "同样的任务、更快的一版：除 2、3 特判后，从 i = 5 开始只试 6k−1 和 6k+1 两个位置（5 和 7、11 和 13……）。质数输出 yes，合数输出 no。和 T1 用同一个输入核对，体会「同任务双算法」。", "starter": "n = int(input())\nanswer = \"yes\"\n# 特判：n 是 2 或 3 直接 yes；n 是 2 或 3 的倍数直接 no\n# i = 5 开始，每轮检查 n % i == 0 或 n % (i + 2) == 0\n# 然后 i = i + 6\n", "expect": "yes", "hints": ["特判两条：n 是 2 或 3 直接 yes；n 是 2 或 3 的倍数直接 no。剩下的候选从 5 开始。", "为什么候选是 5,7、11,13、17,19…？看 6k±1 数轴：偶数和 3 的倍数（9,15,21…）都早被除过了，只剩 6k−1 和 6k+1 两种位置。一轮检查两个：if n % i == 0 or n % (i + 2) == 0:。", "一轮查完两个位置后 i = i + 6，跳到下一对；最后 print(answer)。和 T1 用同一个输入核对：1000000007 → yes。"], "optional": false}]}, {"nn": "04", "dirname": "埃氏筛与批处理加速", "title": "埃氏筛与批处理加速", "intro": "上一讲把三种试除讲透了，这一讲解决「一批数」：先用埃氏筛造一张素数表，再让批处理分解快 2~3.5 倍。老规矩：先手算后代码，两方案输出完全一致才算数。", "obj": [{"kind": "single", "q": "埃氏筛划掉倍数时，为什么从 p × p 开始划，而不是从 p × 2 开始？", "opts": ["从 p × p 开始划更快，因为更小的倍数（p × 2、p × 3……）已经被更小的素数划过了", "从小倍数开始划会漏掉质数", "p × p 是第一个合数，后面都不是", "没有原因，习惯写法"], "a": 0, "why": "筛到 p 时，比 p × p 更小的 p 的倍数（如 p × 2 里的 2 已划掉它们）早就被更小的素数划掉了。从 p × p 开始既不漏也不重复，这是埃氏筛「快」的细节之一。"}, {"kind": "single", "q": "筛法跑完后，flags[v] 还是 True（没被划掉），说明 v 是？", "opts": ["质数", "合数", "1", "偶数"], "a": 0, "why": "埃氏筛把每个质数的倍数全部划掉，剩下没被划掉的就是质数。flags[v] 为 True 表示 v 没有更小的质因子--它就是质数。"}, {"kind": "single", "q": "实验二比较「逐个试除」和「先筛再只除素数」时，最重要的正确性护栏是？", "opts": ["两方案的输出逐行完全一致，提速才可信", "提速倍数越大越不用管对错", "方案 B 是书上写的，肯定正确", "多跑几次取平均"], "a": 0, "why": "评分表要求「结论可信、数据真实」。「输出逐行一致」证明加速没有牺牲正确性；如果输出不一致，说明算法写错了，提速数据作废。"}, {"kind": "single", "q": "方案 B（先筛再分解）比方案 A（逐个试除）快的根本原因是？", "opts": ["只除素数表里的素数，合数候选全部跳过，每个数除的次数大幅减少", "方案 B 的代码行数更少", "方案 B 不用循环", "方案 B 的变量名更短"], "a": 0, "why": "逐个试除要把 4、6、8、9 这些合数候选都除一遍；只除素数后，候选少一半以上（30 以内只剩 10 个素数）。一次建表、处处复用，批处理时优势最大。"}, {"kind": "blank", "q": "埃氏筛内层「划掉下一个倍数」的更新语句是：multiple = multiple + ____（一个字母）", "a": "p", "accept": ["p"], "why": "每划掉一个倍数，就跳到下一个倍数：multiple = multiple + p（p 是当前素数）。注意不是 + 1--那是把每个数都划掉了。"}, {"kind": "blank", "q": "30 以内（含 30）共有____个质数（填数字）", "a": "10", "accept": ["10"], "why": "2, 3, 5, 7, 11, 13, 17, 19, 23, 29--共 10 个。这就是课堂手筛的结果，也是 flags 表数出来的结果。"}], "tasks": [{"id": "T1", "title": "批处理分解（先写对）", "input": "3\n12\n97\n100", "desc": "模拟实验二的批处理：第一行读个数 m，后面 m 行每行一个整数，逐个输出质因数分解式（格式同第 02 讲 T1：n = 因子 × 因子……）。这是「先写对，再加速」的基本功。", "starter": "m = int(input())\nk = 0\nwhile k < m:\n    n = int(input())\n    # 对这个 n 做质因数分解并按格式输出一行\n    k = k + 1\n", "expect": "12 = 2 × 2 × 3\n97 = 97\n100 = 2 × 2 × 5 × 5", "hints": ["把第 02 讲 T1 的分解代码放进 while k < m 循环体里，每次处理一个新读入的 n。", "别忘了质数边界：内层分解结束后剩下的 m 大于 1 也要 append。", "每处理完一个数立刻输出一行，不要攒到最后。"], "optional": false}, {"id": "T2", "title": "埃氏筛：数素数个数", "input": "30", "desc": "读入整数 n（2 ≤ n ≤ 10^6），输出 n 以内（含 n）质数的个数。这就是埃氏筛的本体：先造素数表，再数一数。", "starter": "n = int(input())\nflags = [True] * (n + 1)   # flags[v] 为 True 表示「v 还没被划掉」\nflags[0] = False\nflags[1] = False\n# 第 1 步：外层循环，p 从 2 试起，只要 p * p <= n 就继续（while 条件自己写）\n\n\n# 第 2 步：p 没被划掉（flags[p] 为 True）才需要划它的倍数\n\n\n# 第 3 步：内层从 multiple = p * p 开始，把不超过 n 的倍数全部划掉（每次加 p）\n\n\n# 第 4 步：别忘了外层末尾 p = p + 1\n# 第 5 步：数一数 2 到 n 里还有多少个 True，打印个数\n", "expect": "10", "hints": ["先想手筛 30 的过程：从 2 开始，把每个没被划掉的数的倍数划掉。程序里 flags[v] 为 True 表示没被划掉。", "外层 while p * p <= n:，里面 if flags[p]: 才划；内层 multiple = p * p，while multiple <= n: 把 flags[multiple] 改成 False，每次 multiple = multiple + p。", "数个数：count = 0，v 从 2 到 n，if flags[v]: 就 count = count + 1；最后 print(count)。输入 30 应该输出 10。"], "optional": false}]}, {"nn": "05", "dirname": "报告与全真模拟", "title": "报告与全真模拟", "intro": "对准评分表「问题描述 10 + 项目分析报告 20 + 现场成果分享 5」。数据/ 里有 PPT 六页框架、流程图规范、陈述脚本骨架、全真模拟卷和自评清单--比赛当天 120 分钟的每一步，今天先走一遍。", "obj": [{"kind": "single", "q": "评分表「数字分解与处理 15 分」里，程序写对之后最容易被忽视的得分点是？", "opts": ["输出完整、格式规范", "代码越短越好", "用最复杂的算法显得厉害", "注释越多越好"], "a": 0, "why": "评分表原文明确写「输出完整、格式规范」。分解对了、格式错了，分数照扣--第 02 讲的格式三查要带进赛场。"}, {"kind": "single", "q": "流程图里「n % i == 0?」这样的判断分支，规范的画法是？", "opts": ["菱形判断框，两个出口分别标「是」「否」", "矩形处理框，出口不标注", "平行四边形输入输出框", "圆角矩形起止框"], "a": 0, "why": "判断用菱形、双出口标「是 / 否」；输入输出用平行四边形；处理用矩形；起止用圆角矩形。判断框不标「是 / 否」是流程图最常见的扣分点。"}, {"kind": "single", "q": "5 分钟陈述的时间分配，最合理的是？", "opts": ["开场 30 秒 + 算法讲解 90 秒 + 数据展示 90 秒 + 优化原理 60 秒 + 收尾 30 秒", "开场自我介绍 3 分钟，后面赶着念完", "全程逐行念代码，数据一笔带过", "数据展示部分省略，只讲想法"], "a": 0, "why": "时间控制本身就是评分项。数据展示是评委最想听的段（「效率探究」20 分的证据），90 秒必须给足；收尾不超时体现时间控制能力。"}, {"kind": "single", "q": "评委追问「你们还能再优化吗？」，最好的回应是？", "opts": ["拍胸脯说我们的方案已经最优", "如实说明已做优化的原理与量级，再诚实指出更高阶的算法（如概率型算法）超出中学范围，是我们想继续学习的方向", "说不知道，请评委指教", "转移话题讲别的"], "a": 1, "why": "评分要求「能准确回应评委问题」。知道边界在哪、如实说出来，比夸大更可信--报告评分同样要求「结论可信、数据真实」。"}, {"kind": "blank", "q": "流程图中表示「输入 / 输出」的框，形状名称是____（填五个字）", "a": "平行四边形", "accept": ["平行四边形"], "why": "输入输出用平行四边形、判断用菱形、处理用矩形、起止用圆角矩形--四种形状记牢，画一张规范的流程图就是「问题描述 10 分」的主力。"}, {"kind": "blank", "q": "任务一的分解程序，输出格式必须与题面模板____一致（填两字）", "a": "完全", "accept": ["完全", "逐字", "严格"], "why": "评分表原文「输出完整、格式规范」。逐字符照抄模板：等号空格、乘号两侧空格、末尾干净。"}], "tasks": [{"id": "T1", "title": "综合自检 + 全真模拟", "input": "360", "desc": "读入整数 n（2 ≤ n ≤ 10^6），输出两行：第一行是质因数分解式（格式同第 02 讲），第二行是全部因数个数。这是全课程综合自检--写对它，再去完成一次 120 分钟全真模拟（数据/全真模拟卷.md）。", "starter": "n = int(input())\n# 第一行：短除法分解（第 02 讲 T1 原样复用）\n# 第二行：枚举 1 到 n 数因数个数；\n# 快速法提示：因数个数定理，指数 + 1 连乘\n", "expect": "360 = 2 × 2 × 2 × 3 × 3 × 5\n24", "hints": ["分解部分和第 02 讲 T1 一模一样：内层反复除、外层换下一个、最后 m > 1 补上。", "因数个数用枚举：j 从 1 到 n，n % j == 0 就计数；360 的答案是 24。", "想用因数个数定理验证：360 = 2³ × 3² × 5，(3+1) × (2+1) × (1+1) = 24，和枚举结果应该一样。"], "optional": false}]}, {"nn": "M01", "filename": "模拟卷01.html", "title": "大数分解 60 分钟全真模拟卷一", "timeLimitMin": 60, "intro": "限时 60 分钟，覆盖因数分解、效率对比、埃氏筛应用与报告规范。建议分配：客观题 15 分钟 + 编程三题 40 分钟 + 流程与自查 5 分钟。", "obj": [{"kind": "single", "q": "数字 1 属于哪一类？", "opts": ["质数", "既不是质数也不是合数", "合数", "最小偶质数"], "a": 1, "why": "质数要求「除了 1 和它本身以外没有别的因数」，且必须大于 1；1 只有一个因数，既不是质数也不是合数。埃氏筛也要把 flags[0] 和 flags[1] 设为 False。"}, {"kind": "single", "q": "用短除试除法分解质数 n = 29 时，外层 while i * i <= m: 循环结束时，m 的值是？", "opts": ["1", "0", "5", "29"], "a": 3, "why": "29 没有 2 到 5 之间的任何因数，所以内层循环一次都没执行，m 一直保持 29。正因如此，循环外必须写 if m > 1: 把剩下的质数 29 收进结果里。"}, {"kind": "single", "q": "已知 84 = 2 × 2 × 3 × 7，84 的全部因数（含 1 和 84）共有几个？", "opts": ["12", "6", "8", "24"], "a": 0, "why": "按因数个数定理：84 = 2² × 3¹ × 7¹，指数加 1 连乘得 (2+1) × (1+1) × (1+1) = 3 × 2 × 2 = 12 个。"}, {"kind": "single", "q": "在短除法外层循环中，误把 while i * i <= m: 写成了 while i * i < m:（少了一个等号），输入哪个数一定会出错？", "opts": ["12", "30", "49", "17"], "a": 2, "why": "49 = 7 × 7。i = 7 时正好 i * i == 49，写成 < 会提前停在 i = 6，把合数 49 原封不动当成质因数放进结果。12、30 在 i = 2、3 时已除小，17 本身是质数。"}, {"kind": "single", "q": "检验一个约 10^10 大小的质数，「从 2 试到 √n」大约需要试除多少次？", "opts": ["50 次左右", "10^5 次左右", "10^8 次左右", "10^10 次左右"], "a": 1, "why": "√(10^10) = 10^5 = 十万次。如果从 2 试到 n 则需要 10^10 次，两者相差十万倍。"}, {"kind": "single", "q": "用 6k±1 试除法检查 n = 35 是否质数，特判完 2 和 3 后，第一轮循环检查的两个除数 i 和 i + 2 分别是？", "opts": ["1 和 3", "3 和 5", "7 和 9", "5 和 7"], "a": 3, "why": "6k±1 试除从 i = 5 起步，每轮检查 i 和 i + 2（也就是 5 和 7），下一轮 i 加 6 检查 11 和 13。检查 35 时第一轮遇到 5 就发现 35 % 5 == 0 停下。"}, {"kind": "single", "q": "用埃氏筛求 100 以内的全部质数，外层循环变量 p 最大只需检查到多少？", "opts": ["10", "50", "99", "100"], "a": 0, "why": "外层条件是 p * p <= 100，即 p <= 10。任何不超过 100 的合数，必然有一个不超过 10 的质因子，所以 p 超过 10 后不会再划掉新数。"}, {"kind": "single", "q": "在比赛 PPT 六页报告框架中，「控制变量说明 + 实验记录表 + 算法耗时对比图」最适合放在哪一部分？", "opts": ["封面与标题页", "问题理解页", "实验设计与数据对比页", "创新与反思页"], "a": 2, "why": "控制变量属于实验设计，记录表与柱状/折线图属于数据与对比，是支撑「算法效率探究 20 分」的核心证据。"}, {"kind": "blank", "q": "埃氏筛划掉质数 p 的倍数时，为了跳过已被更小质数划掉的数，内层起始位置 multiple 应设为 ____（用字母 p 表示，不要空格）", "a": "p*p", "accept": ["p*p", "p**2"], "why": "2×p、3×p 等更小的倍数在筛 2、3 时已经划过，直接从 p * p 开始划既省时间又不遗漏。"}, {"kind": "blank", "q": "用短除法分解 n = 36，若误把内层 while m % i == 0: 写成了 if m % i == 0:（只除一次不反复除），最终分解结果里会混入一个合数因子 ____（填数字）", "a": "6", "accept": ["6"], "why": "手算追踪：i=2 除一次得 m=18，i=3 除一次得 m=6，接着 i=4 时 4×4>6 循环结束，剩下的 m=6 被当成质数放进结果（变成 2 × 3 × 6）。"}, {"kind": "blank", "q": "若一台电脑每秒可完成 5×10^7 次简单取余运算，估算执行 1.5×10^9 次取余大约需要 ____ 秒（填数字）", "a": "30", "accept": ["30"], "why": "总次数 ÷ 每秒次数 = (1.5 × 10^9) ÷ (5 × 10^7) = 30 秒。"}, {"kind": "blank", "q": "手绘比赛流程图时，表示「条件判断（如 n % i == 0?）」的图框形状名称是 ____（填两字）", "a": "菱形", "accept": ["菱形"], "why": "四种标准图框：起止用圆角矩形、输入输出用平行四边形、处理计算用矩形、条件判断用菱形（出口需标「是」「否」）。"}], "tasks": [{"id": "T1", "title": "数字分解与成分统计", "input": "485100", "desc": "读入整数 n（2 ≤ n ≤ 10^6），依次输出四行：\n第 1 行：质因数分解式（格式如 485100 = 2 × 2 × ...）\n第 2 行：全部因数的个数\n第 3 行：偶因数的个数\n第 4 行：最大质因数\n注意：不要死记硬背样例数字，程序要对任意合数/质数通用。", "starter": "n = int(input())\n# 第 1 部分：短除法求质因数列表 parts（存字符串），按格式打印分解式\n# 第 2 部分：枚举 1 到 n 统计全部因数个数 tot_cnt 与偶因数个数 even_cnt\n# 第 3 部分：最大质因数就是 parts 的最后一个元素 parts[-1]\n", "expect": "485100 = 2 × 2 × 3 × 3 × 5 × 5 × 7 × 7 × 11\n162\n108\n11", "hints": ["短除法所得因子是从小到大排列的，所以 parts[-1] 天然就是最大质因数（前提是循环后别忘了 if m > 1: 补最后一项）。", "统计全部因数与偶因数可以在同一个 while j <= n 循环里做：if n % j == 0: 时 tot_cnt 加 1，再套一层 if j % 2 == 0: 让 even_cnt 加 1。", "输出第 1 行用 print(str(n) + \" = \" + \" × \".join(parts))，后三行分别 print(tot_cnt)、print(even_cnt)、print(parts[-1])。"], "optional": false}, {"id": "T2", "title": "双算法循环次数对比（跳偶 vs 6k±1）", "input": "104729", "desc": "读入整数 n（n ≥ 2）。分别用「跳偶试除」和「6k±1 试除」判断 n 是否质数，并各自统计 while 循环执行了多少轮（记为 cnt1 和 cnt2）。输出三行：\n第 1 行：yes 或 no\n第 2 行：跳偶版循环次数 = cnt1\n第 3 行：6k±1版循环次数 = cnt2\n（比赛现场在此基础上套一层 time.perf_counter() 即可直接用于效率实验表。）", "starter": "n = int(input())\n# 算法一：跳偶试除（2 特判，偶数直接 no，否则 i 从 3 起每次 +2 到 i*i <= n），用 cnt1 记循环轮数\n# 算法二：6k±1 试除（2/3 特判，2 或 3 的倍数直接停，否则 i 从 5 起每次查 i 和 i+2、每次 +6），用 cnt2 记循环轮数\n", "expect": "yes\n跳偶版循环次数 = 161\n6k±1版循环次数 = 54", "hints": ["两种写法都先各自初始化 cnt1 = 0、cnt2 = 0，只要进了 while 循环体开头就把对应计数器加 1。", "跳偶版：while i * i <= n and not found: 里 cnt1 = cnt1 + 1；6k±1 版：while i * i <= n and not found: 里 cnt2 = cnt2 + 1。", "注意输出格式逗号拼接会自动加空格：print(\"跳偶版循环次数 =\", cnt1) 和 print(\"6k±1版循环次数 =\", cnt2)。"], "optional": false}, {"id": "T3", "title": "埃氏筛应用：区间孪生质数统计", "input": "100", "desc": "相差为 2 的两个质数称为「孪生质数」（例如 3 和 5、5 和 7、11 和 13）。读入整数 n（2 ≤ n ≤ 10^5），用埃氏筛找出 2 到 n 的全部质数存入列表 primes，然后统计孪生质数的对数，输出两行：\n质数个数 = ...\n孪生质数对数 = ...", "starter": "n = int(input())\n# 第 1 步：用埃氏筛造 flags 表，把 2 到 n 中 flags[v] 为 True 的数 append 进 primes\n# 第 2 步：遍历相邻两个质数 primes[k] 和 primes[k + 1]，若差等于 2 就计数\n", "expect": "质数个数 = 25\n孪生质数对数 = 8", "hints": ["先照第 04 讲 T2 写出埃氏筛得到 flags，然后用 v 从 2 到 n 收集所有 flags[v] 为 True 的数放进 primes。", "收集完 primes 后，写 k = 0，while k < len(primes) - 1:（注意减 1 防越界），判断 if primes[k + 1] - primes[k] == 2:。", "最后打印 print(\"质数个数 =\", len(primes)) 和 print(\"孪生质数对数 =\", twins)。输入 100 应得 25 和 8。"], "optional": false}]}, {"nn": "E01", "filename": "拓展卷01.html", "title": "大数分解拓展拔高卷（GCD / 完全数 / 半质数）", "timeLimitMin": 60, "intro": "限时 60 分钟，面向已掌握五讲主线的学生拓展拔高：结合辗转相除、互质、完全数、半质数与唯一分解原理，全部题目与五讲及模拟卷一零重复。", "obj": [{"kind": "single", "q": "两个正整数的最大公约数是 1（例如 8 和 15），在数学上称这两个数？", "opts": ["孪生质数", "互质（互素）", "完全数", "等差数列"], "a": 1, "why": "最大公约数为 1 的两个整数称为互质（互素），它们自身不一定是质数（8 和 15 都是合数，但公因数只有 1）。"}, {"kind": "single", "q": "已知 a = 24、b = 36，两数的最大公约数是 12，那么它们的最小公倍数是？", "opts": ["48", "144", "72", "864"], "a": 2, "why": "核心恒等式：最小公倍数 = a × b ÷ 最大公约数 = 24 × 36 ÷ 12 = 72。"}, {"kind": "single", "q": "如果把整数拆成「两个质数的乘积」（例如 15 = 3 × 5、21 = 3 × 7），这类数叫「半质数」。下面哪个数是半质数？", "opts": ["30", "12", "49", "24"], "a": 2, "why": "49 = 7 × 7，恰好是两个质数之积；30 = 2×3×5（3 个质因子）、12 = 2×2×3、24 = 2×2×2×3。"}, {"kind": "single", "q": "已知两个数的质因数分解式分别是 A = 2³ × 3² × 5 和 B = 2² × 3³ × 7，它们的最大公约数是？", "opts": ["2² × 3² = 36", "2³ × 3³ = 216", "2 × 3 × 5 × 7 = 210", "2³ × 3² × 5 × 7"], "a": 0, "why": "求最大公约数时，取两数「共同拥有」的质因子，且指数取较小值：2 取 2²、3 取 3²，5 和 7 不共有，得 36。"}, {"kind": "single", "q": "如果一个正整数等于它所有「真因数（不含自身）」之和，例如 6 = 1 + 2 + 3，就称为「完全数」。继 6 之后的第二个完全数是？", "opts": ["12", "24", "36", "28"], "a": 3, "why": "28 的真因数是 1、2、4、7、14，之和 1 + 2 + 4 + 7 + 14 = 28。"}, {"kind": "single", "q": "只枚举 i 从 2 到 √n 成对统计 n 的全部因数之和时，当遇到 i * i == n（即 n 是完全平方数）时必须特别注意什么？", "opts": ["i 和 n // i 是同一个数，只能加一次，不能重复加两次", "完全平方数没有因数", "必须改回从 1 枚举到 n", "n // i 一定比 √n 小"], "a": 0, "why": "例如 36 当 i = 6 时，36 // 6 还是 6；若不判断 i * i != n 就把 i 和 n // i 都加上去，6 会被多算一次。"}, {"kind": "single", "q": "埃氏筛开一个长度为 n + 1 的布尔列表 flags = [True] * (n + 1)。如果 n = 10^9（十亿），这套写法最先遇到的问题是？", "opts": ["Python 列表内存占用过大（几个 GB），普通电脑会卡死或报 MemoryError", "p * p <= n 条件会失效", "flags[0] 无法设为 False", "列表无法存超过 100 的下标"], "a": 0, "why": "10^9 个 Python 列表引用就要消耗约 8 GB 内存，超出普通考场机房内存；这也是报告里「算法局限与内存边界」的重要分析点。"}, {"kind": "single", "q": "在拓展阅读《费马小定理》中，如果有同学在答辩时把费马小定理吹成「百分百能识别所有质数的万能公式」，评委追问时最危险的反例是？", "opts": ["存在极少数「卡迈克尔数」（如 561）是合数却能骗过测试", "费马小定理不能算 2 的倍数", "Python 无法做幂运算", "质数 7 不满足费马小定理"], "a": 0, "why": "费马小定理是必要不充分条件：561 = 3 × 11 × 17 是合数，却能骗过许多底数测试。不懂原理不要在报告里硬吹。"}, {"kind": "blank", "q": "用辗转相除法求 gcd(a, b) 时，每次把 (a, b) 更新为 (b, ____) 直到 b 变成 0（不要空格）", "a": "a%b", "accept": ["a%b"], "why": "欧几里得算法的核心一步：a 与 b 的最大公约数等于 b 与 a % b 的最大公约数。"}, {"kind": "blank", "q": "两个正整数 12 和 18 的最小公倍数是 ____（填数字）", "a": "36", "accept": ["36"], "why": "gcd(12, 18) = 6，所以 lcm = 12 × 18 ÷ 6 = 36。"}, {"kind": "blank", "q": "6 = 1 + 2 + 3 是最小的完全数，它一共有 ____ 个正因数（含 1 和 6 本身，填数字）", "a": "4", "accept": ["4"], "why": "6 的全部正因数是 1、2、3、6，共 4 个（真因数 3 个）。"}, {"kind": "blank", "q": "现代 RSA 加密算法的安全性，主要利用了「两个大质数相乘很容易，但把乘积反过来做____非常困难」这一特性（填四个字）", "a": "大数分解", "accept": ["大数分解", "质因数分解"], "why": "大数分解在经典计算机上没有已知的多项式时间算法，这正是本赛项研究的现实背景。"}], "tasks": [{"id": "T1", "title": "活动团队分组（GCD 与最小公倍数）", "input": "84\n126", "desc": "分两行读入 A 校人数 a（输入 84 回车）和 B 校人数 b（输入 126 回车）。要求把两校各自平均分成若干人数相同的小组，每组人数尽可能多；再用最大公约数算出最小公倍数。输出三行：\n每组最多人数 = 42\n最少总组数 = 5\n最小公倍数 = 252", "starter": "a0 = int(input())\nb0 = int(input())\n# 用辗转相除法 while b != 0: 求 gcd_val，再算 groups 与 lcm_val\n", "expect": "每组最多人数 = 42\n最少总组数 = 5\n最小公倍数 = 252", "hints": ["先拷贝一份 a = a0, b = b0 去跑辗转相除法：while b != 0: r = a % b; a = b; b = r，结束时 a 就是最大公约数。", "最少总组数是两校各自分成的组数之和：a0 // gcd_val + b0 // gcd_val。", "最小公倍数公式：a0 * b0 // gcd_val（先乘再整除，整数不会溢出）。"], "optional": false}, {"id": "T2", "title": "区间完全数搜寻（O(√x) 真因数求和）", "input": "500", "desc": "读入整数 n（2 <= n <= 10000，输入 500 回车），找出 2 到 n 之间所有「完全数」（真因数之和等于它本身），依次逐行输出，并在最后一行输出总数：\n6\n28\n496\n共 3 个完全数\n提示：判断每个 x 时只需枚举 i 从 2 到 i * i <= x，找到一对因数 i 和 x // i 同时累加（注意 i * i == x 只加一次）。", "starter": "n = int(input())\ncnt = 0\n# 外层 x 从 2 到 n，内层 s = 1（1 一定是真因数），i 从 2 试到 i * i <= x\n", "expect": "6\n28\n496\n共 3 个完全数", "hints": ["对每个 x，真因数不包含 x 本身，所以 s 从 1 起算，i 从 2 试到 i * i <= x。", "如果 x % i == 0：把 i 加进 s；若 i * i != x，再把 x // i 也加进 s。", "内层结束后如果 s == x，就 print(x) 且 cnt 加 1；最后输出 print(\"共\", cnt, \"个完全数\")。"], "optional": false}, {"id": "T3", "title": "区间无平方半质数统计", "input": "200", "desc": "读入整数 n（4 <= n <= 5000，输入 200 回车）。先用埃氏筛找出 2 到 n 的全部质数存入列表 primes，再统计「恰好能写成两个不同质数相乘（p < q 且 p * q <= n）」的无平方半质数共有多少个，以及其中最大的一个是多少，输出两行：\n不同质数乘积个数 = 56\n最大一个 = 194", "starter": "n = int(input())\n# 第 1 步：埃氏筛建质数表 primes\n# 第 2 步：双层遍历 primes[i] 和 primes[j]（j > i），统计 prod = primes[i] * primes[j] <= n 的个数与最大值\n", "expect": "不同质数乘积个数 = 56\n最大一个 = 194", "hints": ["先用埃氏筛收集出所有不超过 n 的质数放进列表 primes。", "用两层循环 i 从 0 到 len(primes)-1，j 从 i+1 到 len(primes)-1，检查 primes[i] * primes[j] <= n。", "只要乘积 <= n，计数器 cnt 加 1，同时用 if prod > best: best = prod 更新最大值。"], "optional": false}]}]</script>
+<script>
+(function () {
+  var ALL = JSON.parse(document.getElementById("ALL_DS_DATA").textContent);
+  var curIdx = 0;
+  var D = ALL[0];
+
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function el(tag, cls) { var e = document.createElement(tag); if (cls) e.className = cls; return e; }
+  function normOut(t) {
+    var lines = t.replace(/\r\n/g, "\n").split("\n"), out = [];
+    for (var i = 0; i < lines.length; i++) out.push(lines[i].replace(/^[\s\u3000]+/, "").replace(/[\s\u3000]+$/, ""));
+    while (out.length && out[out.length - 1] === "") out.pop();
+    return out.join("\n");
+  }
+  function normBlank(s) {
+    s = s.replace(/^[\s\u3000]+/, "").replace(/[\s\u3000]+$/, "");
+    if (s.length >= 2 && s.charAt(0) === s.charAt(s.length - 1) && (s.charAt(0) === '"' || s.charAt(0) === "'")) s = s.substring(1, s.length - 1);
+    return s.replace(/[\s\u3000]+/g, "");
+  }
+
+  function getUnitState(u) {
+    var st = { obj: {}, objScore: -1, tasks: {} };
+    u.tasks.forEach(function (t) { st.tasks[t.id] = { done: false, hints: 0 }; });
+    var raw = lsGet("ds" + u.nn + "_practice_v1");
+    if (raw) {
+      try {
+        var s = JSON.parse(raw);
+        if (s && s.obj) st.obj = s.obj;
+        if (s && typeof s.objScore === "number") st.objScore = s.objScore;
+        if (s && s.tasks) u.tasks.forEach(function (t) { if (s.tasks[t.id]) st.tasks[t.id] = s.tasks[t.id]; });
+      } catch (e) {}
+    }
+    return st;
+  }
+  function saveUnitState(u, st) { lsSet("ds" + u.nn + "_practice_v1", JSON.stringify(st)); renderNav(); }
+
+  function renderNav() {
+    var host = document.getElementById("sideNav");
+    var html = '<div class="nav-sec">零基础 5 讲</div>';
+    for (var i = 0; i < ALL.length; i++) {
+      if (i === 5) html += '<div class="nav-sec">60 分钟模拟与拓展</div>';
+      var u = ALL[i], st = getUnitState(u);
+      var ok = (st.objScore === u.obj.length);
+      u.tasks.forEach(function (t) { if (!t.optional && !st.tasks[t.id].done) ok = false; });
+      html += '<div class="nav-item' + (i === curIdx ? ' active' : '') + '" data-i="' + i + '"><span>' + u.nn + ' · ' + u.title + '</span><span style="color:#2e8b57;font-weight:bold;">' + (ok ? '✓' : '') + '</span></div>';
+    }
+    host.innerHTML = html;
+    var items = host.querySelectorAll(".nav-item");
+    for (var k = 0; k < items.length; k++) {
+      items[k].addEventListener("click", function () {
+        curIdx = Number(this.getAttribute("data-i"));
+        D = ALL[curIdx];
+        renderNav();
+        renderUnit();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    }
+  }
+
+  function renderUnit() {
+    var st = getUnitState(D);
+    document.getElementById("pageTitle").textContent = (D.timeLimitMin ? D.title : ("第 " + D.nn + " 讲 · " + D.title));
+    document.getElementById("pageIntro").textContent = D.intro;
+    var sCnt = 0, bCnt = 0;
+    D.obj.forEach(function (q) { if (q.kind === "single") sCnt++; else bCnt++; });
+    document.getElementById("objHeading").textContent = "客观题（" + sCnt + " 单选 + " + bCnt + " 填空）";
+    var objHost = document.getElementById("objHost");
+    objHost.innerHTML = "";
+    D.obj.forEach(function (q, qi) {
+      var card = el("div", "qcard"); card.id = "q" + qi;
+      var num = el("div", "qnum"); num.textContent = "第 " + (qi + 1) + " 题 · " + (q.kind === "single" ? "单选" : "填空");
+      var qt = el("div", "qtext"); qt.textContent = q.q;
+      card.appendChild(num); card.appendChild(qt);
+      if (q.kind === "single") {
+        for (var oi = 0; oi < q.opts.length; oi++) {
+          var lb = el("label", "opt");
+          var r = document.createElement("input"); r.type = "radio"; r.name = "q" + qi; r.value = String(oi);
+          if (st.obj["q" + qi] === oi) r.checked = true;
+          lb.appendChild(r);
+          var sp = document.createElement("span"); sp.textContent = " " + "ABCD".charAt(oi) + ". " + q.opts[oi];
+          lb.appendChild(sp); card.appendChild(lb);
+        }
+      } else {
+        var inp = document.createElement("input"); inp.type = "text"; inp.className = "blank"; inp.id = "b" + qi;
+        inp.value = st.obj["q" + qi] || ""; card.appendChild(inp);
+      }
+      var why = el("div", "why"); why.id = "why" + qi; card.appendChild(why);
+      objHost.appendChild(card);
+    });
+    document.getElementById("objScore").textContent = st.objScore >= 0 ? ("上次得分：" + st.objScore + " / " + D.obj.length) : "";
+
+    document.getElementById("submitObjBtn").onclick = function () {
+      var score = 0;
+      D.obj.forEach(function (q, qi) {
+        var ok = false;
+        if (q.kind === "single") {
+          var p = document.querySelector('input[name="q' + qi + '"]:checked');
+          st.obj["q" + qi] = p ? Number(p.value) : -1;
+          ok = (st.obj["q" + qi] === q.a);
+        } else {
+          st.obj["q" + qi] = document.getElementById("b" + qi).value;
+          ok = [q.a].concat(q.accept || []).some(function (v) { return normBlank(st.obj["q" + qi]) === normBlank(v); });
+        }
+        var card = document.getElementById("q" + qi), why = document.getElementById("why" + qi);
+        card.className = "qcard " + (ok ? "right" : "wrong");
+        why.textContent = (ok ? "✓ 答对了。" : "× 正确答案：" + (q.kind === "single" ? "ABCD".charAt(q.a) : q.a) + "。") + q.why;
+        why.style.display = "block";
+        if (ok) score++;
+      });
+      st.objScore = score;
+      document.getElementById("objScore").textContent = "得分：" + score + " / " + D.obj.length;
+      saveUnitState(D, st);
+    };
+
+    var taskHost = document.getElementById("taskHost");
+    taskHost.innerHTML = "";
+    D.tasks.forEach(function (t) {
+      var box = el("div", "task");
+      var h = el("div");
+      var nm = document.createElement("b"); nm.textContent = t.id + " · " + t.title;
+      var db = el("span", "badge" + (st.tasks[t.id].done ? " done" : "")); db.textContent = st.tasks[t.id].done ? "已通过 ✓" : "未通过";
+      h.appendChild(nm); h.appendChild(db); box.appendChild(h);
+      var desc = el("div"); desc.style.margin = "6px 0"; desc.textContent = t.desc; box.appendChild(desc);
+      var io = el("pre", "io"); io.textContent = "输入样例：\n" + t.input + "\n预期输出：\n" + t.expect; box.appendChild(io);
+      var ta = document.createElement("textarea");
+      ta.value = lsGet("ds" + D.nn + "_draft_" + t.id + "_v1") || t.starter;
+      ta.addEventListener("input", function () { lsSet("ds" + D.nn + "_draft_" + t.id + "_v1", ta.value); });
+      box.appendChild(ta);
+      var hbox = el("div", "hintbox");
+      var hbtn = document.createElement("button"); hbtn.textContent = "展开三级提示";
+      hbtn.style.marginTop = "6px";
+      hbtn.onclick = function () {
+        hbox.style.display = "block";
+        hbox.textContent = t.hints.map(function (x, i) { return "提示" + (i + 1) + "：" + x; }).join("\n");
+      };
+      box.appendChild(hbtn); box.appendChild(hbox);
+      var paste = document.createElement("textarea"); paste.className = "paste"; paste.placeholder = "粘贴 IDLE 运行输出核对…";
+      box.appendChild(paste);
+      var msg = el("div", "msg");
+      var cbtn = document.createElement("button"); cbtn.className = "primary"; cbtn.style.marginTop = "6px"; cbtn.textContent = "核对输出";
+      cbtn.onclick = function () {
+        if (paste.value.indexOf("Traceback") !== -1) { msg.className = "msg bad"; msg.textContent = "检测到 Traceback 报错，请先修正语法。"; return; }
+        if (normOut(paste.value) === normOut(t.expect)) {
+          st.tasks[t.id].done = true; saveUnitState(D, st);
+          db.className = "badge done"; db.textContent = "已通过 ✓";
+          msg.className = "msg ok"; msg.textContent = "核对通过，输出一致！";
+        } else {
+          msg.className = "msg bad"; msg.textContent = "输出不一致，请对照预期输出。";
+        }
+      };
+      box.appendChild(cbtn); box.appendChild(msg);
+      taskHost.appendChild(box);
+    });
+  }
+
+  renderNav();
+  renderUnit();
+})();
+</script>
+</body>
+</html>

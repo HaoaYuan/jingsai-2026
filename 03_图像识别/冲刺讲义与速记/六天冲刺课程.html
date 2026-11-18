@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>图像识别 · 六天冲刺课程指南（36节实战排期表）</title>
+<style>
+  :root {
+    --brand: #0b5fff;
+    --brand-dark: #0045c7;
+    --ink: #1c2b3a;
+    --mut: #5f6368;
+    --line: #e3ebf5;
+    --bg: #f4f7fc;
+    --ok: #137333;
+    --okbg: #e6f4ea;
+    --bad: #c5221f;
+    --orange: #e37400;
+    --orangebg: #fef7e0;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif; background:var(--bg); color:var(--ink); line-height:1.6; }
+  .wrap { max-width:1040px; margin:0 auto; padding:0 20px; }
+
+  header.top-hero { background:linear-gradient(135deg, #0b5fff 0%, #2fa4ff 100%); color:#fff; padding:36px 0 30px; }
+  .kicker { font-size:13px; letter-spacing:2px; opacity:.9; margin-bottom:6px; font-weight:600; text-transform:uppercase; }
+  h1 { font-size:30px; margin:0 0 8px; }
+  .sub { font-size:15px; opacity:.92; margin:0; max-width:820px; }
+  
+  .meta-bar { display:flex; gap:20px; flex-wrap:wrap; margin-top:16px; font-size:13.5px; opacity:.92; }
+  .meta-bar b { color:#fff; }
+
+  /* 顶部快捷操作栏 */
+  .action-bar { background:#fff; border-bottom:1px solid var(--line); position:sticky; top:0; z-index:90; box-shadow:0 2px 8px rgba(0,0,0,.03); }
+  .action-wrap { display:flex; justify-content:space-between; align-items:center; padding:10px 0; flex-wrap:wrap; gap:12px; }
+  .day-tabs { display:flex; gap:6px; overflow-x:auto; }
+  .tab-btn { border:1px solid var(--line); background:#fff; border-radius:6px; padding:6px 14px; font-size:13.5px; cursor:pointer; font-family:inherit; color:var(--ink); font-weight:500; transition:all .15s; white-space:nowrap; }
+  .tab-btn:hover { border-color:var(--brand); color:var(--brand); }
+  .tab-btn.active { background:var(--brand); color:#fff; border-color:var(--brand); font-weight:bold; }
+  
+  .tools-right { display:flex; gap:10px; align-items:center; }
+  .btn-mode { font-size:13px; padding:6px 12px; border-radius:6px; border:1px solid #c9dcff; background:#eef4ff; color:var(--brand); cursor:pointer; font-weight:600; }
+  .btn-mode.active { background:var(--orange); color:#fff; border-color:var(--orange); }
+  .btn-print { font-size:13px; padding:6px 12px; border-radius:6px; border:1px solid var(--line); background:#fff; cursor:pointer; }
+
+  /* 通用卡片 */
+  .section-card { background:#fff; border-radius:12px; border:1px solid var(--line); padding:22px 24px; margin:20px 0; box-shadow:0 4px 16px rgba(20,50,100,.03); }
+  .sec-title { font-size:18px; font-weight:bold; color:#0e366e; margin:0 0 14px; display:flex; align-items:center; justify-content:space-between; border-bottom:2px solid #eef4ff; padding-bottom:8px; }
+  
+  .banner-quote { background:var(--orangebg); border:1px solid #f9ab00; color:#8a5a00; border-radius:8px; padding:12px 16px; font-size:14px; margin-bottom:18px; }
+  .banner-quote code { background:#fff; padding:1px 6px; border-radius:4px; font-family:Consolas,monospace; font-weight:bold; }
+
+  /* 总表表格 */
+  .sched-table { width:100%; border-collapse:collapse; font-size:13.5px; text-align:left; }
+  .sched-table th { background:#f7f9fc; padding:10px 12px; border:1px solid var(--line); color:#4a5568; font-weight:600; }
+  .sched-table td { padding:10px 12px; border:1px solid var(--line); }
+  .sched-table tr:hover td { background:#fafcff; }
+
+  /* 单日详细卡片 */
+  .day-block { margin-bottom:28px; scroll-margin-top:70px; }
+  .day-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px; }
+  .day-title { font-size:20px; font-weight:bold; color:#0e366e; display:flex; align-items:center; gap:10px; }
+  .day-badge { background:var(--brand); color:#fff; font-size:12px; padding:2px 8px; border-radius:4px; font-weight:600; }
+  .day-target { font-size:14px; color:var(--mut); }
+
+  .lesson-row { display:grid; grid-template-columns:50px 1fr 110px 140px; gap:10px; padding:10px 12px; border:1px solid var(--line); border-radius:8px; margin-bottom:8px; background:#fff; align-items:center; font-size:13.5px; transition:all .15s; }
+  @media (max-width:720px) { .lesson-row { grid-template-columns:40px 1fr; } .col-ref, .col-out { display:none; } }
+  .lesson-row:hover { border-color:#b9d4ff; background:#fafcff; }
+  .lesson-row.optional { background:#fbfcfe; border-style:dashed; }
+  .lesson-row.optional .sec-idx { color:var(--orange); }
+  
+  .sec-idx { font-weight:bold; color:var(--brand); text-align:center; }
+  .lesson-body { line-height:1.45; }
+  .opt-tag { font-size:11px; padding:1px 5px; border-radius:4px; background:var(--orangebg); color:var(--orange); font-weight:600; margin-left:4px; }
+  .col-ref a { color:var(--brand); text-decoration:none; font-weight:500; font-size:13px; }
+  .col-ref a:hover { text-decoration:underline; }
+  .col-out { font-family:Consolas,monospace; font-size:12.5px; color:#2c3e50; background:#f1f4f8; padding:3px 8px; border-radius:4px; text-align:center; }
+
+  /* 评价与打勾 */
+  .criteria-box { background:#fafcff; border:1px solid #dce8fa; border-radius:8px; padding:14px 16px; margin-top:12px; font-size:13.5px; }
+  .crit-title { font-weight:bold; color:#0e366e; margin-bottom:8px; display:flex; justify-content:space-between; }
+  .chk-label { display:flex; align-items:center; gap:8px; margin-bottom:6px; cursor:pointer; }
+  .chk-label input { margin:0; }
+  .chk-label.checked { color:var(--ok); font-weight:bold; }
+
+  .teacher-alert { border-left:4px solid var(--orange); padding-left:12px; margin:8px 0; font-size:13px; color:#855d00; }
+
+  /* 教师提醒三条 */
+  .alert-card { background:#fff8ec; border:1px solid #ffe0b0; border-radius:10px; padding:16px 20px; margin-top:24px; }
+  .alert-card h3 { margin:0 0 10px; color:#8a5a00; font-size:16px; }
+  .alert-card ol { margin:0; padding-left:20px; font-size:13.5px; color:#6d4800; }
+  .alert-card li { margin-bottom:6px; }
+
+  footer { text-align:center; padding:40px 0 60px; font-size:13px; color:var(--mut); }
+
+  @media print {
+    .action-bar, header.top-hero, footer { display:none !important; }
+    body { background:#fff; color:#000; }
+    .section-card { border:1px solid #888; box-shadow:none; padding:12px; margin:10px 0; break-inside:avoid; }
+    .lesson-row { border:1px solid #bbb; break-inside:avoid; padding:6px; margin-bottom:4px; }
+    .day-block { break-inside:avoid; page-break-after:auto; margin-bottom:20px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top-hero">
+  <div class="wrap">
+    <div class="kicker">2026 人工智能素养实践活动 · 冲刺指南</div>
+    <h1>图像识别 · 六天冲刺课程教学排期表</h1>
+    <p class="sub">适用对象：初中组零基础学生 · 目标：赛场从空白文件独立默写识别程序、手绘流程图并按模板输出（每天 6 节 × 40 分钟，共 36 节）</p>
+    <div class="meta-bar">
+      <span>教学环境：<b>Python 3.9 + IDLE（Windows 10 离线）</b></span>
+      <span>配套材料：<b>《图像识别备赛教程》·《背代码手册》·《冲刺练习》</b></span>
+      <span>真题标准：<b>往年 B 套现场三件套</b></span>
+    </div>
+  </div>
+</header>
+
+<div class="action-bar">
+  <div class="wrap action-wrap">
+    <div class="day-tabs">
+      <button class="tab-btn active" onclick="scrollToSec('overview')">总览总表</button>
+      <button class="tab-btn" onclick="scrollToSec('day1')">Day 1 运行基础</button>
+      <button class="tab-btn" onclick="scrollToSec('day2')">Day 2 循环计数</button>
+      <button class="tab-btn" onclick="scrollToSec('day3')">Day 3 读真题网格</button>
+      <button class="tab-btn" onclick="scrollToSec('day4')">Day 4 特征与规则</button>
+      <button class="tab-btn" onclick="scrollToSec('day5')">Day 5 组装与默写</button>
+      <button class="tab-btn" onclick="scrollToSec('day6')">Day 6 全真模拟考</button>
+    </div>
+    <div class="tools-right">
+      <button class="btn-mode" id="btn-toggle-half" onclick="toggleHalfDayMode()">切换：半天精简模式</button>
+      <button class="btn-print" onclick="window.print()">打印排期表</button>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+  <!-- 核心主线标语 -->
+  <div class="section-card" id="overview">
+    <div class="sec-title">
+      <span>六天总体路线规划</span>
+      <span style="font-size:13px; font-weight:normal; color:var(--mut);">可直接在电脑上勾选记录各组过关进度</span>
+    </div>
+
+    <div class="banner-quote">
+      <b>🚩 赛场核心主线（第 1 天贴在机房黑板上）：</b><br>
+      <code>load(读入网格)</code> &rarr; <code>row_widths(数每行宽度)</code> &rarr; <code>classify(三条规则定形状)</code> &rarr; <code>print(按模板严格输出)</code>。<br>
+      <b>固定节拍：</b>每天晨间 10 分钟默写前一天的必背段落；离场前 2 分钟齐声朗读背诵口诀。
+    </div>
+
+    <table class="sched-table">
+      <thead>
+        <tr>
+          <th style="width:70px;">天数</th>
+          <th>当天主题与突破点</th>
+          <th style="width:130px;">教程对应章节</th>
+          <th style="width:120px;">背代码手册进度</th>
+          <th style="width:180px;">当天硬产出指标</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>Day 1</b></td>
+          <td>把程序跑起来：IDLE、print、变量、下标、<code>//</code> <code>%</code></td>
+          <td>第 1–3 章</td>
+          <td>通读手册</td>
+          <td><code>hello.py</code> 跑通；10题像素小练</td>
+        </tr>
+        <tr>
+          <td><b>Day 2</b></td>
+          <td>会判断、会循环：if 分支与 for 循环、两句核心口诀</td>
+          <td>第 4–5 章</td>
+          <td>—</td>
+          <td>数 1 计数器；找最后一个 1（位置26）</td>
+        </tr>
+        <tr>
+          <td><b>Day 3</b></td>
+          <td>整幅图与真题文件：二维网格遍历、open 读取真题数据</td>
+          <td>第 6–9 章</td>
+          <td><b style="color:var(--brand);">背熟第 1 段 load</b></td>
+          <td>读出三件套行数/列数/总 1 数</td>
+        </tr>
+        <tr>
+          <td><b>Day 4</b></td>
+          <td>特征与规则：外接框与行宽序列、三条规则定分类</td>
+          <td>第 10–11 章</td>
+          <td><b style="color:var(--brand);">背熟第 2、3 段</b></td>
+          <td><code>row_widths</code> + <code>classify</code> 判对三件套</td>
+        </tr>
+        <tr>
+          <td><b>Day 5</b></td>
+          <td>组装与限时默写：四段组装、12分钟脱稿限时默写</td>
+          <td>第 12–13 章</td>
+          <td><b style="color:var(--brand);">第 4 段 + 整段连背</b></td>
+          <td>从空白文件默写完整代码并跑通</td>
+        </tr>
+        <tr>
+          <td><b>Day 6</b></td>
+          <td>全真模拟与补漏：40分钟限时闭卷考、手绘流程图、答辩演练</td>
+          <td>第 19–21 章</td>
+          <td><b style="color:var(--ok);">全程脱稿 100%</b></td>
+          <td>全真模拟 &ge;80分；手绘图与1分钟答辩</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Day 1 -->
+  <div class="section-card day-block" id="day1">
+    <div class="day-header">
+      <div class="day-title"><span class="day-badge">DAY 1</span> 把程序跑起来</div>
+      <div class="day-target">目标：独立新建/保存/运行 .py；会用下标取字符；会用 // 与 % 算行列</div>
+    </div>
+
+    <div class="lesson-row"><span class="sec-idx">第1节</span><div class="lesson-body"><b>初识环境与第一行代码</b>：IDLE、第一个程序、两条铁律（英文标点 / 报错三步读法）</div><div class="col-ref"><a href="图像识别备赛教程.md" target="_blank">教程 第1章</a></div><div class="col-out">hello.py 跑通</div></div>
+    <div class="lesson-row"><span class="sec-idx">第2节</span><div class="lesson-body"><b>数据容器</b>：变量、字符串、下标从 0 开始计数、len() 函数</div><div class="col-ref"><a href="图像识别备赛教程.md" target="_blank">教程 第2章</a></div><div class="col-out">练习 2-1 (29/1/0)</div></div>
+    <div class="lesson-row"><span class="sec-idx">第3节</span><div class="lesson-body"><b>计算机算术</b>：/（浮点除）与 //（整除）、%（取余）；像素摆行数与一维换行列</div><div class="col-ref"><a href="图像识别备赛教程.md" target="_blank">教程 第3章</a></div><div class="col-out">练习 3-1 (9行1个)</div></div>
+    <div class="lesson-row optional"><span class="sec-idx">第4节</span><div class="lesson-body"><b>像素基础小练 10 题</b> <span class="opt-tag">可缓</span>：长度/取位/奇偶/行列换算现场测验</div><div class="col-ref">—</div><div class="col-out">课堂全员订正</div></div>
+    <div class="lesson-row"><span class="sec-idx">第5节</span><div class="lesson-body"><b>黑板贴主线口号</b>：预告六天冲刺地图；明确考场纪律（禁止手机/严禁大模型/空白U盘）</div><div class="col-ref"><a href="图像识别备赛教程.md" target="_blank">教程 第0章</a></div><div class="col-out">签署冲刺公约</div></div>
+    <div class="lesson-row"><span class="sec-idx">第6节</span><div class="lesson-body"><b>第 1 天过关小测（15分钟）</b>：3 道读代码写输出 + 2 道中文标点改错</div><div class="col-ref"><a href="图像识别备赛教程.md" target="_blank">教程 第1-3章</a></div><div class="col-out">登记录入"过关"</div></div>
+
+    <div class="criteria-box">
+      <div class="crit-title"><span>Day 1 教师过关验收标准</span><span id="crit-status-1" style="font-size:12.5px; color:var(--mut);"></span></div>
+      <label class="chk-label"><input type="checkbox" onchange="saveCheck(this, 'c1_1')"> 能独立在 IDLE 新建、保存、运行 .py 文件并排除语法报错</label>
+      <label class="chk-label"><input type="checkbox" onchange="saveCheck(this, 'c1_2')"> 深刻理解“下标从 0 开始”，能准确说出最后一个字符是 row[-1] 或 row[len-1]</label>
+      <label class="chk-label"><input type="checkbox" onchange="saveCheck(this, 'c1_3')"> 口算 17 // 5 得 3、17 % 5 得 2，能换算 100 列网格中任意编号的行列号</label>
+      <div class="teacher-alert"><b>巡视重点：</b>学生最容易犯中文冒号、中文括号错误；注意纠正文件存错路径找不到的问题。</div>
+    </div>
+  </div>
+
+  <!-- Day 2 -->
+  <div class="section-card day-block" id="day2">
+    <div class="day-header">
+      <div class="day-title"><span class="day-badge">DAY 2</span> 会判断、会循环</div>
+      <div class="day-target">目标：掌握 if/elif/else 与逻辑运算符；会用 for 计数、找最后一个 1</div>
+    </div>
+
+    <div class="lesson-row"><span class="sec-idx">第1节</span><div class="lesson-body"><b>分支判断</b>：if/elif/else 结构、= 与 == 的区别、4格缩进规则</div><div class="col-ref"><a href="图像识别备赛教程.md" target="_blank">教程 第4章</a></div><div class="col-out">门票与判断代码</div></div>
+    <div class="lesson-row"><span class="sec-idx">第2节</span><div class="lesson-body"><b>逻辑组合</b>：and/or/not；状态记录变量（先 False，条件满足改 True）</div><div class="col-ref"><a href="图像识别备赛教程.md" target="_blank">教程 第4章</a></div><div class="col-out">行宽变小过 (True)</div></div>
+    <div class="lesson-row"><span class="sec-idx">第3节</span><div class="lesson-body"><b>for 逐字符遍历</b>：计数器初值置 0；<b>口诀一：循环数数，循环外下结论</b></div><div class="col-ref"><a href="图像识别备赛教程.md" target="_blank">教程 第5章</a></div><div class="col-out">数 1 程序 (14个)</div></div>
+    <div class="lesson-row"><span class="sec-idx">第4节</span><div class="lesson-body"><b>下标遍历与覆盖机制</b>：range(len())；<b>口诀二：遇到就记，后面覆盖前面</b></div><div class="col-ref"><a href="图像识别备赛教程.md" target="_blank">教程 第5章</a></div><div class="col-out">最后一个1 (位置26)</div></div>
+    <div class="lesson-row optional"><span class="sec-idx">第5节</span><div class="lesson-body"><b>练习 4-1 与 5-1 强化</b> <span class="opt-tag">可缓</span>：两句口诀默写与 count() 快捷方式对比</div><div class="col-ref"><a href="图像识别备赛教程.md" target="_blank">教程 第4-5章</a></div><div class="col-out">口诀脱稿默写</div></div>
+    <div class="lesson-row"><span class="sec-idx">第6节</span><div class="lesson-body"><b>第 2 天过关检测</b>：手写从一行 0/1 字符串中数出 1 的个数（严禁使用 count）</div><div class="col-ref"><a href="图像识别备赛教程.md" target="_blank">教程 第5章</a></div><div class="col-out">独立运行全对</div></div>
+
+    <div class="criteria-box">
+      <div class="crit-title"><span>Day 2 教师过关验收标准</span></div>
+      <label class="chk-label"><input type="checkbox" onchange="saveCheck(this, 'c2_1')"> 循环体计数器初值置 0，不会报 NameError</label>
+      <label class="chk-label"><input type="checkbox" onchange="saveCheck(this, 'c2_2')"> 严格执行“判断写在循环外”，不会把 if 写进循环导致刷屏</label>
+      <label class="chk-label"><input type="checkbox" onchange="saveCheck(this, 'c2_3')"> 能脱稿解释“遇到就记，后面覆盖前面”为什么能找到最后一个 1</label>
+      <div class="teacher-alert"><b>巡视重点：</b>缩进层级！`if` 判断下结论的代码必须与 `for` 对齐，严禁缩进进 for 循环内部。</div>
+    </div>
+  </div>
+
+  <!-- Day 3 -->
+  <div class="section-card day-block" id="day3">
+    <div class="day-header">
+      <div class="day-title"><span class="day-badge">DAY 3</span> 整幅图与真题文件</div>
+      <div class="day-target">目标：理解 grid[r][c] 二维结构；熟练 open 读取；<b>背熟第 1 段 load</b></div>
+    </div>
+
+    <div class="lesson-row"><span class="sec-idx">第1节</span><div class="lesson-body"><b>二维网格与嵌套循环</b>：先行后列 grid[r][c]、外层走行内层走列、整图统计</div><div class="col-ref"><a href="图像识别备赛教程.md" target="_blank">教程 第6章</a></div><div class="col-out">5x5总1数 (21个)</div></div>
+    <div class="lesson-row"><span class="sec-idx">第2节</span><div class="lesson-body"><b>读取比赛真题</b>：open()、strip() 清理换行符、跳过末尾空行、data/ 路径规范</div><div class="col-ref"><a href="图像识别备赛教程.md" target="_blank">教程 第7章</a></div><div class="col-out">图形1 (100/100/3853)</div></div>
+    <div class="lesson-row"><span class="sec-idx">第3节</span><div class="lesson-body"><b>封装 load 函数</b>：对照《背代码手册》第 1 段逐行拆解讲解与圈画考点</div><div class="col-ref"><a href="背代码手册.md" target="_blank">手册 第1段</a></div><div class="col-out">圈出易错行</div></div>
+    <div class="lesson-row"><span class="sec-idx">第4节</span><div class="lesson-body"><b>第一次默写第 1 段</b>：遮住手册、草稿纸默写、逐字符核验</div><div class="col-ref"><a href="背代码手册.md" target="_blank">手册 默写卡</a></div><div class="col-out">全对第1次记录</div></div>
+    <div class="lesson-row"><span class="sec-idx">第5节</span><div class="lesson-body"><b>循环读取真题三件套</b>：依次打印三个文件的总 1 像素数量（3853 / 2770 / 2983）</div><div class="col-ref"><a href="图像识别备赛教程.md" target="_blank">教程 第7,9章</a></div><div class="col-out">三文件数据无误</div></div>
+    <div class="lesson-row optional"><span class="sec-idx">第6节</span><div class="lesson-body"><b>二次默写与纠错</b> <span class="opt-tag">可缓</span>：针对忘写 strip() 或漏掉冒号的学生单兵教练</div><div class="col-ref"><a href="背代码手册.md" target="_blank">手册 第1段</a></div><div class="col-out">全对第2次记录</div></div>
+
+    <div class="criteria-box">
+      <div class="crit-title"><span>Day 3 教师过关验收标准</span></div>
+      <label class="chk-label"><input type="checkbox" onchange="saveCheck(this, 'c3_1')"> load 函数 8 行代码能从空白文本独立默写，零语法错误</label>
+      <label class="chk-label"><input type="checkbox" onchange="saveCheck(this, 'c3_2')"> 绝不遗漏 strip()，列数输出为严格的 100（非 101）</label>
+      <label class="chk-label"><input type="checkbox" onchange="saveCheck(this, 'c3_3')"> 三件套总 1 数实测正确：图形1=3853、图形2=2770、图形3=2983</label>
+      <div class="teacher-alert"><b>巡视重点：</b>路径中必须写 `"data/" + name`，如果直接打开文件名会引发 FileNotFoundError。</div>
+    </div>
+  </div>
+
+  <!-- Day 4 -->
+  <div class="section-card day-block" id="day4">
+    <div class="day-header">
+      <div class="day-title"><span class="day-badge">DAY 4</span> 特征与规则</div>
+      <div class="day-target">目标：理解“识别=特征+规则”；<b>背熟手册第 2、3 段（row_widths 与 classify）</b></div>
+    </div>
+
+    <div class="lesson-row"><span class="sec-idx">第1节</span><div class="lesson-body"><b>形状与特征表</b>：外接框（上下左右）、面积、填充率；真题特征数据深度对比</div><div class="col-ref"><a href="图像识别备赛教程.md" target="_blank">教程 第10章</a></div><div class="col-out">说出三图行宽差异</div></div>
+    <div class="lesson-row"><span class="sec-idx">第2节</span><div class="lesson-body"><b>编写 row_widths 函数</b>：找到上下边界，提取外接框内每行的水平像素宽度</div><div class="col-ref"><a href="背代码手册.md" target="_blank">手册 第2段</a></div><div class="col-out">代码逐行跑通</div></div>
+    <div class="lesson-row"><span class="sec-idx">第3节</span><div class="lesson-body"><b>默写第 2 段 row_widths</b>：9 行核心代码默写过关，重点排查 `rows[-1] + 1`</div><div class="col-ref"><a href="背代码手册.md" target="_blank">手册 默写卡</a></div><div class="col-out">全对记录</div></div>
+    <div class="lesson-row"><span class="sec-idx">第4节</span><div class="lesson-body"><b>三条规则与判定顺序</b>：先五边（顶宽&ge;10）&rarr; 再圆（行宽变小）&rarr; 剩三角；36/36 验证范围</div><div class="col-ref"><a href="图像识别备赛教程.md" target="_blank">教程 第11章</a></div><div class="col-out">口述判定依据</div></div>
+    <div class="lesson-row"><span class="sec-idx">第5节</span><div class="lesson-body"><b>默写第 3 段 classify</b>：8 行规则函数默写过关；拼上 load 与 row_widths 运行</div><div class="col-ref"><a href="背代码手册.md" target="_blank">手册 第3段</a></div><div class="col-out">判对三件套</div></div>
+    <div class="lesson-row optional"><span class="sec-idx">第6节</span><div class="lesson-body"><b>为什么顺序不能换？</b> <span class="opt-tag">可缓</span>：实验验证乱序的后果（五边形误判为圆）；高中组翻车实验</div><div class="col-ref"><a href="图像识别备赛教程.md" target="_blank">教程 第14章</a></div><div class="col-out">答辩口径过关</div></div>
+
+    <div class="criteria-box">
+      <div class="crit-title"><span>Day 4 教师过关验收标准</span></div>
+      <label class="chk-label"><input type="checkbox" onchange="saveCheck(this, 'c4_1')"> row_widths 能够准确输出每行宽度，不漏掉末行（range 的 +1 必须写对）</label>
+      <label class="chk-label"><input type="checkbox" onchange="saveCheck(this, 'c4_2')"> classify 顺序绝对正确：先判顶宽&ge;10为五边形，再判变小为圆，最后等腰三角形</label>
+      <label class="chk-label"><input type="checkbox" onchange="saveCheck(this, 'c4_3')"> 三个文件类别全对：图形1=圆形、图形2=等腰三角形、图形3=正五边形</label>
+      <div class="teacher-alert"><b>巡视重点：</b>`for i in range(len(widths) - 1):` 必须 `-1`，否则 `widths[i+1]` 会发生 IndexError 越界。</div>
+    </div>
+  </div>
+
+  <!-- Day 5 -->
+  <div class="section-card day-block" id="day5">
+    <div class="day-header">
+      <div class="day-title"><span class="day-badge">DAY 5</span> 组装与限时默写</div>
+      <div class="day-target">目标：从空白文件默写完整程序；跑通三件套；严格匹配输出模板；熟悉调试排错</div>
+    </div>
+
+    <div class="lesson-row"><span class="sec-idx">第1节</span><div class="lesson-body"><b>四段完整组装</b>：load &rarr; row_widths &rarr; classify &rarr; 主程序 3 行；对照《冲刺练习》</div><div class="col-ref"><a href="../练习与模拟/冲刺练习/完整程序_初中组.py" target="_blank">参考程序.py</a></div><div class="col-out">理清四段逻辑</div></div>
+    <div class="lesson-row"><span class="sec-idx">第2节</span><div class="lesson-body"><b>第一次限时默写（15分钟）</b>：允许看一次手册，在冲刺练习目录新建空白文件独立运行</div><div class="col-ref"><a href="背代码手册.md" target="_blank">手册 27行</a></div><div class="col-out">跑通并记录耗时</div></div>
+    <div class="lesson-row"><span class="sec-idx">第3节</span><div class="lesson-body"><b>卡点精讲与高频错题</b>：对照手册“高频错误十条”排查，把写错的整行重抄 3 遍</div><div class="col-ref"><a href="背代码手册.md" target="_blank">高频错误表</a></div><div class="col-out">消除个人卡点</div></div>
+    <div class="lesson-row"><span class="sec-idx">第4节</span><div class="lesson-body"><b>第二次限时默写（12分钟，完全脱稿）</b>：全程不准看书看屏幕，计时开始，跑通三件套</div><div class="col-ref"><a href="../练习与模拟/冲刺练习/默写骨架_初中组.py" target="_blank">默写骨架.py</a></div><div class="col-out">12分钟脱稿达标</div></div>
+    <div class="lesson-row"><span class="sec-idx">第5节</span><div class="lesson-body"><b>调试速查演练</b>：SyntaxError、NameError、IndexError、FileNotFoundError 现场排错答疑</div><div class="col-ref"><a href="图像识别备赛教程.md" target="_blank">教程 第13章</a></div><div class="col-out">排错反应&lt;30秒</div></div>
+    <div class="lesson-row optional"><span class="sec-idx">第6节</span><div class="lesson-body"><b>输出模板咬文嚼字</b> <span class="opt-tag">可缓</span>：文件名后两个半角空格、英文冒号一个空格；找茬挑错</div><div class="col-ref"><a href="背代码手册.md" target="_blank">手册 模板</a></div><div class="col-out">逐字符0误差</div></div>
+
+    <div class="criteria-box">
+      <div class="crit-title"><span>Day 5 教师过关验收标准</span></div>
+      <label class="chk-label"><input type="checkbox" onchange="saveCheck(this, 'c5_1')"> 12 分钟内脱稿默写出 27 行代码，在空白电脑上一枪跑通</label>
+      <label class="chk-label"><input type="checkbox" onchange="saveCheck(this, 'c5_2')"> 输出字符与要求逐字完全一致：文件名后两个空格、英文冒号后一个空格</label>
+      <label class="chk-label"><input type="checkbox" onchange="saveCheck(this, 'c5_3')"> 遇到 SyntaxError 或 IndexError 能在 30 秒内看行号定位并自行排除</label>
+      <div class="teacher-alert"><b>巡视重点：</b>检查主程序 `print(name + "  识别为: " + ...)` 中的空格数与冒号中英文，失之毫厘谬以千里！</div>
+    </div>
+  </div>
+
+  <!-- Day 6 -->
+  <div class="section-card day-block" id="day6">
+    <div class="day-header">
+      <div class="day-title"><span class="day-badge" style="background:#004be5;">DAY 6</span> 全真模拟与补漏</div>
+      <div class="day-target">目标：40 分钟限时闭卷模拟（100分制）；手绘流程图规范达标；答辩 1 分钟脱稿过关</div>
+    </div>
+
+    <div class="lesson-row"><span class="sec-idx">第1节</span><div class="lesson-body"><b>发卷与考场规则宣讲</b>：分发草稿纸、宣布 40 分钟限时规则（10客观+25编程+5自查）</div><div class="col-ref"><a href="考前速记与答辩攻防.md" target="_blank">5大禁令</a></div><div class="col-out">草稿纸署名</div></div>
+    <div class="lesson-row" style="background:#f4f8ff; border-color:#b9d4ff;"><span class="sec-idx" style="color:#004be5;">第2-3节</span><div class="lesson-body"><b>🔥 40 分钟全真模拟考</b>：打开《全真模拟试卷.html》启动倒计时，独立作答全部模块</div><div class="col-ref"><a href="../练习与模拟/全真模拟试卷.html" target="_blank">模拟试卷.html</a></div><div class="col-out"><b>综合总分&ge;80</b></div></div>
+    <div class="lesson-row"><span class="sec-idx">第4节</span><div class="lesson-body"><b>按官方评分表判分</b>：程序 50 分（读取10/特征15/分类15/输出10）、客观 30、流程答辩 20</div><div class="col-ref"><a href="../练习与模拟/全真模拟试卷.html" target="_blank">成绩单看板</a></div><div class="col-out">登记各生弱项</div></div>
+    <div class="lesson-row"><span class="sec-idx">第5节</span><div class="lesson-body"><b>客观题冲刺刷题</b>：打开《客观题练习.html》完成 30 题扩散思维题库，错题一键重练</div><div class="col-ref"><a href="../练习与模拟/客观题练习.html" target="_blank">客观题练习.html</a></div><div class="col-out">30题全绿通关</div></div>
+    <div class="lesson-row"><span class="sec-idx">第6节</span><div class="lesson-body"><b>答辩死穴演练</b>：1 分钟话术人人过关；“为什么五边形必须先判”评委追问逐人过堂</div><div class="col-ref"><a href="考前速记与答辩攻防.md" target="_blank">答辩5死穴</a></div><div class="col-out">脱稿对答如流</div></div>
+
+    <div class="criteria-box">
+      <div class="crit-title"><span>Day 6 教师过关验收标准</span></div>
+      <label class="chk-label"><input type="checkbox" onchange="saveCheck(this, 'c6_1')"> 全真模拟试卷总分达到 80 分以上（目标冲击 90+ 冲金梯队）</label>
+      <label class="chk-label"><input type="checkbox" onchange="saveCheck(this, 'c6_2')"> 草稿纸手绘流程图图元规范（圆角矩形/平行四边形/矩形/菱形）且标明分支</label>
+      <label class="chk-label"><input type="checkbox" onchange="saveCheck(this, 'c6_3')"> 抽查答辩问题“为什么五边形先判”，能用“五边形也有行宽变小段”清晰答出</label>
+      <label class="chk-label"><input type="checkbox" onchange="saveCheck(this, 'c6_4')"> 代码保存为 队伍编号_姓名1_姓名2.py 并演练拷入空白 U 盘</label>
+      <div class="teacher-alert"><b>巡视重点：</b>模拟考试如果低于 80 分，按“模板空格错 &rarr; 漏 strip &rarr; 规则顺序换了 &rarr; 缩进错”的顺序快速补漏！</div>
+    </div>
+  </div>
+
+  <!-- 给教师的三条提醒 -->
+  <div class="alert-card">
+    <h3>📢 给备赛指导教师的三条铁律提醒</h3>
+    <ol>
+      <li><b>背诵进度是硬指标，绝不可妥协：</b>《背代码手册》的四段代码（27行）背不下来，第 6 天模拟必挂。第 3、4、5 天的背诵与默写节次必须盯紧，人人过关，不可被讲课拖堂挪作他用。</li>
+      <li><b>所有真题数字已在本机全部实测：</b>讲评时请直接引用官方实测值（网格 100×100；总 1 像素：图形1=3853、图形2=2770、图形3=2983；填充率 0.764 / 0.501 / 0.707；首行宽 1 / 1 / 43，末行宽 1 / 79 / 3）。</li>
+      <li><b>诚实条款也是得分项：</b>学生答辩时必须如实回答“我们的行宽规则在正向实心图形、平移 ±10、缩放 0.7–1.2 范围内 36 个样例 100% 正确；旋转和空心图形未经验证”。实事求是的科学态度在素养活动答辩中是非常重要的加分项，盲目吹嘘反而会被评委当场出题打脸。</li>
+    </ol>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    2026年青少年人工智能素养实践活动 · 图形识别冲刺教学系统 · 纯前端离线运行
+  </div>
+</footer>
+
+<script>
+// 平滑滚动定位
+function scrollToSec(id) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth' });
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+  }
+}
+
+// 半天精简模式切换
+let isHalfDay = false;
+function toggleHalfDayMode() {
+  isHalfDay = !isHalfDay;
+  const btn = document.getElementById('btn-toggle-half');
+  const optRows = document.querySelectorAll('.lesson-row.optional');
+  
+  if (isHalfDay) {
+    btn.textContent = '当前：半天精简模式（已折叠可缓节次）';
+    btn.classList.add('active');
+    optRows.forEach(r => r.style.display = 'none');
+  } else {
+    btn.textContent = '切换：半天精简模式';
+    btn.classList.remove('active');
+    optRows.forEach(r => r.style.display = 'grid');
+  }
+}
+
+// 本地保存打勾进度
+const CHK_KEY = 'imgrec_sprint_chk_v1';
+function loadChecks() {
+  try {
+    const data = JSON.parse(localStorage.getItem(CHK_KEY) || '{}');
+    document.querySelectorAll('input[type="checkbox"]').forEach(chk => {
+      const id = chk.getAttribute('onchange')?.match(/'([^']+)'/)?.[1];
+      if (id && data[id]) {
+        chk.checked = true;
+        chk.parentElement.classList.add('checked');
+      }
+    });
+  } catch(e) {}
+}
+
+function saveCheck(chk, id) {
+  try {
+    const data = JSON.parse(localStorage.getItem(CHK_KEY) || '{}');
+    data[id] = chk.checked;
+    localStorage.setItem(CHK_KEY, JSON.stringify(data));
+    if (chk.checked) chk.parentElement.classList.add('checked');
+    else chk.parentElement.classList.remove('checked');
+  } catch(e) {}
+}
+
+loadChecks();
+</script>
+
+</body>
+</html>

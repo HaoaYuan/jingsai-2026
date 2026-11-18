@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2026年人工智能素养实践活动 · 图像识别 60 分钟全真模拟卷二</title>
+<style>
+  :root { --brand:#0b5fff; --ink:#1c2b3a; --mut:#5f6368; --line:#dce3ed; --bg:#f4f7fc; --ok:#137333; --okbg:#e6f4ea; --bad:#c5221f; --badbg:#fce8e6; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif; background:var(--bg); color:var(--ink); line-height:1.6; font-size:15.5px; }
+
+  .top-bar { position:sticky; top:0; z-index:100; background:#fff; border-bottom:1px solid var(--line); padding:10px 24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; box-shadow:0 2px 8px rgba(0,0,0,.04); }
+  .exam-info { font-size:14px; color:var(--mut); }
+  .exam-info b { color:var(--ink); font-size:16px; margin-right:8px; }
+  .timer-box { display:flex; align-items:center; }
+  .timer-box > * + * { margin-left:10px; }
+  .timer-digits { font-family:Consolas,monospace; font-size:22px; font-weight:bold; color:var(--brand); background:#eef4ff; padding:3px 12px; border-radius:6px; border:1px solid #c9dcff; }
+  .timer-btn { background:#fff; border:1px solid var(--line); border-radius:6px; padding:6px 12px; font-size:13px; cursor:pointer; font-family:inherit; }
+  .timer-btn:hover { border-color:var(--brand); color:var(--brand); }
+  .btn-submit { background:var(--brand); color:#fff; border-color:var(--brand); font-weight:bold; }
+  .btn-submit:hover { background:#004be5; color:#fff; }
+
+  .banner { display:none; background:#fff8ec; border:1px solid #ffe0b0; color:#8a5a00; padding:8px 16px; text-align:center; font-size:14px; }
+  main { max-width:940px; margin:22px auto 60px; padding:0 20px; }
+  .paper-header { background:#fff; border-radius:12px; border:1px solid var(--line); padding:24px 28px 18px; text-align:center; margin-bottom:18px; box-shadow:0 4px 16px rgba(0,0,0,.02); }
+  .paper-header h1 { margin:0 0 6px; font-size:24px; color:#0e366e; }
+  .paper-header p { margin:4px 0; font-size:14px; color:var(--mut); }
+  .meta-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:14px; padding-top:14px; border-top:1px dashed var(--line); font-size:13px; text-align:left; }
+  @media (max-width:700px) { .meta-grid { grid-template-columns:repeat(2,1fr); } }
+  .meta-grid span b { color:var(--brand); }
+
+  .section-card { background:#fff; border-radius:12px; border:1px solid var(--line); padding:20px 24px; margin-bottom:20px; box-shadow:0 4px 16px rgba(0,0,0,.02); }
+  .sec-title { font-size:18px; font-weight:bold; color:#0e366e; margin:0 0 12px; display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #eef4ff; padding-bottom:8px; }
+  .sec-score { font-size:14px; color:var(--brand); font-weight:normal; }
+  .instruction { background:#fff8ec; border:1px solid #ffe0b0; color:#8a5a00; border-radius:8px; padding:10px 14px; font-size:13.5px; margin-bottom:16px; }
+
+  .q-item { padding:14px 0; border-bottom:1px solid #f0f3f8; }
+  .q-item:last-child { border-bottom:none; }
+  .q-stem { font-size:15px; font-weight:500; margin-bottom:8px; }
+  .q-stem code { font-family:Consolas,monospace; background:#f1f3f4; padding:0 4px; border-radius:4px; font-size:13.5px; }
+  .opts-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  @media (max-width:680px) { .opts-row { grid-template-columns:1fr; } }
+  .opt-label { display:flex; align-items:center; padding:7px 10px; border:1px solid var(--line); border-radius:6px; cursor:pointer; font-size:14px; }
+  .opt-label > * + * { margin-left:8px; }
+  .opt-label:hover { background:#f7f9fd; border-color:var(--brand); }
+  .q-feedback { margin-top:8px; padding:8px 12px; border-radius:6px; font-size:13.5px; display:none; }
+  .q-feedback.ok { background:var(--okbg); color:var(--ok); border:1px solid #a8dab5; }
+  .q-feedback.bad { background:var(--badbg); color:var(--bad); border:1px solid #f5b7b1; }
+
+  .task-box { border:1px solid #dce5f2; border-radius:10px; padding:16px 18px; margin-top:16px; background:#fcfdff; }
+  .task-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+  .task-head h3 { margin:0; font-size:16.5px; color:#0e366e; }
+  .badge { font-size:12px; padding:2px 9px; border-radius:999px; background:#eef4ff; color:var(--brand); }
+  .badge.done { background:var(--okbg); color:var(--ok); font-weight:bold; }
+  .code-req { font-size:14px; color:#2c3e50; }
+  .code-req pre { background:#f2f6fb; border:1px solid var(--line); border-radius:8px; padding:8px 12px; font-family:Consolas,monospace; font-size:13.5px; white-space:pre-wrap; margin:8px 0; }
+  textarea.code-editor { width:100%; height:170px; font-family:Consolas,monospace; font-size:14px; padding:10px 12px; border:1px solid #c9dcff; border-radius:8px; background:#fff; line-height:1.5; resize:vertical; margin-top:6px; }
+  textarea.paste-box { width:100%; height:88px; font-family:Consolas,monospace; font-size:14px; padding:8px 12px; border:1px solid #c9dcff; border-radius:8px; background:#fff; line-height:1.45; resize:vertical; margin-top:8px; }
+  .toolbar { display:flex; flex-wrap:wrap; margin-top:8px; }
+  .toolbar > * + * { margin-left:8px; margin-top:4px; }
+  .toolbar button { background:#fff; border:1px solid var(--line); border-radius:6px; padding:6px 12px; font-size:13px; cursor:pointer; font-family:inherit; }
+  .toolbar button:hover { border-color:var(--brand); color:var(--brand); }
+  .toolbar button.primary { background:var(--brand); border-color:var(--brand); color:#fff; font-weight:600; }
+  .toolbar button.primary:hover { background:#004be5; color:#fff; }
+  .hint-box { display:none; margin-top:8px; padding:8px 12px; border-radius:8px; background:#fff8ec; border:1px solid #ffe0b0; color:#8a5a00; font-size:13.5px; white-space:pre-wrap; }
+  .msg-box { display:none; margin-top:8px; padding:8px 12px; border-radius:8px; font-size:13.5px; white-space:pre-wrap; }
+  .msg-box.ok { background:var(--okbg); color:var(--ok); border:1px solid #a8dab5; }
+  .msg-box.bad { background:var(--badbg); color:var(--bad); border:1px solid #f5b7b1; }
+  .msg-box.info { background:#eef4ff; color:#14417e; border:1px solid #c9dcff; }
+
+  .rubric-list { font-size:14px; color:#333; margin:0; padding-left:20px; }
+  .rubric-list li { margin-bottom:6px; }
+  .defense-qa { background:#f7faff; border:1px solid #dce5f2; border-radius:8px; padding:12px 14px; margin-top:12px; font-size:14px; }
+
+  #score-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.5); z-index:999; justify-content:center; align-items:center; }
+  .modal-content { background:#fff; border-radius:14px; max-width:520px; width:90%; padding:24px 26px; box-shadow:0 12px 36px rgba(0,0,0,.2); }
+  .score-banner { text-align:center; padding:12px 0 18px; border-bottom:1px solid var(--line); }
+  .big-score { font-size:44px; font-weight:bold; color:var(--brand); line-height:1; }
+  .score-breakdown { margin:14px 0; font-size:14px; }
+  .score-row { display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px dashed #eee; }
+  .btn-close-modal { width:100%; padding:10px; background:var(--brand); color:#fff; border:none; border-radius:8px; font-size:15px; font-weight:bold; cursor:pointer; }
+
+  @media print {
+    .top-bar, .toolbar, .btn-submit, #score-modal, .q-feedback, .msg-box, .hint-box { display:none !important; }
+    body { background:#fff; color:#000; }
+    .section-card, .paper-header { border:1px solid #888; box-shadow:none; break-inside:avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="banner" id="storeBanner">本地存储不可用，本页仍可做题与核对输出，但刷新后进度不会保留。</div>
+
+<div class="top-bar">
+  <div class="exam-info">
+    <b>2026 图像识别 · 60 分钟全真模拟卷二</b>
+    <span>限时 60 分钟 · 全新题库 + 实测新点阵</span>
+  </div>
+  <div class="timer-box">
+    <span>剩余时间</span>
+    <span class="timer-digits" id="timer">60:00</span>
+    <button class="timer-btn" id="btn-timer-toggle">暂停</button>
+    <button class="timer-btn" id="btn-timer-reset">重新计时</button>
+    <button class="timer-btn" onclick="window.print()">打印</button>
+    <button class="timer-btn btn-submit" id="btn-submit">交卷评分</button>
+  </div>
+</div>
+
+<main>
+  <div class="paper-header">
+    <h1>图像识别（初中组）· 60 分钟全真模拟卷二</h1>
+    <p>满分 100 分（客观题 45 分 + 编程实操 40 分 + 流程图与答辩 15 分）· 数据目录：<code>冲刺练习/data_mock2/</code></p>
+    <div class="meta-grid">
+      <span>环境：<b>Python 3.9 + IDLE</b></span>
+      <span>客观题：<b>15 题（零重复）</b></span>
+      <span>编程：<b>2 题（实跑核对）</b></span>
+      <span>保存：<b>本机离线自动保存</b></span>
+    </div>
+  </div>
+
+  <div class="instruction">
+    <b>1 小时练习建议：</b>前 15 分钟完成 15 道客观题；中间 35 分钟在 IDLE 中读取 <code>冲刺练习/data_mock2/</code> 下三个打乱顺序的新尺寸点阵编写程序并粘贴运行结果核对；最后 10 分钟在草稿纸手绘流程图并口述两道答辩追问。
+  </div>
+
+  <div class="section-card">
+    <div class="sec-title">
+      <span>第一部分：基础、算法与新规客观题（单选题）</span>
+      <span class="sec-score">共 15 题 · 每题 3 分 · 满分 45 分</span>
+    </div>
+    <div id="mcq-container"></div>
+    <div class="toolbar" style="margin-top:14px;">
+      <button class="primary" id="btn-grade-mcq">立即批改客观题</button>
+      <button id="btn-redo-mcq">清空重做客观题</button>
+      <span id="mcq-live-msg" style="font-size:14px; color:var(--mut); align-self:center; margin-left:10px;"></span>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="sec-title">
+      <span>第二部分：现场编程实操（新点阵泛化 + 特征量化）</span>
+      <span class="sec-score">共 2 题 · 满分 40 分 · 支持粘贴输出自动核对</span>
+    </div>
+    <p style="font-size:14px; color:var(--mut); margin-top:0;">数据已存放在 <code>图形识别/冲刺练习/data_mock2/</code>（<code>图形1.txt</code>～<code>图形3.txt</code>）。本套点阵已调整大小、平移位置并打乱顺序，不能照搬旧图行号。</p>
+    <div id="tasks-container"></div>
+  </div>
+
+  <div class="section-card">
+    <div class="sec-title">
+      <span>第三部分：流程图与评委追问自评</span>
+      <span class="sec-score">满分 15 分</span>
+    </div>
+    <ul class="rubric-list">
+      <li><b>框形与流向（5 分）</b>：圆角矩形（起止）、平行四边形（输入/输出）、矩形（读取与特征计算）、菱形（条件判断，出口明确标「是」「否」）。</li>
+      <li><b>程序闭环（5 分）</b>：清楚表达「循环读 3 个文件 → 算行宽与填充率 → 三重判断 → 按模板输出」。</li>
+      <li><b>答辩攻防自检（5 分）</b>：能脱口说出下面两个高频追问的规范回答。</li>
+    </ul>
+    <div class="defense-qa">
+      <b>追问 1：</b>如果测试图形顺时针旋转了 90 度，你们的行宽规则还能识别吗？<br>
+      <b>参考口径：</b>不能直接识别；当前行宽规则假设图形正向摆放（顶窄底宽），旋转后首行宽度和增减趋势都会变化，需要改用轮廓转角数或长宽主轴对齐后再测。
+    </div>
+    <div class="defense-qa">
+      <b>追问 2：</b>除了「行宽」，还有哪些简单指标能区分圆形和正方形？<br>
+      <b>参考口径：</b>填充率（面积 ÷ 外接框面积）。实心正方形填充率接近 1.00，而圆形接近 π/4 ≈ 0.78，可以作为第二道量化门槛。
+    </div>
+    <div style="margin-top:14px;">
+      <label style="font-size:14px; cursor:pointer; display:block; margin-bottom:6px;">
+        <input type="checkbox" id="chk-flow"> 已在草稿纸上手绘完成完整流程图，菱形判断出口均标「是/否」（10 分）
+      </label>
+      <label style="font-size:14px; cursor:pointer; display:block;">
+        <input type="checkbox" id="chk-def"> 已脱离讲义口述完上面两道评委追问（5 分）
+      </label>
+    </div>
+  </div>
+
+  <div class="toolbar" style="justify-content:center; margin-top:10px;">
+    <button id="btn-export-txt">导出本卷练习记录 (.txt)</button>
+    <button id="btn-reset-all">清空本卷全部记录</button>
+  </div>
+</main>
+
+<div id="score-modal">
+  <div class="modal-content">
+    <div class="score-banner">
+      <div style="font-size:14px; color:var(--mut);">模拟卷二最终得分</div>
+      <div class="big-score" id="total-score">0</div>
+      <div style="font-size:13.5px; color:var(--mut); margin-top:6px;" id="eval-grade">待评价</div>
+    </div>
+    <div class="score-breakdown">
+      <div class="score-row"><span>客观题得分（满分 45）：</span><b id="s-mcq">0 分</b></div>
+      <div class="score-row"><span>编程实操得分（满分 40）：</span><b id="s-code">0 分</b></div>
+      <div class="score-row"><span>流程图与答辩（满分 15）：</span><b id="s-flow">0 分</b></div>
+      <div class="score-row"><span>本次用时：</span><b id="s-time">0 分钟</b></div>
+    </div>
+    <div id="score-advice" style="font-size:13.5px; color:#444; background:#f8f9fa; padding:10px 12px; border-radius:6px; margin-bottom:14px;"></div>
+    <button class="btn-close-modal" id="btn-close-modal">关闭并返回查看解析</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var KEY = 'imgrec_mock2_v1';
+  var TOTAL_SEC = 60 * 60;
+  var storeOK = true;
+
+  var MCQS = [
+    {
+      n: 1,
+      stem: "已知 <code>s = \"0011101\"</code>，执行 <code>print(s[-3:])</code> 的输出是：",
+      opts: ["101", "110", "001", "111"],
+      ans: 0,
+      exp: "s[-3:] 表示从倒数第 3 个字符一直切到末尾，即最后三个字符 \"101\"。"
+    },
+    {
+      n: 2,
+      stem: "100×100 的二维网格读入列表 <code>g</code> 后（共 100 行，每行 100 个字符），要访问最右下角那个像素，正确的写法是：",
+      opts: ["g[100][100]", "g[0][99]", "g[99][99]", "g[99][100]"],
+      ans: 2,
+      exp: "100 行和 100 列的合法下标范围都是 0 到 99，右下角是第 99 行第 99 列，即 g[99][99]。"
+    },
+    {
+      n: 3,
+      stem: "某一行像素 <code>row = \"01101110\"</code>，最左边的 '1' 在下标 1，最右边的 '1' 在下标 6。从最左 '1' 到最右 '1' 之间的跨度宽度（含两端）是多少？",
+      opts: ["5", "7", "4", "6"],
+      ans: 3,
+      exp: "闭区间长度计算：右下标 - 左下标 + 1 = 6 - 1 + 1 = 6（分别对应下标 1,2,3,4,5,6）。"
+    },
+    {
+      n: 4,
+      stem: "小学组部分图形是 1–2 像素宽的空心轮廓。如果直接用 <code>g[r].count(\"1\")</code> 当作该行的图形宽度去套初中组规则，最主要的问题是：",
+      opts: [
+        "Python 会立刻报 TypeError",
+        "只数到了左右边框的几个 '1'，中间大段空心的 '0' 没算进去，行宽失真",
+        "count() 会自动把空心图形填满",
+        "输出模板会自动缺少一个空格"
+      ],
+      ans: 1,
+      exp: "对空心轮廓，中间都是 '0'，count(\"1\") 只会得到左右两条细边框的像素数（如 2 或 4），要用最右 '1' 减最左 '1' 加 1 才能量出外轮廓宽度。"
+    },
+    {
+      n: 5,
+      stem: "在 <code>load()</code> 函数中，读取每一行后写 <code>line = line.strip()</code>，紧接着写 <code>if line: grid.append(line)</code>。这句 <code>if line:</code> 的核心作用是：",
+      opts: [
+        "删掉字符串里所有的 '0'",
+        "把换行符替换成空格",
+        "把 100 行合并成 1 行",
+        "跳过文件末尾或中间的空行，防止后续处理空字符串时出错"
+      ],
+      ans: 3,
+      exp: "空字符串在条件判断里为 False；加 if line: 可以安全过滤掉文件尾部的多余空行。"
+    },
+    {
+      n: 6,
+      stem: "一个实心圆形的像素面积，大约占其外接正方形面积的多少（提示：圆面积 πr²，外接正方形面积 (2r)² = 4r²）？",
+      opts: ["约 0.78（78% 左右）", "约 0.50（50% 左右）", "约 1.00（100%）", "约 0.25（25% 左右）"],
+      ans: 0,
+      exp: "π ÷ 4 ≈ 3.14 ÷ 4 ≈ 0.785，这也是识别时区分圆形（~0.78）和等腰三角形（~0.50）的经典量化依据。"
+    },
+    {
+      n: 7,
+      stem: "如果测试数据里突然出现一个正向摆放、50×50 的实心正方形，直接放进我们的 27 行初中组程序，它会被判成什么？",
+      opts: [
+        "圆形",
+        "等腰三角形",
+        "正五边形（因为首行宽度 >= 10，第一条规则就命中了）",
+        "程序报错退出"
+      ],
+      ans: 2,
+      exp: "正方形首行宽就是 50（>= 10），在 classify() 第一句 if widths[0] >= 10 就会直接返回正五边形。这就是知道规则适用边界的重要性。"
+    },
+    {
+      n: 8,
+      stem: "下面四行输出中，完全符合初中组官方考核模板要求的是：",
+      opts: [
+        "图形2.txt 识别为: 等腰三角形",
+        "图形2.txt  识别为: 等腰三角形",
+        "图形2.txt  识别为：等腰三角形",
+        "图形2.txt  识别为:等腰三角形"
+      ],
+      ans: 1,
+      exp: "标准模板为文件名后两个半角空格、英文冒号、冒号后一个半角空格。A 只有一个空格，C 用了中文冒号，D 冒号后缺空格。"
+    },
+    {
+      n: 9,
+      stem: "某图形统计出的行宽序列 <code>widths = [3, 5, 7, 9, 11]</code>，送入 27 行程序的 <code>classify(widths)</code> 后返回结果是：",
+      opts: ["正五边形", "圆形", "等腰三角形", "报错"],
+      ans: 2,
+      exp: "widths[0] = 3 < 10 不判五边形；相邻两项一直变大没有 widths[i] > widths[i+1] 不判圆形；最后返回等腰三角形。"
+    },
+    {
+      n: 10,
+      stem: "在图像像素连通性分析中，对中心像素 (r, c) 检查其「8 邻域」时，最多需要检查周围多少个邻居像素？",
+      opts: ["4 个", "6 个", "9 个", "8 个（上下左右加四个对角方向）"],
+      ans: 3,
+      exp: "3×3 九宫格去掉中心自己，周围一圈共 8 个邻居（4 个正交方向 + 4 个对角方向）。"
+    },
+    {
+      n: 11,
+      stem: "把每幅图量化为「[填充率, 长宽比, 首行宽比例]」三个数值组成的特征列表，再去比对标准图库里哪类图形的数值最接近。这种思路属于：",
+      opts: [
+        "特征向量 + 相似度匹配（最近邻思想）",
+        "无监督随机分组",
+        "仅按文件名排序",
+        "卷积神经网络训练"
+      ],
+      ans: 0,
+      exp: "用多个量化指标组成特征向量，再通过计算距离/相似度去检索最接近的模板，正是图库匹配和 KNN 的核心思想。"
+    },
+    {
+      n: 12,
+      stem: "小强在代码里直接写 <code>if name == \"图形1.txt\": return \"圆形\"</code>，结果在官方新测试集（打乱顺序）上大面积出错。根本原因是：",
+      opts: [
+        "代码运行速度不够快",
+        "没有提取图像本身的几何特征，属于硬编码背文件名",
+        "函数写得太多了",
+        "没有使用 strip()"
+      ],
+      ans: 1,
+      exp: "识别程序必须依据像素网格算出的特征进行推理，不能依赖文件名猜测答案。"
+    },
+    {
+      n: 13,
+      stem: "一套识别程序在 20 幅测试图上运行，其中 2 幅正五边形被误判成圆形，其余 18 幅全对。本次测试的准确率是：",
+      opts: ["80%", "85%", "90%", "95%"],
+      ans: 2,
+      exp: "准确率 = 判对数量 ÷ 总数量 = 18 ÷ 20 = 0.90 = 90%。"
+    },
+    {
+      n: 14,
+      stem: "在手绘「循环处理 3 个文件」的程序流程图时，表示「3 个文件是否都已处理完毕？」这一判断环节，正确的图框与出口画法是：",
+      opts: [
+        "菱形框，两个出口分别标注「是」和「否」",
+        "矩形框，不需要标注出口文字",
+        "圆角矩形框，只画一条向下箭头",
+        "平行四边形框"
+      ],
+      ans: 0,
+      exp: "所有判断条件和循环退出条件都用菱形框表示，且两条流向线必须清晰标注「是」「否」。"
+    },
+    {
+      n: 15,
+      stem: "答辩时评委问：「如果把等腰三角形顺时针旋转 90 度（尖朝右、底在左），你们的 27 行程序还能正确识别吗？」最好的回答是：",
+      opts: [
+        "能，因为旋转后总像素数完全没变",
+        "能，只要把 print 里的冒号改成中文冒号就行",
+        "程序会直接报 SyntaxError",
+        "不能；当前行宽法假设图形正向摆放，旋转 90° 后行宽趋势会变为先增后减导致误判，需改用旋转不变特征（如轮廓转角数）"
+      ],
+      ans: 3,
+      exp: "如实说清算法适用边界并给出改进方向，既科学诚实又体现对算法原理的深入理解。"
+    }
+  ];
+
+  var TASKS = [
+    {
+      id: "T1",
+      title: "泛化识别新三件套（25 分）",
+      pts: 25,
+      desc: "请编写程序读取 `图形识别/冲刺练习/data_mock2/` 下的 `图形1.txt`、`图形2.txt`、`图形3.txt`（注意：相对路径若脚本放在 `冲刺练习/` 下则写 `\"data_mock2/\" + name`），用特征规则判定形状并严格按考核模板输出三行。\n提示：本组测试图已调整大小、位置并打乱了 1/2/3 的形状顺序！",
+      starter: "def load(name):\n    grid = []\n    with open(\"data_mock2/\" + name, encoding=\"utf-8\") as f:\n        for line in f:\n            line = line.strip()\n            if line:\n                grid.append(line)\n    return grid\n\n# 补全 row_widths(g)、classify(widths) 和 3 个文件的循环输出\n",
+      expect: "图形1.txt  识别为: 等腰三角形\n图形2.txt  识别为: 正五边形\n图形3.txt  识别为: 圆形",
+      hints: [
+        "思路：流程不变，依然是 load -> row_widths -> classify -> 按文件名循环打印。注意把路径从 data/ 改为 data_mock2/。",
+        "步骤：row_widths 找出含 \"1\" 的首尾行号 rows[0] 到 rows[-1]，统计每行 \"1\" 的个数；classify 先判断 widths[0] >= 10 返回正五边形，再检查相邻行变小返回圆形，其余返回等腰三角形。",
+        "局部代码：print(name + \"  识别为: \" + classify(row_widths(load(name))))"
+      ]
+    },
+    {
+      id: "T2",
+      title: "外接框与填充率特征量化（15 分）",
+      pts: 15,
+      desc: "在 T1 基础上继续提取每个图形的量化特征：外接框高度 h（有 1 的首行到末行共几行）、外接框宽度 bw（所有含 1 的行中，最右 '1' 下标 - 最左 '1' 下标 + 1）、面积 area（'1' 的总数）、填充率 fill = area / (h * bw)（保留 2 位小数）。\n请依次输出三行，格式严格如下：\n图形1.txt 54x67 面积=1836 填充率=0.51 等腰三角形",
+      starter: "# 对 data_mock2/ 下 图形1.txt ~ 图形3.txt：\n# 1. h = len(widths)，area = sum(widths)\n# 2. 用 line.find(\"1\") 和 line.rfind(\"1\") 找所有行的最小左列与最大右列，算出 bw = max_c - min_c + 1\n# 3. fill = area / (h * bw)，打印 f\"{name} {h}x{bw} 面积={area} 填充率={fill:.2f} {shape}\"\n",
+      expect: "图形1.txt 54x67 面积=1836 填充率=0.51 等腰三角形\n图形2.txt 53x67 面积=2003 填充率=0.56 正五边形\n图形3.txt 53x53 面积=2121 填充率=0.76 圆形",
+      hints: [
+        "思路：外接框高度就是 widths 的长度；宽度需要遍历含 \"1\" 的每一行，更新全局最左列 min_c 和全局最右列 max_c。",
+        "步骤：循环 g 的每一行，如果 \"1\" in g[r]，用 c1 = g[r].find(\"1\") 和 c2 = g[r].rfind(\"1\") 更新 min_c、max_c；最后 bw = max_c - min_c + 1。",
+        "局部代码：print(f\"{name} {h}x{bw} 面积={area} 填充率={fill:.2f} {shape}\")"
+      ]
+    }
+  ];
+
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function fmt(s) { return esc(s).replace(/`([^`]+)`/g, '<code>$1</code>'); }
+  function normalize(s) {
+    var lines = s.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
+    for (var i = 0; i < lines.length; i++) {
+      lines[i] = lines[i].replace(/^[\s\u3000]+/, '').replace(/[\s\u3000]+$/, '');
+    }
+    while (lines.length && lines[lines.length - 1] === '') lines.pop();
+    return lines.join('\n');
+  }
+
+  function loadProg() {
+    var p = null;
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (raw) p = JSON.parse(raw);
+    } catch (e) { storeOK = false; }
+    if (!p || typeof p !== 'object') p = {};
+    if (!p.mcq) p.mcq = {};
+    if (typeof p.mcqGraded !== 'boolean') p.mcqGraded = false;
+    if (!p.drafts) p.drafts = {};
+    if (!p.hints) p.hints = {};
+    if (!p.tasksDone) p.tasksDone = {};
+    if (typeof p.chkFlow !== 'boolean') p.chkFlow = false;
+    if (typeof p.chkDef !== 'boolean') p.chkDef = false;
+    if (typeof p.timeLeft !== 'number') p.timeLeft = TOTAL_SEC;
+    return p;
+  }
+  function saveProg() {
+    try { localStorage.setItem(KEY, JSON.stringify(prog)); }
+    catch (e) { storeOK = false; $('storeBanner').style.display = 'block'; }
+  }
+
+  var prog = loadProg();
+  if (!storeOK) $('storeBanner').style.display = 'block';
+
+  function renderMCQs() {
+    var host = $('mcq-container');
+    var html = '';
+    for (var i = 0; i < MCQS.length; i++) {
+      var q = MCQS[i];
+      html += '<div class="q-item" id="qitem-' + q.n + '">';
+      html += '<div class="q-stem"><b>' + q.n + '.</b> ' + q.stem + '</div>';
+      html += '<div class="opts-row">';
+      for (var oi = 0; oi < q.opts.length; oi++) {
+        var letter = 'ABCD'.charAt(oi);
+        html += '<label class="opt-label"><input type="radio" name="mcq-' + q.n + '" value="' + oi + '"><span><b>' + letter + '.</b> ' + esc(q.opts[oi]) + '</span></label>';
+      }
+      html += '</div><div class="q-feedback" id="fb-' + q.n + '"></div></div>';
+    }
+    host.innerHTML = html;
+
+    for (var j = 0; j < MCQS.length; j++) {
+      (function (qItem) {
+        var radios = document.getElementsByName('mcq-' + qItem.n);
+        for (var r = 0; r < radios.length; r++) {
+          if (prog.mcq[qItem.n] === r) radios[r].checked = true;
+          radios[r].addEventListener('change', function () {
+            prog.mcq[qItem.n] = Number(this.value);
+            saveProg();
+          });
+        }
+      })(MCQS[j]);
+    }
+    if (prog.mcqGraded) gradeMCQs(false);
+  }
+
+  function gradeMCQs(shouldSave) {
+    var okCnt = 0;
+    for (var i = 0; i < MCQS.length; i++) {
+      var q = MCQS[i];
+      var picked = prog.mcq[q.n];
+      var fb = $('fb-' + q.n);
+      fb.style.display = 'block';
+      if (picked === q.ans) {
+        okCnt++;
+        fb.className = 'q-feedback ok';
+        fb.innerHTML = '<b>✓ 回答正确 (+3 分)</b>：' + esc(q.exp);
+      } else {
+        var yours = (typeof picked === 'number') ? 'ABCD'.charAt(picked) : '未作答';
+        fb.className = 'q-feedback bad';
+        fb.innerHTML = '<b>✗ 回答错误 (0 分)</b>。你的选择：' + yours + '，正确答案：<b>' + 'ABCD'.charAt(q.ans) + '</b>。<br>' + esc(q.exp);
+      }
+    }
+    $('mcq-live-msg').textContent = '客观题得分：' + (okCnt * 3) + ' / 45（答对 ' + okCnt + ' / 15 题）';
+    if (shouldSave) { prog.mcqGraded = true; saveProg(); }
+    return okCnt * 3;
+  }
+
+  function renderTasks() {
+    var host = $('tasks-container');
+    host.innerHTML = '';
+    for (var i = 0; i < TASKS.length; i++) {
+      (function (t) {
+        var box = document.createElement('div');
+        box.className = 'task-box';
+        var head = document.createElement('div');
+        head.className = 'task-head';
+        var h3 = document.createElement('h3');
+        h3.textContent = t.id + ' · ' + t.title + '（' + t.pts + ' 分）';
+        var bdg = document.createElement('span');
+        bdg.className = 'badge' + (prog.tasksDone[t.id] ? ' done' : '');
+        bdg.id = 'bdg-' + t.id;
+        bdg.textContent = prog.tasksDone[t.id] ? '已通过 ✓' : '待核对';
+        head.appendChild(h3);
+        head.appendChild(bdg);
+        box.appendChild(head);
+
+        var req = document.createElement('div');
+        req.className = 'code-req';
+        req.innerHTML = fmt(t.desc).replace(/\n/g, '<br>');
+        box.appendChild(req);
+
+        var ta = document.createElement('textarea');
+        ta.className = 'code-editor';
+        ta.id = 'code-' + t.id;
+        ta.value = (typeof prog.drafts[t.id] === 'string' && prog.drafts[t.id] !== '') ? prog.drafts[t.id] : t.starter;
+        ta.addEventListener('input', function () {
+          prog.drafts[t.id] = ta.value;
+          saveProg();
+        });
+        box.appendChild(ta);
+
+        var tb = document.createElement('div');
+        tb.className = 'toolbar';
+        var fmtBtn = document.createElement('button');
+        fmtBtn.textContent = '格式检查（不判分）';
+        fmtBtn.addEventListener('click', function () { checkFormat(t); });
+        var expBtn = document.createElement('button');
+        expBtn.textContent = '导出 .py';
+        expBtn.addEventListener('click', function () { exportPy(t); });
+        var hintBtn = document.createElement('button');
+        hintBtn.id = 'hintbtn-' + t.id;
+        hintBtn.addEventListener('click', function () { revealHint(t); });
+        tb.appendChild(fmtBtn);
+        tb.appendChild(expBtn);
+        tb.appendChild(hintBtn);
+        box.appendChild(tb);
+
+        var hintHost = document.createElement('div');
+        hintHost.id = 'hints-' + t.id;
+        box.appendChild(hintHost);
+
+        var paste = document.createElement('textarea');
+        paste.className = 'paste-box';
+        paste.id = 'paste-' + t.id;
+        paste.placeholder = '把 IDLE 里运行的全部输出结果粘贴到这里（贴 Traceback 会给报错提示），然后点击「核对输出」...';
+        box.appendChild(paste);
+
+        var tb2 = document.createElement('div');
+        tb2.className = 'toolbar';
+        var chkBtn = document.createElement('button');
+        chkBtn.className = 'primary';
+        chkBtn.textContent = '核对输出';
+        chkBtn.addEventListener('click', function () { verifyTask(t); });
+        tb2.appendChild(chkBtn);
+        box.appendChild(tb2);
+
+        var msg = document.createElement('div');
+        msg.className = 'msg-box';
+        msg.id = 'msg-' + t.id;
+        box.appendChild(msg);
+
+        host.appendChild(box);
+        refreshHints(t);
+      })(TASKS[i]);
+    }
+  }
+
+  function revealHint(t) {
+    var used = prog.hints[t.id] || 0;
+    if (used < t.hints.length) {
+      prog.hints[t.id] = used + 1;
+      saveProg();
+      refreshHints(t);
+    }
+  }
+  function refreshHints(t) {
+    var used = prog.hints[t.id] || 0;
+    $('hintbtn-' + t.id).textContent = '提示（已用 ' + used + '/3）';
+    var host = $('hints-' + t.id);
+    host.innerHTML = '';
+    for (var i = 0; i < used && i < t.hints.length; i++) {
+      var d = document.createElement('div');
+      d.className = 'hint-box';
+      d.style.display = 'block';
+      d.textContent = '提示 ' + (i + 1) + '/3：' + t.hints[i];
+      host.appendChild(d);
+    }
+  }
+
+  function checkFormat(t) {
+    var code = $('code-' + t.id).value;
+    var msg = $('msg-' + t.id);
+    var issues = [];
+    if (/[“”‘’（）]/.test(code)) issues.push('检测到中文引号或中文括号，Python 只认英文半角符号');
+    if (/&&|\|\|/.test(code)) issues.push('Python 用 and / or，不能写 && / ||');
+    var lines = code.replace(/\r\n/g, '\n').split('\n');
+    var hasTab = false, hasSp = false;
+    for (var i = 0; i < lines.length; i++) {
+      if (/^\t+/.test(lines[i])) hasTab = true;
+      if (/^ {2,}/.test(lines[i])) hasSp = true;
+      var codePart = lines[i].split('#')[0].replace(/[\s\u3000]+$/, '');
+      if (codePart.indexOf('"') === -1 && codePart.indexOf("'") === -1 && /^(if|elif|else|for|while|def)\b/.test(codePart) && codePart.charAt(codePart.length - 1) !== ':') {
+        issues.push('第 ' + (i + 1) + ' 行行末缺英文冒号 :');
+      }
+    }
+    if (hasTab && hasSp) issues.push('缩进混用了 Tab 与空格，请统一用 4 个空格');
+    var openP = (code.match(/\(/g) || []).length, closeP = (code.match(/\)/g) || []).length;
+    if (openP !== closeP) issues.push('圆括号不成对：( 有 ' + openP + ' 个，) 有 ' + closeP + ' 个');
+    msg.style.display = 'block';
+    msg.className = 'msg-box ' + (issues.length ? 'bad' : 'info');
+    msg.textContent = issues.length ? '格式检查发现问题：\n· ' + issues.join('\n· ') : '格式检查通过（只查语法格式，不代表逻辑对错），去 IDLE 运行吧！';
+  }
+
+  function exportPy(t) {
+    var code = $('code-' + t.id).value;
+    var blob = new Blob([code], { type: 'text/plain;charset=utf-8' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'mock2_' + t.id + '.py';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+  }
+
+  function verifyTask(t) {
+    var pasted = $('paste-' + t.id).value;
+    var msg = $('msg-' + t.id);
+    var bdg = $('bdg-' + t.id);
+    msg.style.display = 'block';
+    if (!pasted.trim()) {
+      msg.className = 'msg-box info';
+      msg.textContent = '请先在 IDLE 中运行程序，把输出的全部文字粘贴到上面的输入框里。';
+      return;
+    }
+    if (pasted.indexOf('Traceback') !== -1) {
+      msg.className = 'msg-box bad';
+      msg.textContent = '粘贴内容包含 Python 报错（Traceback）：回 IDLE 查看红色报错最后一行（常见原因：文件路径没写 data_mock2/、变量拼错或越界）。';
+      prog.tasksDone[t.id] = false;
+      bdg.className = 'badge';
+      bdg.textContent = '待核对';
+      saveProg();
+      return;
+    }
+    if (normalize(pasted) === normalize(t.expect)) {
+      msg.className = 'msg-box ok';
+      msg.textContent = '输出完全一致，' + t.id + ' 通过（+' + t.pts + ' 分）！';
+      prog.tasksDone[t.id] = true;
+      bdg.className = 'badge done';
+      bdg.textContent = '已通过 ✓';
+      saveProg();
+    } else {
+      msg.className = 'msg-box bad';
+      msg.textContent = '输出与预期还不一致。注意核对：文件名后是不是两个空格？冒号是不是英文的？小数是不是保留两位？';
+      prog.tasksDone[t.id] = false;
+      bdg.className = 'badge';
+      bdg.textContent = '待核对';
+      saveProg();
+    }
+  }
+
+  /* 计时器 */
+  var timerId = null;
+  var timerRunning = true;
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+  function paintTimer() {
+    var sec = prog.timeLeft > 0 ? prog.timeLeft : 0;
+    $('timer').textContent = pad2(Math.floor(sec / 60)) + ':' + pad2(sec % 60);
+    if (sec < 5 * 60) {
+      $('timer').style.color = '#c5221f';
+      $('timer').style.borderColor = '#c5221f';
+    } else {
+      $('timer').style.color = 'var(--brand)';
+      $('timer').style.borderColor = '#c9dcff';
+    }
+  }
+  function startTimer() {
+    if (timerId) clearInterval(timerId);
+    paintTimer();
+    timerId = setInterval(function () {
+      if (!timerRunning) return;
+      if (prog.timeLeft > 0) {
+        prog.timeLeft--;
+        paintTimer();
+        saveProg();
+      } else {
+        clearInterval(timerId);
+        alert('60 分钟模拟时间到！系统将自动统计当前得分。');
+        submitExam();
+      }
+    }, 1000);
+  }
+
+  $('btn-timer-toggle').addEventListener('click', function () {
+    timerRunning = !timerRunning;
+    this.textContent = timerRunning ? '暂停' : '继续';
+  });
+  $('btn-timer-reset').addEventListener('click', function () {
+    if (!confirm('重新开始 60 分钟倒计时？')) return;
+    prog.timeLeft = TOTAL_SEC;
+    timerRunning = true;
+    $('btn-timer-toggle').textContent = '暂停';
+    saveProg();
+    startTimer();
+  });
+
+  $('btn-grade-mcq').addEventListener('click', function () { gradeMCQs(true); });
+  $('btn-redo-mcq').addEventListener('click', function () {
+    if (!confirm('清空当前客观题作答并重做？')) return;
+    prog.mcq = {};
+    prog.mcqGraded = false;
+    saveProg();
+    renderMCQs();
+    $('mcq-live-msg').textContent = '';
+  });
+
+  var chkFlow = $('chk-flow');
+  var chkDef = $('chk-def');
+  chkFlow.checked = prog.chkFlow;
+  chkDef.checked = prog.chkDef;
+  chkFlow.addEventListener('change', function () { prog.chkFlow = chkFlow.checked; saveProg(); });
+  chkDef.addEventListener('change', function () { prog.chkDef = chkDef.checked; saveProg(); });
+
+  function submitExam() {
+    timerRunning = false;
+    $('btn-timer-toggle').textContent = '继续';
+    var mcqScore = gradeMCQs(true);
+    var codeScore = 0;
+    for (var i = 0; i < TASKS.length; i++) {
+      if (prog.tasksDone[TASKS[i].id]) codeScore += TASKS[i].pts;
+    }
+    var flowScore = (prog.chkFlow ? 10 : 0) + (prog.chkDef ? 5 : 0);
+    var total = mcqScore + codeScore + flowScore;
+    var elapsedMin = Math.round((TOTAL_SEC - prog.timeLeft) / 60);
+
+    $('total-score').textContent = total;
+    $('s-mcq').textContent = mcqScore + ' / 45 分';
+    $('s-code').textContent = codeScore + ' / 40 分';
+    $('s-flow').textContent = flowScore + ' / 15 分';
+    $('s-time').textContent = elapsedMin + ' 分钟';
+
+    var grade = '需继续巩固';
+    var advice = '建议对照错题解析补强短板，并把 T1、T2 在 IDLE 里独立跑到一次通过。';
+    if (total >= 90) {
+      grade = '冲金水准（卓越）';
+      advice = '状态很稳！注意考场文件命名 队伍编号_姓名1_姓名2.py 与输出模板细节即可。';
+    } else if (total >= 80) {
+      grade = '冲银水准（良好）';
+      advice = '基本功扎实，检查未满分的模块（如填充率公式或少数失分客观题）。';
+    } else if (total >= 60) {
+      grade = '达标水准（合格）';
+      advice = '已过及格线，重点复盘做错的客观题，并确保两个编程任务都能靠自己写通。';
+    }
+    $('eval-grade').textContent = grade;
+    $('score-advice').textContent = advice;
+    $('score-modal').style.display = 'flex';
+  }
+
+  $('btn-submit').addEventListener('click', function () {
+    if (confirm('确定现在交卷并统计得分？')) submitExam();
+  });
+  $('btn-close-modal').addEventListener('click', function () {
+    $('score-modal').style.display = 'none';
+  });
+
+  $('btn-export-txt').addEventListener('click', function () {
+    var lines = ['图像识别 60 分钟模拟卷二 · 练习记录', '导出时间：' + new Date().toLocaleString()];
+    var okCnt = 0;
+    for (var i = 0; i < MCQS.length; i++) {
+      var q = MCQS[i], p = prog.mcq[q.n];
+      var status = (typeof p === 'number') ? (p === q.ans ? '正确' : '错误（选 ' + 'ABCD'.charAt(p) + '，应选 ' + 'ABCD'.charAt(q.ans) + '）') : '未答';
+      if (p === q.ans) okCnt++;
+      lines.push('客观第 ' + q.n + ' 题：' + status);
+    }
+    lines.push('客观题正确：' + okCnt + ' / 15');
+    for (var j = 0; j < TASKS.length; j++) {
+      var t = TASKS[j];
+      lines.push('编程 ' + t.id + '：' + (prog.tasksDone[t.id] ? '通过' : '未通过') + '（提示已用 ' + (prog.hints[t.id] || 0) + '/3）');
+    }
+    var blob = new Blob([lines.join('\r\n')], { type: 'text/plain;charset=utf-8' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = '图像识别模拟卷二记录.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+  });
+
+  $('btn-reset-all').addEventListener('click', function () {
+    if (!confirm('确定清空本卷全部作答、草稿与计时记录？')) return;
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    window.location.reload();
+  });
+
+  renderMCQs();
+  renderTasks();
+  startTimer();
+})();
+</script>
+</body>
+</html>

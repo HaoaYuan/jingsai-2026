@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>编程闯关 · 闯关地图</title>
+<style>
+  :root { --blue:#0b5fff; --blue2:#2fa4ff; --ink:#1c2b3a; --muted:#6f8096;
+          --line:#e3ebf5; --bg:#eef3fa; --green:#18a058; --orange:#ff9800; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+         background:var(--bg); color:var(--ink); line-height:1.6; font-size:16px; }
+  .wrap { max-width:1080px; margin:0 auto; padding:0 24px 40px; }
+  header.top { background:linear-gradient(135deg,#0b5fff 0%,#2fa4ff 100%); color:#fff; padding:34px 0 28px; }
+  .kicker { font-size:13px; letter-spacing:3px; color:rgba(255,255,255,.84); margin:0 0 8px; }
+  h1 { font-size:32px; margin:0 0 8px; }
+  .sub { font-size:15px; color:rgba(255,255,255,.88); margin:0; }
+  .meta { display:flex; flex-wrap:wrap; margin-top:14px; font-size:13.5px; color:rgba(255,255,255,.82); }
+  .meta > * + * { margin-left:22px; }
+  .meta b { color:#fff; }
+  .notice { background:#fff8ec; border:1px solid #ffe0b0; color:#8a5a00; border-radius:12px;
+            padding:10px 16px; font-size:13.5px; margin:20px 0 0; }
+  .banner { display:none; background:#fff8ec; border:1px solid #ffe0b0; color:#8a5a00;
+            border-radius:10px; padding:10px 16px; font-size:14px; margin:12px 0 0; }
+  .banner.show { display:block; }
+  .progress-line { font-size:15px; font-weight:700; color:#14417e; margin:16px 0 12px; }
+  .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px 18px;
+          box-shadow:0 8px 22px rgba(30,70,140,.06); display:flex; flex-direction:column; }
+  .card-head { display:flex; align-items:center; margin-bottom:6px; }
+  .card-head > * + * { margin-left:10px; }
+  .no { width:34px; height:34px; line-height:34px; text-align:center; border-radius:10px;
+        background:var(--blue); color:#fff; font-weight:700; font-size:14px; flex:0 0 auto; }
+  .card h3 { font-size:17px; margin:0; color:#14417e; }
+  .desc { font-size:13.5px; color:#3b4a5f; margin:2px 0 8px; flex:1; }
+  .state { font-size:13.5px; color:var(--muted); margin:0 0 10px; }
+  .card.st { border-color:#bfe6cf; }
+  .card.st .no { background:var(--green); }
+  .card.lock { opacity:.62; }
+  .card.lock .no { background:#9db2c9; }
+  .btn { display:inline-block; border:1px solid var(--blue); background:var(--blue); color:#fff;
+         font-size:14px; padding:7px 16px; border-radius:9px; cursor:pointer; text-decoration:none;
+         text-align:center; }
+  .btn:hover { background:#074fd6; }
+  .btn.gray { background:#fff; color:#3b4a5f; border-color:#c9d8ea; }
+  .btn.gray:hover { background:#f2f7ff; }
+  .row { display:flex; align-items:center; }
+  .row > * + * { margin-left:10px; }
+  .hintline { font-size:13px; color:var(--muted); }
+  footer.foot { border-top:1px solid var(--line); background:#fff; color:var(--muted);
+                font-size:13px; padding:16px 0; margin-top:32px; text-align:center; }
+  @media (max-width:900px) { .grid { grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:600px) { .grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <p style="margin:0 0 8px;"><a href="../index.html" style="color:rgba(255,255,255,.88);text-decoration:none;font-size:13.5px;">← 返回三大赛项总入口</a></p>
+    <p class="kicker">2026 人工智能素养提升实践活动 · 备赛训练</p>
+    <h1>01 编程闯关 · 闯关地图</h1>
+    <p class="sub">每关一个知识点：客观题全对 + 编程核对通过就盖章，解锁下一关</p>
+    <div class="meta">
+      <span>共 <b>8</b> 关 + 1 个模拟关 + <b>2</b> 套加练 + <b>2</b> 套模拟 + <b>1</b> 套拓展</span>
+      <span>日常训练 <b>60</b> 分钟 / 模拟关 <b>40</b> 分钟</span>
+      <span>环境 <b>Python 3.9 + IDLE</b></span>
+      <span>离线可用 · 不联网 · 不上传</span>
+    </div>
+  </div>
+</header>
+<main class="wrap">
+  <div class="banner" id="storeBanner">进度无法保存（浏览器禁用了本地存储），本页功能仍可用，但刷新后记录会丢失。</div>
+  <div class="notice">学习记录只保存在本机浏览器，换电脑或清理浏览器数据会丢失；进度条只作参考，关卡里随时可以重做。</div>
+  <div class="notice" style="background:#eef4ff;border-color:#bfd6ff;color:#14417e;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;">
+    <span><b>单页全课程合集：</b>可在同一页面内切换全部 14 个关卡、模拟卷与拓展卷，进度与地图实时互通。</span>
+    <a class="btn" href="编程闯关全课程.html" style="margin-top:4px;">打开「编程闯关全课程.html」 →</a>
+  </div>
+  <p class="progress-line" id="progressLine"></p>
+  <div class="grid" id="map"></div>
+  <div class="row" style="margin-top:20px;">
+    <button class="btn gray" id="unlockAllBtn" onclick="doUnlockAll()">教师：解锁全部关卡</button>
+    <button class="btn gray" id="resetBtn" onclick="doReset()">重置进度</button>
+    <span class="hintline" style="margin:6px 0 0;">解锁/重置都会弹出确认框，请谨慎操作。</span>
+  </div>
+</main>
+<footer class="foot">编程闯关备赛 · 零基础 20 天速成 · 离线练习 · 不联网、不上传</footer>
+<script>
+var MAP_DATA = [{"id": "L01", "file": "level01.html", "title": "初识 print", "topic": "print() 与注释", "index": 0}, {"id": "L02", "file": "level02.html", "title": "变量与字符串", "topic": "变量、字符串、print 逗号拼接", "index": 1}, {"id": "L03", "file": "level03.html", "title": "四则运算与整除", "topic": "/、//、% 与运算顺序", "index": 2}, {"id": "L04", "file": "level04.html", "title": "输入与类型转换", "topic": "input() 与 int()", "index": 3}, {"id": "L05", "file": "level05.html", "title": "让程序判断", "topic": "if / elif / else", "index": 4}, {"id": "L06", "file": "level06.html", "title": "for 循环", "topic": "for 与 range()、累加", "index": 5}, {"id": "L07", "file": "level07.html", "title": "字符串索引与 len", "topic": "len()、s[i] 取字符", "index": 6}, {"id": "L08", "file": "level08.html", "title": "综合小试", "topic": "读代码、累乘、综合排查", "index": 7}, {"id": "FIN", "file": "final.html", "title": "全真模拟关", "topic": "限时 40 分钟 · 覆盖 L1–L8", "index": 8}, {"id": "DRA", "file": "drillA.html", "title": "加练 A · 基础巩固卷", "topic": "覆盖 L1–L5：print、变量、运算、输入、判断", "drill": true, "timeLimitMin": 0}, {"id": "DRB", "file": "drillB.html", "title": "加练 B · 综合模拟卷", "topic": "覆盖 L1–L8：判断、循环、字符串、综合排查", "drill": true, "timeLimitMin": 0}, {"id": "MK1", "file": "mock01.html", "title": "每日模拟一 · 60 分钟综合卷", "topic": "限时 60 分钟 · 15 道客观题 + 4 道编程题（覆盖 L1–L8，零重复）", "drill": true, "timeLimitMin": 60}, {"id": "MK2", "file": "mock02.html", "title": "每日模拟二 · 60 分钟进阶卷", "topic": "限时 60 分钟 · 逻辑运算、while、列表与字符串拆分（零重复）", "drill": true, "timeLimitMin": 60}, {"id": "EXT1", "file": "ext01.html", "title": "拓展拔高 · 算法思维特训卷", "topic": "限时 60 分钟 · 嵌套循环、枚举、递推、数位拆分与排序去重", "drill": true, "timeLimitMin": 60}];
+</script>
+<script>
+
+(function () {
+  'use strict';
+  var KEY = 'ck_progress_v1';
+  var storeOK = true;
+  var DEF = { v: 1, unlocked: 1, stamps: {}, obj: {}, hints: {}, tasks: {}, final: { started: false, left: 2400 }, timers: {} };
+
+  function loadProg() {
+    var p;
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (raw) p = JSON.parse(raw);
+    } catch (e) { storeOK = false; p = null; }
+    if (!p || typeof p !== 'object') p = {};
+    for (var k in DEF) { if (!(k in p)) p[k] = DEF[k]; }
+    if (!p.stamps) p.stamps = {};
+    if (!p.obj) p.obj = {};
+    if (!p.hints) p.hints = {};
+    if (!p.tasks) p.tasks = {};
+    if (!p.final) p.final = { started: false, left: 2400 };
+    if (!p.timers) p.timers = {};
+    return p;
+  }
+  function saveProg() {
+    try { localStorage.setItem(KEY, JSON.stringify(prog)); }
+    catch (e) { storeOK = false; showBanner(); }
+  }
+  function showBanner() {
+    var b = document.getElementById('storeBanner');
+    if (b) b.className = 'banner show';
+  }
+
+  function doUnlockAll() {
+    var ok = window.confirm('教师模式：解锁全部关卡？（学生将可以自由选择任意关卡）');
+    if (!ok) return;
+    prog.unlocked = 99;
+    saveProg();
+    render();
+  }
+  window.doUnlockAll = doUnlockAll;
+
+  function stateOf(node, prog) {
+    var stamped = !!prog.stamps[node.id];
+    if (node.drill) return { stamped: stamped, unlocked: true };
+    var unlocked = prog.unlocked >= node.index + 1;
+    return { stamped: stamped, unlocked: unlocked };
+  }
+
+  function render() {
+    var map = document.getElementById('map');
+    map.innerHTML = '';
+    var done = 0;
+    var totalMain = 0;
+    var drillDone = 0;
+    var drillTotal = 0;
+    for (var i = 0; i < MAP_DATA.length; i++) {
+      var node = MAP_DATA[i];
+      var st = stateOf(node, prog);
+      if (node.drill) {
+        drillTotal++;
+        if (st.stamped) drillDone++;
+      } else {
+        totalMain++;
+        if (st.stamped) done++;
+      }
+      var card = document.createElement('div');
+      card.className = 'card ' + (st.stamped ? 'st' : st.unlocked ? 'open' : 'lock');
+      var head = document.createElement('div');
+      head.className = 'card-head';
+      var no = document.createElement('span');
+      no.className = 'no';
+      no.textContent = node.id === 'FIN' ? '终' : (node.id.indexOf('EXT') === 0 ? '拓' : (node.timeLimitMin ? '模' : (node.drill ? '练' : String(node.index + 1))));
+      head.appendChild(no);
+      var h3 = document.createElement('h3');
+      h3.textContent = node.title;
+      head.appendChild(h3);
+      card.appendChild(head);
+      var desc = document.createElement('p');
+      desc.className = 'desc';
+      desc.textContent = node.topic;
+      card.appendChild(desc);
+      var stline = document.createElement('p');
+      stline.className = 'state';
+      if (st.stamped) {
+        stline.textContent = '✅ 已盖章';
+      } else if (node.drill && node.timeLimitMin) {
+        stline.textContent = '⏱ 限时 ' + node.timeLimitMin + ' 分钟 · 随时可练';
+      } else if (node.drill) {
+        stline.textContent = '✍ 随时可练 · 不限时';
+      } else if (st.unlocked) {
+        stline.textContent = node.id === 'FIN' ? '⏱ 限时 40 分钟 · 解锁' : '▶ 可挑战';
+      } else {
+        stline.textContent = '🔒 未解锁（先通过上一关）';
+      }
+      card.appendChild(stline);
+      if (st.unlocked || st.stamped) {
+        var a = document.createElement('a');
+        a.className = 'btn';
+        a.href = '练习与模拟/' + node.file;
+        a.textContent = st.stamped ? '重闯' : '进入关卡';
+        card.appendChild(a);
+      }
+      map.appendChild(card);
+    }
+    var line = document.getElementById('progressLine');
+    line.textContent = '当前进度：已通过 ' + done + ' / ' + totalMain + ' 关' +
+      (drillTotal ? '，加练卷已盖章 ' + drillDone + ' / ' + drillTotal : '') +
+      (prog.unlocked >= 99 ? '（教师模式：全部已解锁）' : '');
+  }
+
+  function doReset() {
+    var ok = window.confirm('重置将清空本机全部闯关记录（含各关草稿与盖章），确定继续吗？');
+    if (!ok) return;
+    try {
+      var keys = [];
+      for (var i = 0; i < localStorage.length; i++) {
+        var k = localStorage.key(i);
+        if (k && k.indexOf('ck_') === 0) keys.push(k);
+      }
+      for (var j = 0; j < keys.length; j++) localStorage.removeItem(keys[j]);
+    } catch (e) { showBanner(); }
+    prog = loadProg();
+    render();
+  }
+  window.doReset = doReset;
+
+  var prog = loadProg();
+  if (!storeOK) showBanner();
+  render();
+})();
+
+</script>
+</body>
+</html>

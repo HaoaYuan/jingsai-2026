@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Python 图形识别备赛 · 12 课练习入口</title>
+<style>
+  :root {
+    --blue: #0b5fff;
+    --blue2: #2fa4ff;
+    --ink: #1c2b3a;
+    --muted: #6f8096;
+    --line: #e3ebf5;
+    --bg: #eef3fa;
+    --green: #18a058;
+    --orange: #ff9800;
+    --purple: #7c5cff;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+
+  header.top { background: linear-gradient(135deg, #0b5fff 0%, #2fa4ff 100%); color: #fff; padding: 40px 0 34px; }
+  .kicker { font-size: 14px; letter-spacing: 3px; color: rgba(255,255,255,.84); margin: 0 0 8px; }
+  h1 { font-size: 36px; margin: 0 0 8px; letter-spacing: 1px; }
+  .sub { font-size: 16px; color: rgba(255,255,255,.88); margin: 0; }
+  .meta { display: flex; gap: 24px; flex-wrap: wrap; margin-top: 18px; font-size: 14px; color: rgba(255,255,255,.82); }
+  .meta b { color: #fff; }
+
+  .notice { background: #fff8ec; border: 1px solid #ffe0b0; color: #8a5a00; border-radius: 12px; padding: 12px 16px; font-size: 14px; margin: 22px 0 4px; }
+
+  .week { margin: 26px 0 10px; display: flex; align-items: center; gap: 12px; }
+  .week h2 { font-size: 20px; margin: 0; color: #14417e; }
+  .week span { font-size: 13px; color: var(--muted); }
+  .week::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 20px 20px 18px; box-shadow: 0 8px 22px rgba(30,70,140,.06); display: flex; flex-direction: column; }
+  .card:hover { border-color: #b9d4ff; box-shadow: 0 12px 28px rgba(30,70,140,.10); }
+  .card-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .no { width: 38px; height: 38px; line-height: 38px; text-align: center; border-radius: 11px; background: var(--blue); color: #fff; font-weight: 700; font-size: 15px; flex: 0 0 auto; }
+  .card h3 { font-size: 18px; margin: 0; color: #14417e; line-height: 1.35; }
+  .desc { font-size: 14px; color: #3b4a5f; margin: 4px 0 12px; flex: 1; }
+  .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+  .tag { font-size: 12px; color: var(--muted); background: #f5f8fc; border: 1px solid var(--line); border-radius: 999px; padding: 2px 9px; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn { display: inline-block; text-decoration: none; font-size: 14px; padding: 8px 16px; border-radius: 9px; border: 1px solid var(--blue); background: var(--blue); color: #fff; }
+  .btn:hover { background: #074fd6; }
+  .btn.ghost { background: #fff; color: var(--blue); }
+  .btn.ghost:hover { background: #eef5ff; }
+
+  footer.foot { border-top: 1px solid var(--line); background: #fff; color: var(--muted); font-size: 13px; padding: 20px 0; margin-top: 36px; }
+
+  @media (max-width: 980px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } h1 { font-size: 28px; } }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div style="margin-bottom:6px;"><a href="../index.html" style="color:rgba(255,255,255,.88);text-decoration:none;font-size:13.5px;">← 返回图像识别备赛主页</a></div>
+    <p class="kicker">初中信息科技 · 图形识别备赛</p>
+    <h1>Python 15 课 · 学生练习入口</h1>
+    <p class="sub">按课次进入练习：客观题、程序练习、提示与学习记录</p>
+    <div class="meta">
+      <span>共 <b>15</b> 课</span>
+      <span>每课 <b>40</b> 分钟</span>
+      <span>环境 <b>Python 3.9</b></span>
+      <span>离线可用 · 不联网 · 不上传</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="notice">学习记录只保存在本机浏览器。换电脑或清理浏览器数据会丢失，重要结果请用练习页的“导出学习记录”保存。</div>
+  <div class="notice" style="background:#eef4ff;border-color:#bfd6ff;color:#14417e;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+    <span><b>一体化合集页：</b>已把全部 16 讲（含第 03/04 讲交互练习）+ 冲刺背代码 + 30 题扩散库 + 拓展特训做在同一个网页里，切换讲次不用来回跳转。</span>
+    <a class="btn" href="../图像识别全课程.html">打开「图像识别全课程.html」 &rarr;</a>
+  </div>
+
+  <div class="week"><h2>第 1 周</h2><span>程序与数据的基本功</span></div>
+  <div class="grid">
+    <article class="card">
+      <div class="card-head"><span class="no">01</span><h3>我的第一个程序</h3></div>
+      <p class="desc">打开、保存、运行程序；用 print 输出文字；认出常见符号错误。</p>
+      <div class="tags"><span class="tag">运行</span><span class="tag">print</span><span class="tag">报错</span></div>
+      <div class="actions"><a class="btn" href="第01讲_你好Python/练习.html">进入练习</a><a class="btn ghost" href="第01讲_你好Python/课件.html">复习课件</a></div>
+    </article>
+    <article class="card">
+      <div class="card-head"><span class="no">02</span><h3>图形变成数据</h3></div>
+      <p class="desc">用变量保存一行 0/1；用索引取指定位置；理解像素和分辨率。</p>
+      <div class="tags"><span class="tag">变量</span><span class="tag">字符串</span><span class="tag">索引</span></div>
+      <div class="actions"><a class="btn" href="第02讲_图形变成数据/练习.html">进入练习</a><a class="btn ghost" href="第02讲_图形变成数据/课件.html">复习课件</a></div>
+    </article>
+    <article class="card">
+      <div class="card-head"><span class="no">03</span><h3>程序会算术</h3></div>
+      <p class="desc">四则运算；// 整除和 % 取余；算出第 n 个像素在第几行第几列。</p>
+      <div class="tags"><span class="tag">算术</span><span class="tag">整除 //</span><span class="tag">取余 %</span></div>
+      <div class="actions"><a class="btn" href="第03讲_程序会算术/课件.pptx">打开课件</a><span class="btn ghost">练习在课件内</span></div>
+    </article>
+  </div>
+
+  <div class="week"><h2>第 2 周</h2><span>小数、控制结构与分支</span></div>
+  <div class="grid">
+    <article class="card">
+      <div class="card-head"><span class="no">04</span><h3>小数之谜</h3></div>
+      <p class="desc">0.1 + 0.2 为什么不等于 0.3；小数在计算机里的存储；round 与差值比较。</p>
+      <div class="tags"><span class="tag">小数</span><span class="tag">精度</span><span class="tag">round</span></div>
+      <div class="actions"><a class="btn" href="第04讲_小数之谜/课件.pptx">打开课件</a><span class="btn ghost">练习在课件内</span></div>
+    </article>
+    <article class="card">
+      <div class="card-head"><span class="no">05</span><h3>控制结构入门</h3></div>
+      <p class="desc">第一次整体认识分支、循环和逻辑运算符：用生活情境写 if/elif/else、for 和 and/or/not。</p>
+      <div class="tags"><span class="tag">分支</span><span class="tag">循环</span><span class="tag">and/or/not</span></div>
+      <div class="actions"><a class="btn" href="第05讲_控制结构入门/练习.html">进入练习</a><a class="btn ghost" href="第05讲_控制结构入门/课件.pptx">打开课件</a></div>
+    </article>
+    <article class="card">
+      <div class="card-head"><span class="no">06</span><h3>让程序判断</h3></div>
+      <p class="desc">用 if / elif / else 根据给定特征分类；理解规则系统。</p>
+      <div class="tags"><span class="tag">条件</span><span class="tag">规则</span><span class="tag">缩进</span></div>
+      <div class="actions"><a class="btn" href="第06讲_让程序判断/练习.html">进入练习</a><a class="btn ghost" href="第06讲_让程序判断/课件.html">复习课件</a></div>
+    </article>
+  </div>
+
+  <div class="week"><h2>第 3 周</h2><span>循环、图像与文件</span></div>
+  <div class="grid">
+    <article class="card">
+      <div class="card-head"><span class="no">07</span><h3>逐个检查像素</h3></div>
+      <p class="desc">用 for 循环逐个检查字符，统计一行中 1 和 0 的个数。</p>
+      <div class="tags"><span class="tag">for</span><span class="tag">计数</span><span class="tag">特征</span></div>
+      <div class="actions"><a class="btn" href="第07讲_逐个检查像素/练习.html">进入练习</a><a class="btn ghost" href="第07讲_逐个检查像素/课件.html">复习课件</a></div>
+    </article>
+    <article class="card">
+      <div class="card-head"><span class="no">08</span><h3>从一行到整幅图</h3></div>
+      <p class="desc">用二维列表保存图像，用嵌套循环统计整幅图的像素。</p>
+      <div class="tags"><span class="tag">二维列表</span><span class="tag">坐标</span><span class="tag">嵌套循环</span></div>
+      <div class="actions"><a class="btn" href="第08讲_从一行到整幅图/练习.html">进入练习</a><a class="btn ghost" href="第08讲_从一行到整幅图/课件.html">复习课件</a></div>
+    </article>
+    <article class="card">
+      <div class="card-head"><span class="no">09</span><h3>读取比赛文件</h3></div>
+      <p class="desc">用 open 逐行读取文本，处理换行和空行，读入真实的 100×100 图形。</p>
+      <div class="tags"><span class="tag">文件</span><span class="tag">strip</span><span class="tag">数据质量</span></div>
+      <div class="actions"><a class="btn" href="第09讲_读取比赛文件/练习.html">进入练习</a><a class="btn ghost" href="第09讲_读取比赛文件/课件.html">复习课件</a></div>
+    </article>
+  </div>
+
+  <div class="week"><h2>第 4 周</h2><span>函数、特征与规则</span></div>
+  <div class="grid">
+    <article class="card">
+      <div class="card-head"><span class="no">10</span><h3>把步骤变成函数</h3></div>
+      <p class="desc">用 def、参数和 return 封装读取、统计、尺寸计算。</p>
+      <div class="tags"><span class="tag">def</span><span class="tag">参数</span><span class="tag">return</span></div>
+      <div class="actions"><a class="btn" href="第10讲_把步骤变成函数/练习.html">进入练习</a><a class="btn ghost" href="第10讲_把步骤变成函数/课件.html">复习课件</a></div>
+    </article>
+    <article class="card">
+      <div class="card-head"><span class="no">11</span><h3>寻找形状特征</h3></div>
+      <p class="desc">计算面积、外接框、填充率和行宽序列，比较哪个特征最能区分类别。</p>
+      <div class="tags"><span class="tag">面积</span><span class="tag">外接框</span><span class="tag">行宽</span></div>
+      <div class="actions"><a class="btn" href="第11讲_寻找形状特征/练习.html">进入练习</a><a class="btn ghost" href="第11讲_寻找形状特征/课件.html">复习课件</a></div>
+    </article>
+    <article class="card">
+      <div class="card-head"><span class="no">12</span><h3>建立识别规则</h3></div>
+      <p class="desc">用首行宽和行宽变化组合成规则，在样例和变体上测试。</p>
+      <div class="tags"><span class="tag">规则</span><span class="tag">测试集</span><span class="tag">过拟合</span></div>
+      <div class="actions"><a class="btn" href="第12讲_建立识别规则/练习.html">进入练习</a><a class="btn ghost" href="第12讲_建立识别规则/课件.html">复习课件</a></div>
+    </article>
+  </div>
+
+  <div class="week"><h2>第 5 周</h2><span>整合、独立与模拟</span></div>
+  <div class="grid">
+    <article class="card">
+      <div class="card-head"><span class="no">13</span><h3>整合与调试</h3></div>
+      <p class="desc">把读取、特征、判断、输出串成完整程序，按模板输出。</p>
+      <div class="tags"><span class="tag">流程</span><span class="tag">模板</span><span class="tag">调试</span></div>
+      <div class="actions"><a class="btn" href="第13讲_整合与调试/练习.html">进入练习</a><a class="btn ghost" href="第13讲_整合与调试/课件.html">复习课件</a></div>
+    </article>
+    <article class="card">
+      <div class="card-head"><span class="no">14</span><h3>独立编写与答辩</h3></div>
+      <p class="desc">从空白文件写完整程序，画流程图，用 1 分钟说清依据和局限。</p>
+      <div class="tags"><span class="tag">独立编程</span><span class="tag">流程图</span><span class="tag">答辩</span></div>
+      <div class="actions"><a class="btn" href="第14讲_独立编写与答辩/练习.html">进入练习</a><a class="btn ghost" href="第14讲_独立编写与答辩/课件.html">复习课件</a></div>
+    </article>
+    <article class="card">
+      <div class="card-head"><span class="no">15</span><h3>模拟赛与复盘</h3></div>
+      <p class="desc">40 分钟限时完成 10 道客观题和 1 道编程题，按评分表复盘。</p>
+      <div class="tags"><span class="tag">模拟</span><span class="tag">评分</span><span class="tag">复盘</span></div>
+      <div class="actions"><a class="btn" href="第15讲_模拟赛与复盘/练习.html">进入练习</a><a class="btn ghost" href="第15讲_模拟赛与复盘/课件.html">复习课件</a></div>
+    </article>
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">Python 图形识别备赛 · 15 课 · 离线课件与练习 · 不联网、不上传</div>
+</footer>
+
+</body>
+</html>

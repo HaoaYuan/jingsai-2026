@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第 05 讲 练习 · 控制结构入门</title>
+<style>
+  :root {
+    --blue: #0b5fff;
+    --blue2: #2fa4ff;
+    --ink: #1c2b3a;
+    --muted: #6f8096;
+    --line: #e3ebf5;
+    --bg: #eef3fa;
+    --green: #18a058;
+    --red: #e5484d;
+    --orange: #ff9800;
+    --purple: #7c5cff;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+  header.top { background: linear-gradient(135deg, #0b5fff 0%, #2fa4ff 100%); color: #fff; padding: 34px 0 28px; }
+  .header-grid { display: grid; grid-template-columns: 1.4fr .6fr; gap: 28px; align-items: center; }
+  .kicker { font-size: 14px; letter-spacing: 3px; color: rgba(255,255,255,.82); margin: 0 0 8px; }
+  h1 { font-size: 34px; line-height: 1.25; margin: 0 0 8px; letter-spacing: 1px; }
+  .sub { font-size: 15px; color: rgba(255,255,255,.86); margin: 0; }
+  .progress-box { text-align: right; }
+  .progress { height: 10px; background: rgba(255,255,255,.25); border-radius: 999px; overflow: hidden; }
+  .progress i { display: block; height: 100%; width: 0; background: #fff; border-radius: 999px; transition: width .25s ease; }
+  .progress-box p { margin: 8px 0 0; font-size: 14px; color: rgba(255,255,255,.9); }
+  .progress-box b { font-size: 22px; }
+
+  .subnav { position: sticky; top: 0; z-index: 10; background: rgba(255,255,255,.98); border-bottom: 1px solid var(--line); box-shadow: 0 4px 14px rgba(30,70,140,.06); }
+  .subnav .wrap { display: flex; align-items: center; gap: 8px; height: 52px; }
+  .subnav a { color: var(--ink); text-decoration: none; font-size: 15px; padding: 6px 12px; border-radius: 8px; }
+  .subnav a:hover { background: #eef5ff; color: var(--blue); }
+  .pill { display: inline-block; background: #eef5ff; color: var(--blue); border: 1px solid #d6e6ff; border-radius: 999px; padding: 3px 12px; font-size: 13px; white-space: nowrap; }
+  .subnav .pill { margin-left: auto; }
+
+  main { padding: 10px 0 40px; }
+  .goals { background: #fff; border: 1px solid var(--line); border-left: 5px solid var(--blue); border-radius: 12px; padding: 14px 18px; margin: 22px 0 0; font-size: 15px; color: #3b4a5f; }
+  .goals b { color: #14417e; }
+  section.panel { scroll-margin-top: 70px; background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 26px 28px 28px; margin: 22px 0; box-shadow: 0 8px 24px rgba(30,70,140,.06); }
+  .panel-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 8px; }
+  .panel-head h2 { font-size: 24px; margin: 0 0 4px; color: #14417e; }
+  .panel-head p { margin: 0; color: var(--muted); font-size: 14px; }
+  .panel-head .pill { margin-top: 6px; }
+
+  /* 客观题 */
+  .qcard { border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px; margin: 16px 0; background: #fff; transition: border-color .2s ease; }
+  .qcard.correct { border-color: #9be3b7; background: #fbfffc; }
+  .qcard.wrong { border-color: #ffc9c4; background: #fffdfd; }
+  .qhead { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .qno { width: 34px; height: 34px; line-height: 34px; text-align: center; border-radius: 50%; background: var(--blue); color: #fff; font-weight: 700; font-size: 15px; flex: 0 0 auto; }
+  .tag { font-size: 12px; color: var(--blue); background: #eef5ff; border: 1px solid #d6e6ff; border-radius: 999px; padding: 2px 10px; }
+  .qtype { font-size: 12px; color: #8a5a00; background: #fff8ec; border: 1px solid #ffe0b0; border-radius: 999px; padding: 2px 10px; }
+  .stem { font-size: 18px; font-weight: 600; margin: 12px 0 10px; line-height: 1.55; }
+  .stem code, .opts code, .explain code, .brief code, .req code, .hbody code { background: #f1f5fb; border: 1px solid #e1eaf7; border-radius: 5px; padding: 1px 5px; font-family: Consolas, "Courier New", monospace; font-size: .95em; color: #14417e; }
+  .options { display: grid; gap: 8px; }
+  .options label { display: flex; align-items: flex-start; gap: 10px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 10px; cursor: pointer; font-size: 16px; background: #fbfdff; }
+  .options label:hover { border-color: #b9d4ff; background: #f5f9ff; }
+  .options input { margin-top: 4px; accent-color: var(--blue); flex: 0 0 auto; }
+  .options b { color: #14417e; margin-right: 4px; }
+  .blank-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 6px; }
+  .blank-input { flex: 1 1 240px; min-width: 180px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 9px; font-family: Consolas, "Courier New", monospace; font-size: 16px; color: var(--ink); background: #fbfdff; }
+  .blank-input:focus { outline: 2px solid #b9d4ff; border-color: var(--blue); }
+  .blank-input.ok { border-color: #9be3b7; background: #fbfffc; }
+  .blank-input.no { border-color: #ffc9c4; background: #fffdfd; }
+  .blank-unit { font-size: 13px; color: var(--muted); }
+  pre.mini { margin: 8px 0 0; background: #1e2433; color: #c9e6c4; border-radius: 7px; padding: 10px 14px; font-family: Consolas, "Courier New", monospace; font-size: 14px; line-height: 1.6; white-space: pre-wrap; }
+  .qactions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+
+  .btn { font-family: inherit; font-size: 14px; padding: 8px 18px; border-radius: 9px; border: 1px solid var(--blue); background: var(--blue); color: #fff; cursor: pointer; }
+  .btn:hover { background: #074fd6; }
+  .btn.ghost { background: #fff; color: var(--blue); }
+  .btn.ghost:hover { background: #eef5ff; }
+  .btn.small { font-size: 13px; padding: 6px 14px; }
+  .btn.danger { background: #fff; color: var(--red); border-color: #ffc9c4; }
+  .btn.danger:hover { background: #fff1f0; }
+
+  .feedback { display: none; margin-top: 10px; padding: 10px 14px; border-radius: 9px; font-size: 15px; font-weight: 600; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: #eafaf0; color: #0f6b3a; border: 1px solid #b7e8c9; }
+  .feedback.no { background: #fff1f0; color: #b42318; border: 1px solid #ffc9c4; }
+  .explain { display: none; margin-top: 8px; padding: 10px 14px; border-radius: 9px; background: #f7f9fc; border: 1px dashed #cfdaea; color: #3b4a5f; font-size: 14px; line-height: 1.6; }
+  .explain.show { display: block; }
+  .explain b { color: #14417e; }
+
+  .row-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 14px; }
+
+  /* 程序任务 */
+  .task { border: 1px solid var(--line); border-radius: 16px; padding: 22px; margin: 18px 0; background: #fff; }
+  .task-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .task-head h3 { font-size: 21px; margin: 0; color: #14417e; }
+  .level { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; color: #fff; background: var(--blue); letter-spacing: 1px; }
+  .level.plus { background: var(--orange); }
+  .level.optional { background: var(--purple); }
+  .file { margin-left: auto; font-family: Consolas, monospace; font-size: 13px; color: var(--muted); background: #f7f9fc; border: 1px solid var(--line); border-radius: 7px; padding: 3px 9px; }
+  .brief { margin: 12px 0 12px; font-size: 15px; color: #3b4a5f; }
+  .task-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .task-grid h4, .checks h4 { font-size: 14px; color: #14417e; margin: 0 0 6px; }
+  .req { margin: 0; padding-left: 20px; font-size: 14px; color: #3b4a5f; }
+  .req li { margin: 3px 0; }
+  .expected { margin: 0; background: #f6f9ff; border: 1px solid #dbe7fa; border-radius: 10px; padding: 12px 14px; font-family: Consolas, "Courier New", monospace; font-size: 14px; line-height: 1.65; color: #14417e; white-space: pre-wrap; min-height: 42px; }
+
+  .hints { margin: 14px 0 12px; display: grid; gap: 7px; }
+  details.hint { background: #fffaf0; border: 1px solid #ffe2b8; border-radius: 9px; padding: 8px 12px; }
+  details.hint summary { cursor: pointer; color: #8a5a00; font-size: 14px; font-weight: 600; }
+  details.hint .hbody { margin-top: 7px; font-size: 14px; color: #3b4a5f; line-height: 1.65; }
+  details.hint .hbody code { background: #fff; border: 1px solid #f0d7ad; border-radius: 4px; padding: 1px 5px; font-family: Consolas, monospace; }
+
+  .editor { display: flex; background: #1e2433; border-radius: 11px; overflow: hidden; border: 1px solid #2a3446; }
+  .editor .gutter { flex: 0 0 46px; padding: 14px 8px; background: #171c28; color: #6b7a90; text-align: right; font-family: Consolas, "Courier New", monospace; font-size: 15px; line-height: 1.6; white-space: pre; overflow: hidden; user-select: none; border-right: 1px solid #2a3446; }
+  .editor textarea { flex: 1 1 auto; min-width: 0; min-height: 190px; padding: 14px 16px; border: 0; outline: none; resize: vertical; background: transparent; color: #d7e3f4; font-family: Consolas, "Courier New", monospace; font-size: 15px; line-height: 1.6; tab-size: 4; white-space: pre; overflow: auto; }
+  .editor textarea::placeholder { color: #6b7a90; }
+  .editor-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 9px; }
+  .saved { font-size: 13px; color: var(--green); }
+  .saved.muted { color: var(--muted); }
+  .format-result { display: none; margin-top: 9px; padding: 10px 14px; border-radius: 9px; font-size: 14px; line-height: 1.65; }
+  .format-result.show { display: block; }
+  .format-result.ok { background: #eafaf0; color: #0f6b3a; border: 1px solid #b7e8c9; }
+  .format-result.warn { background: #fff8ec; color: #8a5a00; border: 1px solid #ffe0b0; }
+  .format-result ul { margin: 6px 0 6px; padding-left: 20px; }
+
+  .checks { margin-top: 14px; background: #f8fafc; border: 1px solid var(--line); border-radius: 11px; padding: 12px 14px; }
+  .check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px; }
+  .check-grid label { display: flex; align-items: flex-start; gap: 8px; font-size: 14px; color: #3b4a5f; cursor: pointer; }
+  .check-grid input { margin-top: 4px; accent-color: var(--green); }
+  .note { margin: 12px 0 0; font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  /* 学习记录 */
+  .record-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; margin: 14px 0; }
+  .record-grid label { display: block; font-size: 14px; color: #3b4a5f; }
+  .record-grid input { width: 100%; margin-top: 6px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 9px; font-family: inherit; font-size: 15px; color: var(--ink); background: #fbfdff; }
+  .record-grid input:focus { outline: 2px solid #b9d4ff; border-color: var(--blue); }
+  .record-summary { background: #f7f9fc; border: 1px solid var(--line); border-radius: 11px; padding: 12px 16px; font-size: 14px; color: #3b4a5f; }
+  .record-summary ul { margin: 4px 0 0; padding-left: 18px; }
+  .record-summary li { margin: 2px 0; }
+  .warn { background: #fff8ec; border: 1px solid #ffe0b0; color: #8a5a00; border-radius: 12px; padding: 12px 16px; font-size: 14px; margin: 18px 0 0; }
+
+  footer.foot { border-top: 1px solid var(--line); background: #fff; color: var(--muted); font-size: 13px; padding: 18px 0; }
+
+  @media (max-width: 820px) {
+    .header-grid { grid-template-columns: 1fr; }
+    .progress-box { text-align: left; }
+    .panel-head { flex-direction: column; }
+    .task-grid, .record-grid, .check-grid { grid-template-columns: 1fr; }
+    section.panel { padding: 20px 18px; }
+    h1 { font-size: 27px; }
+    .file { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap header-grid">
+    <div>
+      <p class="kicker">图形识别备赛 · 第 05 讲</p>
+      <h1>让程序会选、会重复：练习</h1>
+      <p class="sub">客观题 6 道（4 选择 + 2 填空，提交即时判分）· 程序练习 2 道 + 1 道选做 · 记录只保存在本机</p>
+    </div>
+    <div class="progress-box">
+      <div class="progress"><i></i></div>
+      <p><b id="progressText">0%</b> 完成</p>
+    </div>
+  </div>
+</header>
+
+<nav class="subnav">
+  <div class="wrap">
+    <a href="#objectives">客观题</a>
+    <a href="#programs">程序练习</a>
+    <a href="#record">学习记录</a>
+    <span class="pill" id="draftStats">程序草稿 0 / 3</span>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <div class="goals">
+    <b>本课目标：</b>认全顺序、分支、循环三种走法；会用 <code>if / elif / else</code> 看情况选一条路，用
+    <code>for ... in range()</code> 重复做一件事，用 <code>and / or / not</code> 把条件连起来。
+    <br><b>说明：</b>客观题提交后由网页即时判分并显示解析；程序练习的「格式检查」只检查写法，
+    <b>不运行 Python、不判答案对错</b>，请到本机 IDLE 按 F5 运行后对照预期输出。
+  </div>
+
+  <section class="panel" id="objectives">
+    <div class="panel-head">
+      <div>
+        <h2>一、客观题（即时判分）</h2>
+        <p>选择题、填空题提交后立即判分并给出解析；答错可以重做。课堂上先做教师指定的 2–3 题。</p>
+      </div>
+      <span class="pill" id="objStats">已答对 0 / 6</span>
+    </div>
+    <div id="qlist"></div>
+    <div class="row-actions">
+      <button type="button" class="btn ghost" id="resetObj">客观题全部重做</button>
+      <span class="note" style="margin:0">答错不影响记录，改对即可。</span>
+    </div>
+  </section>
+
+  <section class="panel" id="programs">
+    <div class="panel-head">
+      <div>
+        <h2>二、程序练习</h2>
+        <p>先在本机 IDLE 里写、保存、按 F5 运行；网页只保存草稿并提供格式检查，不执行 Python。</p>
+      </div>
+      <span class="pill">基础 ×2 · 选做 ×1</span>
+    </div>
+    <div id="tasklist"></div>
+  </section>
+
+  <section class="panel" id="record">
+    <div class="panel-head">
+      <div>
+        <h2>三、学习记录</h2>
+        <p>记录只保存在本机浏览器，不上传。换电脑或清理浏览器数据会丢失，重要结果请及时导出。</p>
+      </div>
+    </div>
+    <div class="record-grid">
+      <label>姓名（可留空）
+        <input type="text" id="studentName" maxlength="20" placeholder="例如：小智">
+      </label>
+      <div class="record-summary" id="recordSummary">
+        <b>本机记录</b>
+        <ul><li>客观题：已答对 0 / 6</li><li>程序草稿：0 / 3</li><li>提示使用：0 次</li></ul>
+      </div>
+    </div>
+    <div class="row-actions">
+      <button type="button" class="btn" id="exportRecord">导出学习记录</button>
+      <button type="button" class="btn danger" id="clearAll">清空本机记录</button>
+    </div>
+    <p class="note">导出的 .txt 包含客观题作答、程序草稿和提示使用次数，可直接交给老师或自己保存。</p>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">第 05 讲 · 控制结构入门 · 练习页 · 离线可用 · 不联网、不上传</div>
+</footer>
+
+<script>
+  var KEY = 'py04sup_practice_v1';
+
+  var QUESTIONS = [
+  {
+    "id": 1,
+    "type": "choice",
+    "tag": "程序结构",
+    "stem": "程序根据成绩是否及格，输出「及格」或「不及格」——这种「看情况选一条路」的结构叫什么？",
+    "options": [
+      "顺序结构",
+      "分支结构",
+      "循环结构",
+      "函数"
+    ],
+    "answer": "B",
+    "explain": "「看情况选一条」是分支；顺序是一句句往下走，循环是重复做同一件事，函数是把步骤打包。"
+  },
+  {
+    "id": 2,
+    "type": "choice",
+    "tag": "分支",
+    "stem": "<code>height = 135</code>，执行 <code>if height &lt; 120:</code> → 免票、<code>elif height &lt; 150:</code> → 半票、<code>else:</code> → 全票。程序输出哪一句？",
+    "options": [
+      "免票",
+      "半票",
+      "全票",
+      "什么都不输出"
+    ],
+    "answer": "B",
+    "explain": "135 &lt; 120 不成立，走 elif；135 &lt; 150 成立，输出「半票」。三条路只会走一条，另外两条不会执行。"
+  },
+  {
+    "id": 3,
+    "type": "choice",
+    "tag": "逻辑运算 and",
+    "stem": "游乐园规定「身高 ≥ 140 厘米 <b>并且</b> 年龄 ≥ 12 岁」才能坐过山车。哪个条件写得对？",
+    "options": [
+      "<code>height &gt;= 140 and age &gt;= 12</code>",
+      "<code>height &gt;= 140 or age &gt;= 12</code>",
+      "<code>not height &gt;= 140</code>",
+      "<code>height &gt;= 140 &amp;&amp; age &gt;= 12</code>"
+    ],
+    "answer": "A",
+    "explain": "「并且」用 and，两边都成立才成立；or 只要一边成立就放行，会放进来身高不够或年龄不够的人；Python 不写 &amp;&amp;，那是其它语言的写法。"
+  },
+  {
+    "id": 4,
+    "type": "choice",
+    "tag": "逻辑运算 or",
+    "stem": "「下雨 <b>或者</b> 刮大风就改到室内上课」，哪个条件写得对？",
+    "options": [
+      "<code>rain and wind</code>",
+      "<code>rain or wind</code>",
+      "<code>not rain</code>",
+      "<code>rain == wind</code>"
+    ],
+    "answer": "B",
+    "explain": "「或者」用 or，一个成立就成立；and 要求同时下雨和刮风才改室内，条件过严，会漏掉只刮风的日子。"
+  },
+  {
+    "id": 5,
+    "type": "blank",
+    "tag": "循环 · 读输出",
+    "stem": "读代码，写出最后一行输出：<pre class=\"mini\">total = 0\nfor n in range(1, 6):\n    total = total + n\nprint(total)</pre>",
+    "placeholder": "填一个数字，例如 15",
+    "answer": "15",
+    "accept": ["15", "15.0"],
+    "explain": "range(1, 6) 给出 1、2、3、4、5；total 依次变成 1、3、6、10、15。print 在循环外面，所以只输出一次。"
+  },
+  {
+    "id": 6,
+    "type": "blank",
+    "tag": "逻辑运算 · 读输出",
+    "stem": "读代码，写出最后一行输出：<pre class=\"mini\">h = 135\na = 11\nif h &gt;= 140 and a &gt;= 12:\n    print(\"可以玩\")\nelse:\n    print(\"不能玩\")</pre>",
+    "placeholder": "填一句输出，例如 不能玩",
+    "answer": "不能玩",
+    "accept": ["不能玩"],
+    "explain": "h = 135 &lt; 140，and 左边不成立，整个条件就不成立，走 else，输出「不能玩」。and 要两边都成立才算成立。"
+  }
+];
+
+  var TASKS = [
+  {
+    "id": "t1",
+    "level": "基础",
+    "levelClass": "",
+    "title": "任务 1 · 门票几价",
+    "file": "01_门票几价.py",
+    "brief": "看身高决定票种：补全 if / elif / else 三条路，让程序自己说出结论。",
+    "requirements": [
+      "用 if / elif / else 写三条互斥的路；",
+      "条件后写英文冒号，执行语句缩进 4 个空格；",
+      "运行后只输出一句票种；",
+      "保存为 01_门票几价.py 并运行。"
+    ],
+    "expected": "半票",
+    "expectedNote": "height = 135：先比 120 不成立、再比 150 成立，走第二条路。改成 110 输出「免票」，改成 160 输出「全票」。",
+    "needIf": true,
+    "needFor": false,
+    "hints": [
+      {
+        "label": "思路",
+        "body": "三条路是互斥的，只会走一条：先判断最小的范围，再用 elif 接下一个，最后用 else 接住剩下的。"
+      },
+      {
+        "label": "步骤",
+        "body": "写 <code>if height &lt; 120:</code>，下一行缩进写 print；再写 <code>elif height &lt; 150:</code>；最后写 <code>else:</code>。别忘了英文冒号。"
+      },
+      {
+        "label": "局部代码",
+        "body": "<pre class=\"mini\">if height &lt; 120:\n    print(\"免票\")\nelif height &lt; 150:\n    ＿＿＿＿＿＿\nelse:\n    ＿＿＿＿＿＿</pre>"
+      }
+    ],
+    "starter": "# 任务 1：门票几价\n# 用 if / elif / else 补全三条路，让程序自己说出票种\nheight = 135  # 单位：厘米\n\n# 身高不到 120 厘米 → 免票\n# 身高不到 150 厘米 → 半票\n# 其他情况          → 全票\n# 要求：条件后写英文冒号，要执行的代码缩进 4 个空格\n\n\n",
+    "checks": [
+      "用了 if / elif / else",
+      "条件后有英文冒号",
+      "print 缩进了 4 个空格",
+      "只输出一句"
+    ]
+  },
+  {
+    "id": "t2",
+    "level": "基础",
+    "levelClass": "",
+    "title": "任务 2 · 哪些编号能上台",
+    "file": "02_哪些编号能上台.py",
+    "brief": "编号 1 到 10，只有 4 到 7 号上台。用 for + if + and 把上台的编号打印出来。",
+    "requirements": [
+      "用 <code>for n in range(1, 11):</code> 逐个检查；",
+      "条件里用 <code>and</code> 连接两个比较；",
+      "print 缩进在 if 里面；",
+      "保存为 02_哪些编号能上台.py 并运行。"
+    ],
+    "expected": "4\n5\n6\n7",
+    "expectedNote": "每个编号判一次，共判 10 次；只有 4、5、6、7 满足「不小于 4 且不大于 7」。",
+    "needIf": true,
+    "needFor": true,
+    "hints": [
+      {
+        "label": "思路",
+        "body": "循环负责把 1–10 一个个带上来，if 负责逐个判断；and 要两边都成立，所以只有中间那段编号会被打印。"
+      },
+      {
+        "label": "步骤",
+        "body": "写 <code>for n in range(1, 11):</code>，里面写 <code>if n &gt;= 4 and n &lt;= 7:</code>，再缩进写 <code>print(n)</code>。"
+      },
+      {
+        "label": "局部代码",
+        "body": "<pre class=\"mini\">for n in range(1, 11):\n    if ＿＿＿＿＿＿＿＿＿＿:\n        print(n)</pre>"
+      }
+    ],
+    "starter": "# 任务 2：哪些编号能上台\n# 编号 1 到 10，只有 4 到 7 号上台\n# 用 for + if + and 打印上台的编号\n# 要求：用 and 把「不小于 4」和「不大于 7」连起来\n\n\n",
+    "checks": [
+      "用了 for 和 range(1, 11)",
+      "条件里用了 and",
+      "print 缩进在 if 里面",
+      "输出 4 行"
+    ]
+  },
+  {
+    "id": "t3",
+    "level": "选做",
+    "levelClass": "optional",
+    "title": "任务 3 · 谁需要补测",
+    "file": "03_谁需要补测.py",
+    "brief": "编号 1 到 10，小于 3 或大于 8 的要补测。用 or（或 not）把他们找出来。",
+    "requirements": [
+      "用 <code>for n in range(1, 11):</code>；",
+      "条件用 <code>or</code>（拓展：改用 <code>not</code>）；",
+      "输出格式为 <code>补测: 编号</code>；",
+      "保存为 03_谁需要补测.py 并运行。"
+    ],
+    "expected": "补测: 1\n补测: 2\n补测: 9\n补测: 10",
+    "expectedNote": "1、2 小于 3，9、10 大于 8；or 只要一边成立就成立，所以这 4 个编号会被打印。",
+    "needIf": true,
+    "needFor": true,
+    "hints": [
+      {
+        "label": "思路",
+        "body": "「或者」用 or；也可以反过来想「3 到 8 号不用补测」，再用 not 把这句话取反。"
+      },
+      {
+        "label": "步骤",
+        "body": "写 <code>if n &lt; 3 or n &gt; 8:</code>，缩进写 <code>print(\"补测:\", n)</code>。"
+      },
+      {
+        "label": "局部代码",
+        "body": "<pre class=\"mini\">for n in range(1, 11):\n    if ＿＿＿＿＿＿＿＿＿＿:\n        print(\"补测:\", n)</pre>"
+      }
+    ],
+    "starter": "# 任务 3（选做）：谁需要补测\n# 编号 1 到 10，小于 3 或大于 8 的要补测\n# 用 for + if + or，输出「补测: 编号」\n# 拓展：试着改用 not 写出同样的结果\n\n\n",
+    "checks": [
+      "用了 for 和 range(1, 11)",
+      "条件里用了 or 或 not",
+      "输出带「补测:」",
+      "共输出 4 行"
+    ]
+  }
+];
+
+  var state = { name: '', objective: {}, code: {}, checks: {}, hints: {} };
+  var timers = {};
+  var storageOK = true;
+  var clearing = false;
+
+  function safeParse(raw) {
+    try { return JSON.parse(raw); } catch (e) { return null; }
+  }
+
+  function loadState() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (!raw) return;
+      var data = safeParse(raw);
+      if (!data) return;
+      state.name = typeof data.name === 'string' ? data.name : '';
+      state.objective = data.objective && typeof data.objective === 'object' ? data.objective : {};
+      state.code = data.code && typeof data.code === 'object' ? data.code : {};
+      state.checks = data.checks && typeof data.checks === 'object' ? data.checks : {};
+      state.hints = data.hints && typeof data.hints === 'object' ? data.hints : {};
+    } catch (e) { storageOK = false; }
+  }
+
+  function saveState() {
+    if (!storageOK) return;
+    try { localStorage.setItem(KEY, JSON.stringify(state)); }
+    catch (e) { storageOK = false; }
+  }
+
+  function updateStats() {
+    var total = QUESTIONS.length, correct = 0, attempted = 0;
+    QUESTIONS.forEach(function (q) {
+      var rec = state.objective[q.id];
+      if (rec) {
+        attempted++;
+        if (rec.correct === true) correct++;
+      }
+    });
+    var drafts = TASKS.filter(function (t) { return state.code[t.id] !== undefined; }).length;
+    var objStats = document.getElementById('objStats');
+    var draftStats = document.getElementById('draftStats');
+    if (objStats) objStats.textContent = '已答对 ' + correct + ' / ' + total + '（已作答 ' + attempted + '）';
+    if (draftStats) draftStats.textContent = '程序草稿 ' + drafts + ' / ' + TASKS.length;
+    var pct = Math.round((correct + drafts) / (total + TASKS.length) * 100);
+    var bar = document.querySelector('#progressText');
+    var fill = document.querySelector('.progress i');
+    if (bar) bar.textContent = pct + '%';
+    if (fill) fill.style.width = pct + '%';
+    updateRecordSummary(correct, attempted, drafts);
+  }
+
+  function updateRecordSummary(correct, attempted, drafts) {
+    var box = document.getElementById('recordSummary');
+    if (!box) return;
+    if (typeof correct !== 'number') {
+      correct = 0; attempted = 0;
+      QUESTIONS.forEach(function (q) {
+        var rec = state.objective[q.id];
+        if (rec) { attempted++; if (rec.correct === true) correct++; }
+      });
+    }
+    if (typeof drafts !== 'number') {
+      drafts = TASKS.filter(function (t) { return state.code[t.id] !== undefined; }).length;
+    }
+    var hintCount = 0;
+    Object.keys(state.hints).forEach(function (k) {
+      hintCount += Object.keys(state.hints[k] || {}).length;
+    });
+    box.innerHTML = '<b>本机记录</b><ul>' +
+      '<li>客观题：已答对 ' + correct + ' / ' + QUESTIONS.length + '（已作答 ' + attempted + '）</li>' +
+      '<li>程序草稿：' + drafts + ' / ' + TASKS.length + '</li>' +
+      '<li>提示使用：' + hintCount + ' 次</li>' +
+      '</ul>';
+  }
+
+  function norm(s) {
+    return String(s == null ? '' : s)
+      .trim()
+      .replace(/^["'“”]+|["'“”]+$/g, '')
+      .replace(/\s+/g, ' ')
+      .toLowerCase();
+  }
+
+  function findQuestion(id) {
+    return QUESTIONS.filter(function (x) { return x.id === id; })[0];
+  }
+
+  function renderQuestions() {
+    var list = document.getElementById('qlist');
+    list.innerHTML = QUESTIONS.map(function (q) {
+      var isBlank = q.type === 'blank';
+      var body;
+      if (isBlank) {
+        body = '<div class="blank-row">' +
+          '<input type="text" class="blank-input" data-blank="' + q.id + '" placeholder="' +
+          (q.placeholder || '在这里填写答案') + '" autocomplete="off" spellcheck="false">' +
+          '<span class="blank-unit">填完点「提交」，回车也可以</span></div>';
+      } else {
+        var opts = q.options.map(function (text, idx) {
+          var letter = 'ABCD'[idx];
+          return '<label><input type="radio" name="q' + q.id + '" value="' + letter +
+                 '"><span><b>' + letter + '．</b>' + text + '</span></label>';
+        }).join('');
+        body = '<div class="options">' + opts + '</div>';
+      }
+      return '<article class="qcard" data-q="' + q.id + '">' +
+        '<div class="qhead"><span class="qno">' + q.id + '</span><span class="tag">' + q.tag +
+        '</span><span class="qtype">' + (isBlank ? '填空题 · 写输出' : '单选题') + '</span></div>' +
+        '<div class="stem">' + q.stem + '</div>' + body +
+        '<div class="qactions"><button type="button" class="btn small" data-act="submit">提交</button>' +
+        '<button type="button" class="btn ghost small" data-act="reset">重做</button></div>' +
+        '<div class="feedback" aria-live="polite"></div>' +
+        '<div class="explain"></div>' +
+        '</article>';
+    }).join('');
+
+    list.querySelectorAll('.qcard').forEach(function (card) {
+      var id = Number(card.getAttribute('data-q'));
+      var q = findQuestion(id);
+      card.querySelector('[data-act="submit"]').addEventListener('click', function () { checkQuestion(id); });
+      card.querySelector('[data-act="reset"]').addEventListener('click', function () { resetQuestion(id); });
+      if (q.type === 'blank') {
+        var inp = card.querySelector('.blank-input');
+        inp.addEventListener('input', function () {
+          state.objective[id] = { picked: inp.value, correct: null };
+          clearFeedback(id);
+          saveState();
+          updateStats();
+        });
+        inp.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') { e.preventDefault(); checkQuestion(id); }
+        });
+      } else {
+        card.querySelectorAll('input[type="radio"]').forEach(function (input) {
+          input.addEventListener('change', function () {
+            state.objective[id] = { picked: input.value, correct: null };
+            clearFeedback(id);
+            saveState();
+            updateStats();
+          });
+        });
+      }
+    });
+
+    restoreQuestions();
+  }
+
+  function restoreQuestions() {
+    QUESTIONS.forEach(function (q) {
+      var rec = state.objective[q.id];
+      if (!rec) return;
+      if (q.type === 'blank') {
+        var inp = document.querySelector('.blank-input[data-blank="' + q.id + '"]');
+        if (inp) inp.value = typeof rec.picked === 'string' ? rec.picked : '';
+      } else {
+        var input = document.querySelector('input[name="q' + q.id + '"][value="' + rec.picked + '"]');
+        if (input) input.checked = true;
+      }
+      if (rec.correct === true || rec.correct === false) showFeedback(q, rec.correct);
+    });
+  }
+
+  function clearFeedback(id) {
+    var card = document.querySelector('.qcard[data-q="' + id + '"]');
+    if (!card) return;
+    card.classList.remove('correct', 'wrong');
+    var fb = card.querySelector('.feedback');
+    var ex = card.querySelector('.explain');
+    var inp = card.querySelector('.blank-input');
+    if (inp) inp.className = 'blank-input';
+    fb.className = 'feedback';
+    fb.textContent = '';
+    ex.className = 'explain';
+    ex.innerHTML = '';
+  }
+
+  function showFeedback(q, correct) {
+    var card = document.querySelector('.qcard[data-q="' + q.id + '"]');
+    if (!card) return;
+    card.classList.toggle('correct', correct);
+    card.classList.toggle('wrong', !correct);
+    var inp = card.querySelector('.blank-input');
+    if (inp) inp.className = 'blank-input ' + (correct ? 'ok' : 'no');
+    var fb = card.querySelector('.feedback');
+    var ex = card.querySelector('.explain');
+    fb.className = 'feedback show ' + (correct ? 'ok' : 'no');
+    fb.textContent = correct ? '正确。' : '还不对，再检查一下。';
+    ex.className = 'explain show';
+    ex.innerHTML = '<b>答案：' + q.answer + '。</b>' + q.explain;
+  }
+
+  function checkQuestion(id) {
+    var q = findQuestion(id);
+    var card = document.querySelector('.qcard[data-q="' + id + '"]');
+    var fb = card.querySelector('.feedback');
+    var picked, correct;
+
+    if (q.type === 'blank') {
+      var inp = card.querySelector('.blank-input');
+      picked = inp.value;
+      if (!picked.trim()) {
+        fb.className = 'feedback show no';
+        fb.textContent = '请先填写答案。';
+        return;
+      }
+      var accept = q.accept && q.accept.length ? q.accept : [q.answer];
+      correct = accept.some(function (a) { return norm(a) === norm(picked); });
+    } else {
+      var input = document.querySelector('input[name="q' + id + '"]:checked');
+      if (!input) {
+        fb.className = 'feedback show no';
+        fb.textContent = '请先选择一个答案。';
+        return;
+      }
+      picked = input.value;
+      correct = picked === q.answer;
+    }
+
+    state.objective[id] = { picked: picked, correct: correct };
+    saveState();
+    showFeedback(q, correct);
+    updateStats();
+  }
+
+  function resetQuestion(id) {
+    var q = findQuestion(id);
+    delete state.objective[id];
+    saveState();
+    var card = document.querySelector('.qcard[data-q="' + id + '"]');
+    if (!card) return;
+    card.querySelectorAll('input[type="radio"]').forEach(function (input) { input.checked = false; });
+    var inp = card.querySelector('.blank-input');
+    if (inp) inp.value = '';
+    clearFeedback(id);
+    updateStats();
+  }
+
+  function resetAllObjectives() {
+    if (!confirm('清空全部客观题作答？程序草稿不会受影响。')) return;
+    state.objective = {};
+    saveState();
+    renderQuestions();
+    updateStats();
+  }
+
+  function formatIssues(t, code) {
+    var issues = [];
+    if (!code.trim()) return ['草稿是空的，先写几行代码。'];
+    if (/[“”‘’]/.test(code)) issues.push('出现了中文引号，改成英文引号 " 或英文单引号。');
+    if (/&&|\|\|/.test(code)) issues.push('Python 用单词 and / or，不写 && 或 ||。');
+    var lines = code.split('\n');
+    lines.forEach(function (line, i) {
+      var s = line.trim();
+      if (/^(if|elif|else|for)\b/.test(s) && !/:\s*(#.*)?$/.test(s)) {
+        issues.push('第 ' + (i + 1) + ' 行：' + s.split(/\s|:/)[0] + ' 后面可能漏了英文冒号 :');
+      }
+    });
+    for (var i = 0; i < lines.length - 1; i++) {
+      var s = lines[i].trim();
+      if (/^(if|elif|else|for)\b/.test(s) && /:\s*$/.test(s)) {
+        var nx = lines[i + 1];
+        if (nx.trim() && !/^#/.test(nx.trim()) && !/^\s{4,}/.test(nx)) {
+          issues.push('第 ' + (i + 2) + ' 行可能没缩进：条件／循环里要执行的代码要缩进 4 个空格。');
+        }
+      }
+    }
+    if (t.needIf && !/\bif\b/.test(code)) issues.push('还没看到 if，本题需要分支判断。');
+    if (t.needFor && !/\bfor\b/.test(code)) issues.push('还没看到 for，本题需要循环。');
+    var bal = 0;
+    for (var k = 0; k < code.length; k++) {
+      if (code[k] === '(') bal++;
+      else if (code[k] === ')') bal--;
+      if (bal < 0) break;
+    }
+    if (bal !== 0) issues.push('圆括号 ( ) 没有配对。');
+    return issues;
+  }
+
+  function showFormat(card, issues) {
+    var box = card.querySelector('.format-result');
+    if (!issues.length) {
+      box.className = 'format-result show ok';
+      box.textContent = '格式检查（不判分）：未发现明显格式问题。请到 IDLE 按 F5 运行，对照预期输出。';
+      return;
+    }
+    box.className = 'format-result show warn';
+    box.innerHTML = '<b>格式检查（不判分）：发现 ' + issues.length + ' 处写法提醒</b><ul>' +
+      issues.map(function (x) { return '<li>' + x + '</li>'; }).join('') +
+      '</ul><div>格式检查只看写法，不运行 Python，也不判断答案对不对；请到 IDLE 按 F5 对照预期输出。</div>';
+  }
+
+  function renderTasks() {
+    var list = document.getElementById('tasklist');
+    list.innerHTML = TASKS.map(function (t) {
+      var req = t.requirements.map(function (x) { return '<li>' + x + '</li>'; }).join('');
+      var hints = t.hints.map(function (h, idx) {
+        return '<details class="hint" data-task="' + t.id + '" data-hint="' + idx +
+               '"><summary>提示 ' + (idx + 1) + '：' + h.label +
+               '</summary><div class="hbody">' + h.body + '</div></details>';
+      }).join('');
+      var checks = t.checks.map(function (x, idx) {
+        return '<label><input type="checkbox" data-task="' + t.id + '" data-check="' + idx +
+               '"><span>' + x + '</span></label>';
+      }).join('');
+      return '<article class="task" data-task="' + t.id + '">' +
+        '<div class="task-head"><span class="level ' + t.levelClass + '">' + t.level +
+        '</span><h3>' + t.title + '</h3><span class="file">' + t.file + '</span></div>' +
+        '<p class="brief">' + t.brief + '</p>' +
+        '<div class="task-grid">' +
+          '<div><h4>要求</h4><ul class="req">' + req + '</ul></div>' +
+          '<div><h4>预期输出</h4><pre class="expected">' + t.expected +
+          '</pre><p class="note">' + t.expectedNote + '</p></div>' +
+        '</div>' +
+        '<div class="hints">' + hints + '</div>' +
+        '<div class="editor"><pre class="gutter" aria-hidden="true"></pre>' +
+        '<textarea data-code="' + t.id + '" aria-label="' + t.title +
+        ' 代码编辑器" spellcheck="false" placeholder="在这里写你的程序"></textarea></div>' +
+        '<div class="editor-actions">' +
+          '<button type="button" class="btn small" data-act="save">保存草稿</button>' +
+          '<button type="button" class="btn ghost small" data-act="format">格式检查（不判分）</button>' +
+          '<button type="button" class="btn ghost small" data-act="export">导出 .py</button>' +
+          '<button type="button" class="btn ghost small" data-act="clear">清空代码</button>' +
+          '<span class="saved muted" data-saved="' + t.id + '">未保存</span>' +
+        '</div>' +
+        '<div class="format-result"></div>' +
+        '<div class="checks"><h4>自查（不判分）</h4><div class="check-grid">' + checks + '</div></div>' +
+        '<p class="note">网页只保存草稿、只做格式检查，不运行 Python。请在本机 IDLE 中按 F5，对照预期输出检查。</p>' +
+        '</article>';
+    }).join('');
+
+    TASKS.forEach(function (t) { bindTask(t); });
+  }
+
+  function bindTask(t) {
+    var card = document.querySelector('.task[data-task="' + t.id + '"]');
+    var ta = card.querySelector('textarea[data-code="' + t.id + '"]');
+    var gutter = card.querySelector('.gutter');
+    var saved = card.querySelector('[data-saved="' + t.id + '"]');
+
+    ta.value = state.code[t.id] !== undefined ? state.code[t.id] : t.starter;
+    updateGutter(ta, gutter);
+
+    ta.addEventListener('input', function () {
+      updateGutter(ta, gutter);
+      clearTimeout(timers[t.id]);
+      timers[t.id] = setTimeout(function () {
+        state.code[t.id] = ta.value;
+        saveState();
+        markSaved(saved);
+        updateStats();
+      }, 250);
+    });
+    ta.addEventListener('scroll', function () { gutter.scrollTop = ta.scrollTop; });
+    ta.addEventListener('keydown', function (e) {
+      if (e.key !== 'Tab') return;
+      e.preventDefault();
+      var start = ta.selectionStart, end = ta.selectionEnd;
+      ta.value = ta.value.slice(0, start) + '    ' + ta.value.slice(end);
+      ta.selectionStart = ta.selectionEnd = start + 4;
+      ta.dispatchEvent(new Event('input'));
+    });
+
+    card.querySelector('[data-act="save"]').addEventListener('click', function () {
+      state.code[t.id] = ta.value;
+      saveState();
+      markSaved(saved);
+      updateStats();
+    });
+    card.querySelector('[data-act="format"]').addEventListener('click', function () {
+      showFormat(card, formatIssues(t, ta.value));
+    });
+    card.querySelector('[data-act="export"]').addEventListener('click', function () {
+      downloadText(t.file, ta.value);
+    });
+    card.querySelector('[data-act="clear"]').addEventListener('click', function () {
+      if (!confirm('清空这个任务的代码草稿？')) return;
+      ta.value = '';
+      delete state.code[t.id];
+      saveState();
+      updateGutter(ta, gutter);
+      var fr = card.querySelector('.format-result');
+      fr.className = 'format-result';
+      fr.textContent = '';
+      saved.className = 'saved muted';
+      saved.textContent = '已清空';
+      updateStats();
+    });
+
+    card.querySelectorAll('details.hint').forEach(function (d) {
+      d.addEventListener('toggle', function () {
+        if (!d.open) return;
+        var idx = d.getAttribute('data-hint');
+        state.hints[t.id] = state.hints[t.id] || {};
+        state.hints[t.id][idx] = true;
+        saveState();
+        updateStats();
+      });
+    });
+
+    card.querySelectorAll('input[type="checkbox"]').forEach(function (cb) {
+      var idx = cb.getAttribute('data-check');
+      if (state.checks[t.id] && state.checks[t.id][idx]) cb.checked = true;
+      cb.addEventListener('change', function () {
+        state.checks[t.id] = state.checks[t.id] || {};
+        state.checks[t.id][idx] = cb.checked;
+        saveState();
+      });
+    });
+
+    if (state.code[t.id] !== undefined) markSaved(saved);
+  }
+
+  function updateGutter(ta, gutter) {
+    var n = ta.value.split('\n').length;
+    var lines = [];
+    for (var k = 1; k <= n; k++) lines.push(k);
+    gutter.textContent = lines.join('\n');
+    gutter.scrollTop = ta.scrollTop;
+  }
+
+  function markSaved(el) {
+    if (!el) return;
+    var t = new Date().toLocaleTimeString('zh-CN', { hour12: false });
+    el.className = 'saved';
+    el.textContent = '已保存 ' + t;
+  }
+
+  function downloadText(filename, text) {
+    var blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 500);
+  }
+
+  function exportRecord() {
+    var lines = [];
+    lines.push('第 05 讲 练习记录 · 控制结构入门');
+    lines.push('姓名：' + (state.name.trim() || '未填写'));
+    lines.push('导出时间：' + new Date().toLocaleString('zh-CN'));
+    lines.push('');
+    lines.push('一、客观题（网页即时判分）');
+    QUESTIONS.forEach(function (q) {
+      var rec = state.objective[q.id];
+      if (!rec) { lines.push(q.id + '. 未作答'); return; }
+      var picked = q.type === 'blank' ? String(rec.picked) : rec.picked;
+      lines.push(q.id + '. [' + q.tag + '] 作答：' + picked +
+        (rec.correct === true ? ' 正确' : ' 错误（正确答案 ' + q.answer + '）'));
+    });
+    lines.push('');
+    lines.push('二、程序练习（网页只存草稿、只做格式检查，不运行 Python）');
+    TASKS.forEach(function (t) {
+      var code = state.code[t.id];
+      var hints = Object.keys(state.hints[t.id] || {}).length;
+      lines.push(t.title + '：' + (code !== undefined ? '已保存草稿' : '未保存草稿') + '；提示使用 ' + hints + ' 次');
+      if (code !== undefined) {
+        lines.push('--- 代码开始 ---');
+        lines.push(code);
+        lines.push('--- 代码结束 ---');
+      }
+      lines.push('');
+    });
+    downloadText('第05讲_练习记录.txt', lines.join('\n'));
+  }
+
+  function clearAll() {
+    if (!confirm('清空本机保存的姓名、作答、代码和提示记录？此操作不能恢复。')) return;
+    clearing = true;
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    location.reload();
+  }
+
+  // 初始化
+  loadState();
+  if (!storageOK) {
+    var warn = document.createElement('div');
+    warn.className = 'warn';
+    warn.textContent = '当前浏览器不允许本地保存，请及时使用“导出学习记录”保存结果。';
+    var main = document.querySelector('main');
+    if (main) main.insertBefore(warn, main.firstChild);
+  }
+  document.getElementById('studentName').value = state.name || '';
+  document.getElementById('studentName').addEventListener('input', function () {
+    state.name = this.value;
+    saveState();
+  });
+  document.getElementById('resetObj').addEventListener('click', resetAllObjectives);
+  document.getElementById('exportRecord').addEventListener('click', exportRecord);
+  document.getElementById('clearAll').addEventListener('click', clearAll);
+
+  window.addEventListener('beforeunload', function () {
+    if (clearing) return;
+    TASKS.forEach(function (t) {
+      var ta = document.querySelector('textarea[data-code="' + t.id + '"]');
+      if (!ta) return;
+      if (!ta.value.trim()) {
+        delete state.code[t.id];
+        return;
+      }
+      if (state.code[t.id] !== undefined || ta.value !== t.starter) {
+        state.code[t.id] = ta.value;
+      }
+    });
+    saveState();
+  });
+
+  renderQuestions();
+  renderTasks();
+  updateStats();
+</script>
+</body>
+</html>

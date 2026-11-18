@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MK1 每日模拟一 · 60 分钟综合卷 · 编程闯关</title>
+<style>
+  :root { --blue:#0b5fff; --blue2:#2fa4ff; --ink:#1c2b3a; --muted:#6f8096;
+          --line:#e3ebf5; --bg:#eef3fa; --green:#18a058; --orange:#ff9800; --purple:#7c5cff; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+         background:var(--bg); color:var(--ink); line-height:1.6; font-size:16px; }
+  .wrap { max-width:900px; margin:0 auto; padding:0 20px 40px; }
+  header.top { background:linear-gradient(135deg,#0b5fff 0%,#2fa4ff 100%); color:#fff; padding:26px 0 22px; }
+  .crumb a { color:rgba(255,255,255,.85); font-size:13px; text-decoration:none; }
+  .badge { display:inline-block; background:rgba(255,255,255,.22); border-radius:999px;
+           padding:2px 12px; font-size:13px; margin:10px 0 6px; }
+  h1 { font-size:28px; margin:0 0 4px; }
+  .topic { font-size:15px; color:rgba(255,255,255,.9); margin:0; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:14px;
+          padding:18px 20px; margin-top:18px; box-shadow:0 8px 22px rgba(30,70,140,.06); }
+  .card h2 { font-size:19px; margin:0 0 4px; color:#14417e; }
+  .hintline { font-size:13px; color:var(--muted); margin:0 0 12px; }
+  .q { border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin:10px 0; }
+  .q .qt { white-space:pre-wrap; font-size:15px; margin:0 0 8px; }
+  .q label { display:block; padding:5px 10px; border-radius:8px; cursor:pointer; font-size:15px; }
+  .q label:hover { background:#f2f7ff; }
+  .q.correct { border-color:var(--green); background:#f2fbf6; }
+  .q.wrong { border-color:#e5484d; background:#fdf3f3; }
+  .why { display:none; font-size:13.5px; color:#8a5a00; background:#fff8ec;
+         border:1px solid #ffe0b0; border-radius:8px; padding:8px 12px; margin-top:8px; }
+  .why.show { display:block; }
+  .task-head { display:flex; align-items:center; margin:0 0 6px; }
+  .task-head > * + * { margin-left:10px; }
+  .task-head h3 { font-size:17px; margin:0; color:#14417e; }
+  .opt-tag { font-size:12px; color:var(--muted); background:#f5f8fc; border:1px solid var(--line);
+             border-radius:999px; padding:1px 9px; }
+  .desc { white-space:pre-wrap; font-size:15px; background:#f7fafd; border:1px solid var(--line);
+          border-radius:10px; padding:10px 14px; margin:8px 0; }
+  pre.starter { background:#f2f6fb; border:1px solid var(--line); border-radius:10px;
+                padding:10px 14px; font:14px/1.5 Consolas,monospace; white-space:pre-wrap; margin:8px 0; }
+  textarea { width:100%; min-height:110px; font:14px/1.55 Consolas,monospace; color:var(--ink);
+             border:1px solid #c9d8ea; border-radius:10px; padding:10px 12px; resize:vertical; }
+  textarea:focus { outline:2px solid #b9d4ff; }
+  .row { display:flex; flex-wrap:wrap; margin:10px 0 4px; }
+  .row > * + * { margin-left:8px; margin-top:4px; }
+  .btn { display:inline-block; border:1px solid var(--blue); background:var(--blue); color:#fff;
+         font-size:14px; padding:7px 16px; border-radius:9px; cursor:pointer; text-decoration:none; }
+  .btn:hover { background:#074fd6; }
+  .btn.ghost { background:#fff; color:var(--blue); }
+  .btn.ghost:hover { background:#eef5ff; }
+  .btn.gray { background:#fff; color:#3b4a5f; border-color:#c9d8ea; }
+  .btn.gray:hover { background:#f2f7ff; }
+  .btn:disabled { opacity:.45; cursor:not-allowed; }
+  .hintbox { background:#fff8ec; border:1px solid #ffe0b0; color:#8a5a00; border-radius:10px;
+             padding:8px 14px; font-size:14px; margin-top:8px; white-space:pre-wrap; }
+  .msg { font-size:14px; border-radius:10px; padding:8px 14px; margin-top:8px; display:none; white-space:pre-wrap; }
+  .msg.show { display:block; }
+  .msg.ok { background:#f2fbf6; border:1px solid #bfe6cf; color:#116a3c; }
+  .msg.bad { background:#fdf3f3; border:1px solid #f3c2c4; color:#a32629; }
+  .msg.info { background:#f2f7ff; border:1px solid #c9d8ea; color:#14417e; }
+  .gate { text-align:center; padding:8px 0 0; }
+  .stamp { display:none; font-size:22px; color:var(--green); font-weight:700; margin:6px 0; }
+  .stamp.show { display:block; }
+  .timer { font:700 26px/1 Consolas,monospace; letter-spacing:2px; color:#fff;
+           background:rgba(255,255,255,.22); border-radius:10px; padding:8px 18px; display:inline-block; }
+  .banner { display:none; background:#fff8ec; border:1px solid #ffe0b0; color:#8a5a00;
+            border-radius:10px; padding:10px 16px; font-size:14px; margin:14px 0 0; }
+  .banner.show { display:block; }
+  footer.foot { border-top:1px solid var(--line); background:#fff; color:var(--muted);
+                font-size:13px; padding:14px 0; margin-top:28px; text-align:center; }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <p class="crumb"><a href="../index.html">← 返回闯关地图</a></p>
+    <span class="badge">每日模拟 · 限时 60 分钟</span>
+    <h1>每日模拟一 · 60 分钟综合卷</h1>
+    <p class="topic">限时 60 分钟 · 15 道客观题 + 4 道编程题（覆盖 L1–L8，零重复）<span id="timerBox" style="display:none;margin-left:16px;"><span class="timer" id="timer">40:00</span></span></p>
+  </div>
+</header>
+<main class="wrap">
+  <div class="banner" id="storeBanner">进度无法保存（浏览器禁用了本地存储），本页功能仍可用，但刷新后记录会丢失。</div>
+  <div class="hintbox" id="timeup" style="display:none;">时间到！输入已锁定，点下面「查看全部解析」对照自查；刷新不会解除锁定，想再练一轮点「开始新一轮模拟」。</div>
+  <div class="row"><button class="btn ghost" id="revealBtn" style="display:none;" onclick="revealWhy()">查看全部解析</button><button class="btn ghost" id="newRoundBtn" style="display:none;" onclick="newRound()">开始新一轮模拟</button></div>
+  <section class="card">
+    <h2>第一部分 · 客观题</h2>
+    <p class="hintline">全部作答后点「提交判分」，全对是盖章条件之一；做错会显示解析，可重做。</p>
+    <div id="objHost">
+<div class="q" id="q0">
+<p class="qt">1. 运行：
+a = 3
+b = 8
+t = a
+a = b
+b = t
+print(a, b)
+输出什么？</p>
+<label><input type="radio" name="q0" value="0"> A. 8 3</label>
+<label><input type="radio" name="q0" value="1"> B. 3 8</label>
+<label><input type="radio" name="q0" value="2"> C. 8 8</label>
+<label><input type="radio" name="q0" value="3"> D. 3 3</label>
+<div class="why">解析：t 先暂存了 a 原来的值 3，然后 b 的 8 覆盖 a，最后把 t 里的 3 放进 b，完成两个变量的值交换，输出 8 3。</div>
+</div>
+<div class="q" id="q1">
+<p class="qt">2. 表达式 (2 + 1) ** 2 - 4 的结果是？</p>
+<label><input type="radio" name="q1" value="0"> A. 2</label>
+<label><input type="radio" name="q1" value="1"> B. 3</label>
+<label><input type="radio" name="q1" value="2"> C. 5</label>
+<label><input type="radio" name="q1" value="3"> D. 1</label>
+<div class="why">解析：** 是幂运算（乘方）。先算括号里 2 + 1 = 3，再算 3 的 2 次方等于 9，最后 9 - 4 = 5。</div>
+</div>
+<div class="q" id="q2">
+<p class="qt">3. 运行：
+m = 10
+m = m - 3
+m = m * 2
+print(m)
+输出什么？</p>
+<label><input type="radio" name="q2" value="0"> A. 10</label>
+<label><input type="radio" name="q2" value="1"> B. 4</label>
+<label><input type="radio" name="q2" value="2"> C. 17</label>
+<label><input type="radio" name="q2" value="3"> D. 14</label>
+<div class="why">解析：按从上到下顺序一步步更新：m 先变成 10 - 3 = 7，再变成 7 × 2 = 14。</div>
+</div>
+<div class="q" id="q3">
+<p class="qt">4. 执行 print(&quot;2026&quot;, &quot;11&quot;, &quot;30&quot;, sep=&quot;-&quot;)，屏幕上显示什么？</p>
+<label><input type="radio" name="q3" value="0"> A. 2026 11 30</label>
+<label><input type="radio" name="q3" value="1"> B. 2026-11-30</label>
+<label><input type="radio" name="q3" value="2"> C. 20261130</label>
+<label><input type="radio" name="q3" value="3"> D. 报错</label>
+<div class="why">解析：sep=&quot;-&quot; 可以把 print 逗号之间的默认分隔符（空格）改成短横线 &quot;-&quot;，所以输出 2026-11-30。</div>
+</div>
+<div class="q" id="q4">
+<p class="qt">5. 运行 print(&quot;得分：&quot; + 95) 时，程序会报哪一种错误？</p>
+<label><input type="radio" name="q4" value="0"> A. TypeError</label>
+<label><input type="radio" name="q4" value="1"> B. SyntaxError</label>
+<label><input type="radio" name="q4" value="2"> C. IndexError</label>
+<label><input type="radio" name="q4" value="3"> D. ValueError</label>
+<div class="why">解析：字符串和整数不能直接用 + 相加，这是类型不匹配，报 TypeError；改成 str(95) 或用逗号分隔即可。</div>
+</div>
+<div class="q" id="q5">
+<p class="qt">6. 运行：
+n = 12
+if n % 2 == 0:
+    print(&quot;偶&quot;)
+if n % 3 == 0:
+    print(&quot;三&quot;)
+输出什么？</p>
+<label><input type="radio" name="q5" value="0"> A. 只输出「偶」</label>
+<label><input type="radio" name="q5" value="1"> B. 只输出「三」</label>
+<label><input type="radio" name="q5" value="2"> C. 两行：先「偶」再「三」</label>
+<label><input type="radio" name="q5" value="3"> D. 什么都不输出</label>
+<div class="why">解析：这是两个独立的 if（不是 elif），12 既能被 2 整除又能被 3 整除，所以两个条件都会成立并依次执行。</div>
+</div>
+<div class="q" id="q6">
+<p class="qt">7. 某项目限高规则：
+if h &gt;= 140:
+    print(&quot;全票&quot;)
+elif h &gt;= 110:
+    print(&quot;半票&quot;)
+else:
+    print(&quot;免票&quot;)
+当 h = 140 时，输出什么？</p>
+<label><input type="radio" name="q6" value="0"> A. 半票</label>
+<label><input type="radio" name="q6" value="1"> B. 全票</label>
+<label><input type="radio" name="q6" value="2"> C. 免票</label>
+<label><input type="radio" name="q6" value="3"> D. 全票和半票</label>
+<div class="why">解析：&gt;= 包含等于，140 &gt;= 140 成立，直接命中第一条分支输出「全票」，后面的 elif 不再检查。</div>
+</div>
+<div class="q" id="q7">
+<p class="qt">8. 运行：
+ans = 0
+for i in range(1, 5):
+    if i % 2 == 0:
+        ans = ans + i
+    else:
+        ans = ans - 1
+print(ans)
+输出什么？</p>
+<label><input type="radio" name="q7" value="0"> A. 10</label>
+<label><input type="radio" name="q7" value="1"> B. 2</label>
+<label><input type="radio" name="q7" value="2"> C. 6</label>
+<label><input type="radio" name="q7" value="3"> D. 4</label>
+<div class="why">解析：i=1 奇数减 1 得 -1；i=2 偶数加 2 得 1；i=3 奇数减 1 得 0；i=4 偶数加 4 得 4。</div>
+</div>
+<div class="q" id="q8">
+<p class="qt">9. 运行：
+c = 0
+for i in range(3):
+    for j in range(4):
+        c = c + 1
+print(c)
+输出什么？</p>
+<label><input type="radio" name="q8" value="0"> A. 12</label>
+<label><input type="radio" name="q8" value="1"> B. 7</label>
+<label><input type="radio" name="q8" value="2"> C. 3</label>
+<label><input type="radio" name="q8" value="3"> D. 4</label>
+<div class="why">解析：外层循环走 3 圈，每走 1 圈内层循环都走 4 圈，一共执行 3 × 4 = 12 次，c 最终为 12。</div>
+</div>
+<div class="q" id="q9">
+<p class="qt">10. s = &quot;ABCDEF&quot;，执行 print(s[1:4]) 输出什么？</p>
+<label><input type="radio" name="q9" value="0"> A. ABCD</label>
+<label><input type="radio" name="q9" value="1"> B. BCDE</label>
+<label><input type="radio" name="q9" value="2"> C. BCD</label>
+<label><input type="radio" name="q9" value="3"> D. CDE</label>
+<div class="why">解析：切片 s[1:4] 含头不含尾：从下标 1（&#x27;B&#x27;）切到下标 3（&#x27;D&#x27;），不含下标 4（&#x27;E&#x27;），结果是 BCD。</div>
+</div>
+<div class="q" id="q10">
+<p class="qt">11. msg = &quot;2026 python&quot;，运行 print(&quot;py&quot; in msg, &quot;Py&quot; in msg) 输出什么？</p>
+<label><input type="radio" name="q10" value="0"> A. True True</label>
+<label><input type="radio" name="q10" value="1"> B. True False</label>
+<label><input type="radio" name="q10" value="2"> C. False True</label>
+<label><input type="radio" name="q10" value="3"> D. 报错</label>
+<div class="why">解析：in 检查子串是否出现且区分大小写：&quot;py&quot; 在 msg 里为 True，大写的 &quot;Py&quot; 不在里面为 False。</div>
+</div>
+<div class="q" id="q11">
+<p class="qt">12. 当 a = 9、b = 4 时，a // b 和 int(a / b) 计算得到的结果都是整数 2。</p>
+<label><input type="radio" name="q11" value="true"> 对</label>
+<label><input type="radio" name="q11" value="false"> 错</label>
+<div class="why">解析：9 // 4 = 2；9 / 4 = 2.25，套一层 int(2.25) 会截断小数部分，同样得到整数 2。</div>
+</div>
+<div class="q" id="q12">
+<p class="qt">13. 已知 s = &quot;hello&quot;，运行 s[0] = &quot;H&quot; 可以把字符串首字母改成大写的 &quot;H&quot;。</p>
+<label><input type="radio" name="q12" value="true"> 对</label>
+<label><input type="radio" name="q12" value="false"> 错</label>
+<div class="why">解析：Python 的字符串是不可变类型，不能通过 s[0] = ... 直接修改其中某个字符，会报 TypeError。</div>
+</div>
+<div class="q" id="q13">
+<p class="qt">14. 在循环里写 print(i, end=&quot;&quot;)，所有输出会紧挨着显示在同一行，中间没有任何空格。</p>
+<label><input type="radio" name="q13" value="true"> 对</label>
+<label><input type="radio" name="q13" value="false"> 错</label>
+<div class="why">解析：end=&quot;&quot; 把默认的换行符替换成了空字符串，所以每次打印后既不换行也不多加空格。</div>
+</div>
+<div class="q" id="q14">
+<p class="qt">15. for i in range(10, 1): 会让 i 从 10 倒着数到 2，一共执行 9 圈。</p>
+<label><input type="radio" name="q14" value="true"> 对</label>
+<label><input type="radio" name="q14" value="false"> 错</label>
+<div class="why">解析：不写第 3 个步长参数时默认每次 +1，起始值 10 比结束值 1 大时，range(10, 1) 为空，循环 0 圈直接跳过。</div>
+</div>
+</div>
+    <div class="row">
+      <button class="btn" id="submitObj" onclick="submitObj()">提交判分</button>
+      <button class="btn ghost" id="redoObj" onclick="redoObj()">重做客观题</button>
+      <span class="hintline" id="objScore" style="margin:4px 0 0;"></span>
+    </div>
+  </section>
+  <section id="tasks"></section>
+  <section class="card gate" id="gate" style="display:none;">
+    <div class="stamp" id="stamp">✅ 本关通过，已盖章！</div>
+    <a class="btn" id="next" href="../index.html">继续</a>
+  </section>
+</main>
+<footer class="foot">编程闯关备赛 · 离线练习 · 不联网、不上传 · 进度只保存在本机</footer>
+<script>
+var PAGE_DATA = {"id": "MK1", "file": "mock01.html", "title": "每日模拟一 · 60 分钟综合卷", "topic": "限时 60 分钟 · 15 道客观题 + 4 道编程题（覆盖 L1–L8，零重复）", "drill": true, "timeLimitMin": 60, "obj": [{"t": "single", "q": "运行：\na = 3\nb = 8\nt = a\na = b\nb = t\nprint(a, b)\n输出什么？", "opts": ["8 3", "3 8", "8 8", "3 3"], "a": 0, "why": "t 先暂存了 a 原来的值 3，然后 b 的 8 覆盖 a，最后把 t 里的 3 放进 b，完成两个变量的值交换，输出 8 3。"}, {"t": "single", "q": "表达式 (2 + 1) ** 2 - 4 的结果是？", "opts": ["2", "3", "5", "1"], "a": 2, "why": "** 是幂运算（乘方）。先算括号里 2 + 1 = 3，再算 3 的 2 次方等于 9，最后 9 - 4 = 5。"}, {"t": "single", "q": "运行：\nm = 10\nm = m - 3\nm = m * 2\nprint(m)\n输出什么？", "opts": ["10", "4", "17", "14"], "a": 3, "why": "按从上到下顺序一步步更新：m 先变成 10 - 3 = 7，再变成 7 × 2 = 14。"}, {"t": "single", "q": "执行 print(\"2026\", \"11\", \"30\", sep=\"-\")，屏幕上显示什么？", "opts": ["2026 11 30", "2026-11-30", "20261130", "报错"], "a": 1, "why": "sep=\"-\" 可以把 print 逗号之间的默认分隔符（空格）改成短横线 \"-\"，所以输出 2026-11-30。"}, {"t": "single", "q": "运行 print(\"得分：\" + 95) 时，程序会报哪一种错误？", "opts": ["TypeError", "SyntaxError", "IndexError", "ValueError"], "a": 0, "why": "字符串和整数不能直接用 + 相加，这是类型不匹配，报 TypeError；改成 str(95) 或用逗号分隔即可。"}, {"t": "single", "q": "运行：\nn = 12\nif n % 2 == 0:\n    print(\"偶\")\nif n % 3 == 0:\n    print(\"三\")\n输出什么？", "opts": ["只输出「偶」", "只输出「三」", "两行：先「偶」再「三」", "什么都不输出"], "a": 2, "why": "这是两个独立的 if（不是 elif），12 既能被 2 整除又能被 3 整除，所以两个条件都会成立并依次执行。"}, {"t": "single", "q": "某项目限高规则：\nif h >= 140:\n    print(\"全票\")\nelif h >= 110:\n    print(\"半票\")\nelse:\n    print(\"免票\")\n当 h = 140 时，输出什么？", "opts": ["半票", "全票", "免票", "全票和半票"], "a": 1, "why": ">= 包含等于，140 >= 140 成立，直接命中第一条分支输出「全票」，后面的 elif 不再检查。"}, {"t": "single", "q": "运行：\nans = 0\nfor i in range(1, 5):\n    if i % 2 == 0:\n        ans = ans + i\n    else:\n        ans = ans - 1\nprint(ans)\n输出什么？", "opts": ["10", "2", "6", "4"], "a": 3, "why": "i=1 奇数减 1 得 -1；i=2 偶数加 2 得 1；i=3 奇数减 1 得 0；i=4 偶数加 4 得 4。"}, {"t": "single", "q": "运行：\nc = 0\nfor i in range(3):\n    for j in range(4):\n        c = c + 1\nprint(c)\n输出什么？", "opts": ["12", "7", "3", "4"], "a": 0, "why": "外层循环走 3 圈，每走 1 圈内层循环都走 4 圈，一共执行 3 × 4 = 12 次，c 最终为 12。"}, {"t": "single", "q": "s = \"ABCDEF\"，执行 print(s[1:4]) 输出什么？", "opts": ["ABCD", "BCDE", "BCD", "CDE"], "a": 2, "why": "切片 s[1:4] 含头不含尾：从下标 1（'B'）切到下标 3（'D'），不含下标 4（'E'），结果是 BCD。"}, {"t": "single", "q": "msg = \"2026 python\"，运行 print(\"py\" in msg, \"Py\" in msg) 输出什么？", "opts": ["True True", "True False", "False True", "报错"], "a": 1, "why": "in 检查子串是否出现且区分大小写：\"py\" 在 msg 里为 True，大写的 \"Py\" 不在里面为 False。"}, {"t": "judge", "q": "当 a = 9、b = 4 时，a // b 和 int(a / b) 计算得到的结果都是整数 2。", "a": true, "why": "9 // 4 = 2；9 / 4 = 2.25，套一层 int(2.25) 会截断小数部分，同样得到整数 2。"}, {"t": "judge", "q": "已知 s = \"hello\"，运行 s[0] = \"H\" 可以把字符串首字母改成大写的 \"H\"。", "a": false, "why": "Python 的字符串是不可变类型，不能通过 s[0] = ... 直接修改其中某个字符，会报 TypeError。"}, {"t": "judge", "q": "在循环里写 print(i, end=\"\")，所有输出会紧挨着显示在同一行，中间没有任何空格。", "a": true, "why": "end=\"\" 把默认的换行符替换成了空字符串，所以每次打印后既不换行也不多加空格。"}, {"t": "judge", "q": "for i in range(10, 1): 会让 i 从 10 倒着数到 2，一共执行 9 圈。", "a": false, "why": "不写第 3 个步长参数时默认每次 +1，起始值 10 比结束值 1 大时，range(10, 1) 为空，循环 0 圈直接跳过。"}], "tasks": [{"id": "TA", "title": "到达时间计算", "input": "8\n40\n135", "optional": false, "desc": "分三行读入三个整数：出发小时 h（输入 8 回车）、出发分钟 m（输入 40 回车）、路程总耗时分钟数 add（输入 135 回车，保证不跨天）。\n请算出一共是几时几分，输出格式如下：\n到达时间 10:55\n提示：先算出总分钟数 total = h * 60 + m + add，再用 // 60 和 % 60 拆成时和分。", "starter": "h = int(input())\nm = int(input())\nadd = int(input())\n# 先转成总分钟数，再加上耗时，最后拆回时和分\n", "expect": "到达时间 10:55", "hints": ["思路：直接给 m 加 135 会超过 60，先全部换算成分钟 total = h * 60 + m + add 最不容易出错。", "步骤：小时 new_h = total // 60，分钟 new_m = total % 60；注意用 str() 和 \":\" 拼在一起。", "局部代码：print(\"到达时间\", str(new_h) + \":\" + str(new_m))"]}, {"id": "TB", "title": "阶梯电费计费", "input": "180", "optional": false, "desc": "读入本月用电度数 kwh（输入 180 回车）。按阶梯累加收费：前 100 度（含 100 度）每度 0.5 元；超出 100 度的部分每度 0.8 元。\n输入 180 应输出：\n总电费 114.0 元\n提示：先判断 kwh <= 100；若超过 100，前 100 度按 0.5 元算，多出的 (kwh - 100) 度按 0.8 元算后相加。", "starter": "kwh = int(input())\n# 用 if / else 分别计算不超过 100 度和超过 100 度的电费\n", "expect": "总电费 114.0 元", "hints": ["思路：阶梯计费不是整体乘 0.8，而是把 180 度拆成「前 100 度」和「超出的 80 度」两段分别计价再相加。", "步骤：if kwh <= 100: fee = kwh * 0.5，else: fee = 100 * 0.5 + (kwh - 100) * 0.8。", "局部代码：fee = 100 * 0.5 + (kwh - 100) * 0.8"]}, {"id": "TC", "title": "数字串求和与非零统计", "input": "20261130", "optional": false, "desc": "读入一串纯数字字符串 s（运行时输入 20261130 回车），用 for 循环逐个取出每一位，累加全部数字的和，同时统计其中非零数字（不是 \"0\"）的个数，输出两行：\n各位数字之和是 15\n非零数字有 6 个", "starter": "s = input()\ntotal = 0\nnonzero = 0\n# for i in range(len(s)):\n#     把 s[i] 转成 int(s[i]) 累加，并判断是否 > 0\n", "expect": "各位数字之和是 15\n非零数字有 6 个", "hints": ["思路：把输入当字符串读进来就能用下标 s[i] 逐位访问，再用 int(s[i]) 转成整数加进 total。", "步骤：循环里写 d = int(s[i])，total = total + d，再 if d != 0: 让 nonzero 加 1。", "局部代码：d = int(s[i])\n    total = total + d\n    if d != 0:\n        nonzero = nonzero + 1"]}, {"id": "TD", "title": "字符串数字脱敏", "input": "ab12c34d", "optional": false, "desc": "读入一行包含字母和数字的字符串 s（运行时输入 ab12c34d 回车）。逐个检查每个字符，把所有数字字符（\"0\" <= ch <= \"9\"）替换成 \"*\" 拼成新串 res，并统计共替换了多少个数字，输出两行：\n脱敏结果：ab**c**d\n共替换了 4 个数字", "starter": "s = input()\nres = \"\"\ncnt = 0\n# for i in range(len(s)):\n#     ch = s[i]\n#     如果是数字字符，res 拼 \"*\" 且 cnt 加 1；否则直接拼 ch\n", "expect": "脱敏结果：ab**c**d\n共替换了 4 个数字", "hints": ["思路：准备空字符串 res = \"\" 和计数器 cnt = 0，逐字符判断是否在 \"0\" 到 \"9\" 之间。", "步骤：if ch >= \"0\" and ch <= \"9\":（或用两层 if）时 res = res + \"*\" 且 cnt = cnt + 1，else: res = res + ch。", "局部代码：if \"0\" <= ch <= \"9\":\n        res = res + \"*\"\n        cnt = cnt + 1"]}]};
+</script>
+<script>
+
+(function () {
+  'use strict';
+  var LV = PAGE_DATA;
+  var KEY = 'ck_progress_v1';
+  var storeOK = true;
+  var DEF = { v: 1, unlocked: 1, stamps: {}, obj: {}, hints: {}, tasks: {}, final: { started: false, left: 2400 } };
+
+  function $(id) { return document.getElementById(id); }
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text !== undefined) e.textContent = text;
+    return e;
+  }
+
+  function loadProg() {
+    var p;
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (raw) p = JSON.parse(raw);
+    } catch (e) { storeOK = false; p = null; }
+    if (!p || typeof p !== 'object') p = {};
+    for (var k in DEF) { if (!(k in p)) p[k] = DEF[k]; }
+    if (!p.stamps) p.stamps = {};
+    if (!p.obj) p.obj = {};
+    if (!p.hints) p.hints = {};
+    if (!p.tasks) p.tasks = {};
+    if (!p.final) p.final = { started: false, left: 2400 };
+    return p;
+  }
+  function saveProg() {
+    try { localStorage.setItem(KEY, JSON.stringify(prog)); }
+    catch (e) { if (storeOK) { storeOK = false; showBanner(); } }
+  }
+  function showBanner() {
+    var b = $('storeBanner');
+    if (b) b.className = 'banner show';
+  }
+
+  /* -- 与教师脚本 --verify 同一套归一化规则 -- */
+  function normalize(s) {
+    var lines = s.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
+    var i;
+    for (i = 0; i < lines.length; i++) {
+      lines[i] = lines[i].replace(/^[\s　]+/, '').replace(/[\s　]+$/, '');
+    }
+    while (lines.length && lines[lines.length - 1] === '') lines.pop();
+    return lines.join('\n');
+  }
+
+  function draftKey(taskId) { return 'ck_draft_' + LV.id + '_' + taskId + '_v1'; }
+  function getDraft(taskId) {
+    try { return localStorage.getItem(draftKey(taskId)); } catch (e) { return null; }
+  }
+  function setDraft(taskId, text) {
+    try { localStorage.setItem(draftKey(taskId), text); } catch (e) {}
+  }
+
+  /* -- 客观题 -- */
+  function chosenAnswer(qi) {
+    var radios = document.getElementsByName('q' + qi);
+    for (var i = 0; i < radios.length; i++) { if (radios[i].checked) return radios[i].value; }
+    return null;
+  }
+  function restoreAnswers() {
+    var saved = prog.obj[LV.id];
+    if (!saved) return;
+    for (var qi = 0; qi < LV.obj.length; qi++) {
+      var v = saved['q' + qi];
+      if (v === undefined) continue;
+      var radios = document.getElementsByName('q' + qi);
+      for (var i = 0; i < radios.length; i++) {
+        var rv = radios[i].value;
+        if (rv === 'true') rv = true; else if (rv === 'false') rv = false; else rv = Number(rv);
+        if (rv === v) radios[i].checked = true;
+      }
+    }
+  }
+  function submitObj() {
+    var saved = {};
+    var score = 0;
+    for (var qi = 0; qi < LV.obj.length; qi++) {
+      var v = chosenAnswer(qi);
+      var card = $('q' + qi);
+      var why = card.querySelector('.why');
+      if (why) why.className = 'why show';
+      if (v === null) {
+        card.className = 'q wrong';
+        continue;
+      }
+      var ans = LV.obj[qi].a;
+      var norm = (v === 'true') ? true : (v === 'false') ? false : Number(v);
+      var ok = (norm === ans);
+      if (ok) score++;
+      card.className = 'q ' + (ok ? 'correct' : 'wrong');
+      saved['q' + qi] = norm;
+    }
+    prog.obj[LV.id] = saved;
+    saveProg();
+    $('objScore').textContent = '得分：' + score + ' / ' + LV.obj.length;
+    updateGate();
+  }
+  function redoObj() {
+    for (var qi = 0; qi < LV.obj.length; qi++) {
+      $('q' + qi).className = 'q';
+      var radios = document.getElementsByName('q' + qi);
+      for (var i = 0; i < radios.length; i++) radios[i].checked = false;
+      var why = $('q' + qi).querySelector('.why');
+      if (why) why.className = 'why';
+    }
+    delete prog.obj[LV.id];
+    saveProg();
+    $('objScore').textContent = '';
+    updateGate();
+  }
+
+  function objPassed() {
+    var saved = prog.obj[LV.id];
+    if (!saved) return false;
+    for (var qi = 0; qi < LV.obj.length; qi++) {
+      if (saved['q' + qi] !== LV.obj[qi].a) return false;
+    }
+    return true;
+  }
+
+  /* -- 编程任务 -- */
+  function buildTasks() {
+    var host = $('tasks');
+    for (var ti = 0; ti < LV.tasks.length; ti++) {
+      var t = LV.tasks[ti];
+      var card = el('div', 'card');
+      card.id = 'task' + ti;
+      var head = el('div', 'task-head');
+      head.appendChild(el('h3', null, '任务 ' + (ti + 1) + '：' + t.title));
+      head.appendChild(el('span', 'opt-tag', t.optional ? '选做 · 不影响盖章' : '必做'));
+      card.appendChild(head);
+      card.appendChild(el('div', 'desc', t.desc));
+      if (t.input !== '无') card.appendChild(el('p', 'hintline', '运行时的输入样例（一行一个回车）：' + t.input.replace(/\n/g, ' ↦ ')));
+      var pre = el('pre', 'starter');
+      pre.textContent = t.starter;
+      card.appendChild(pre);
+      var row1 = el('div', 'row');
+      var copyBtn = el('button', 'btn ghost', '复制起步代码');
+      copyBtn.onclick = (function (t2) { return function () { copyStarter(t2); }; })(t);
+      row1.appendChild(copyBtn);
+      card.appendChild(row1);
+      var lbl = el('p', 'hintline', '代码草稿（可在这里先写，复制到 IDLE 运行；自动保存）：');
+      card.appendChild(lbl);
+      var code = el('textarea');
+      code.id = 'code' + ti;
+      var d = getDraft(t.id);
+      code.value = (d === null || d === '') ? t.starter : d;
+      code.oninput = (function (t2) { return function () { setDraft(t2.id, this.value); }; })(t);
+      card.appendChild(code);
+      var row2 = el('div', 'row');
+      var fmtBtn = el('button', 'btn gray', '格式检查（不判分）');
+      fmtBtn.onclick = (function (ti2) { return function () { checkFormat(ti2); }; })(ti);
+      var expBtn = el('button', 'btn gray', '草稿导出 .py');
+      expBtn.onclick = (function (ti2, t2) { return function () { exportPy(ti2, t2); }; })(ti, t);
+      var hintBtn = el('button', 'btn ghost', '提示');
+      hintBtn.id = 'hintbtn' + ti;
+      hintBtn.onclick = (function (ti2) { return function () { revealHint(ti2); }; })(ti);
+      row2.appendChild(fmtBtn);
+      row2.appendChild(expBtn);
+      row2.appendChild(hintBtn);
+      card.appendChild(row2);
+      var hintHost = el('div');
+      hintHost.id = 'hints' + ti;
+      card.appendChild(hintHost);
+      card.appendChild(el('p', 'hintline', '把 IDLE 里运行后的输出整段粘贴到这里核对：'));
+      var out = el('textarea');
+      out.id = 'out' + ti;
+      out.placeholder = '粘贴运行结果…';
+      card.appendChild(out);
+      var row3 = el('div', 'row');
+      var chkBtn = el('button', 'btn', '核对输出');
+      chkBtn.onclick = (function (ti2) { return function () { verifyOutput(ti2); }; })(ti);
+      row3.appendChild(chkBtn);
+      card.appendChild(row3);
+      var msg = el('div', 'msg');
+      msg.id = 'msg' + ti;
+      card.appendChild(msg);
+      host.appendChild(card);
+      refreshHints(ti);
+    }
+  }
+
+  function copyStarter(t) {
+    copyText(t.starter, '起步代码已复制，去 IDLE 里粘贴');
+  }
+  function copyText(text, tip) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    toast(ok ? tip : '复制失败，请手动选择复制');
+  }
+  function toast(text) {
+    var m = el('div', 'msg info show');
+    m.textContent = text;
+    m.style.position = 'fixed';
+    m.style.left = '50%';
+    m.style.transform = 'translateX(-50%)';
+    m.style.bottom = '26px';
+    m.style.zIndex = '99';
+    m.style.boxShadow = '0 8px 22px rgba(30,70,140,.25)';
+    document.body.appendChild(m);
+    setTimeout(function () { document.body.removeChild(m); }, 1800);
+  }
+
+  function revealHint(ti) {
+    var t = LV.tasks[ti];
+    var used = prog.hints[LV.id] && prog.hints[LV.id][t.id] ? prog.hints[LV.id][t.id] : 0;
+    if (used >= t.hints.length) return;
+    used++;
+    if (!prog.hints[LV.id]) prog.hints[LV.id] = {};
+    prog.hints[LV.id][t.id] = used;
+    saveProg();
+    refreshHints(ti);
+  }
+  function refreshHints(ti) {
+    var t = LV.tasks[ti];
+    var used = prog.hints[LV.id] && prog.hints[LV.id][t.id] ? prog.hints[LV.id][t.id] : 0;
+    var btn = $('hintbtn' + ti);
+    if (btn) btn.textContent = '提示（已用 ' + used + '/3）';
+    var host = $('hints' + ti);
+    if (!host) return;
+    host.innerHTML = '';
+    for (var i = 0; i < used && i < t.hints.length; i++) {
+      var box = el('div', 'hintbox', '提示 ' + (i + 1) + '/3：' + t.hints[i]);
+      host.appendChild(box);
+    }
+  }
+
+  function checkFormat(ti) {
+    var code = $('code' + ti).value;
+    var msg = $('msg' + ti);
+    var issues = [];
+    if (code.trim() === '') {
+      msg.className = 'msg info show';
+      msg.textContent = '代码草稿是空的--先在「代码草稿」里写下或粘贴你的代码。';
+      return;
+    }
+    if (/[“”‘’]/.test(code)) issues.push('发现中文引号 “ ” ‘ ’：Python 只认英文引号 " 和 \'');
+    if (/&&|\|\|/.test(code)) issues.push('发现 && 或 ||：Python 里表示「并且/或者」用 and、or');
+    var lines = code.replace(/\r\n/g, '\n').split('\n');
+    var tabIndent = false, spaceIndent = false;
+    for (var i = 0; i < lines.length; i++) {
+      var raw = lines[i];
+      if (/^\t+/.test(raw)) tabIndent = true;
+      if (/^ {2,}/.test(raw)) spaceIndent = true;
+      var hashIdx = raw.indexOf('#');
+      var codePart = hashIdx === -1 ? raw : raw.slice(0, hashIdx);
+      var hasQuote = codePart.indexOf('"') !== -1 || codePart.indexOf("'") !== -1;
+      var t = codePart.replace(/[\s　]+$/, '');
+      if (!hasQuote && /^(if|elif|else|for|while)\b/.test(t) && t.charAt(t.length - 1) !== ':') {
+        issues.push('第 ' + (i + 1) + ' 行以 ' + t.split(' ')[0] + ' 开头，行尾缺英文冒号 :');
+      }
+    }
+    if (tabIndent && spaceIndent) issues.push('缩进混用了 Tab 和空格：统一只用 4 个空格');
+    var open = (code.match(/\(/g) || []).length;
+    var close = (code.match(/\)/g) || []).length;
+    if (open !== close) issues.push('圆括号不成对：( 有 ' + open + ' 个，) 有 ' + close + ' 个');
+    msg.className = issues.length ? 'msg bad show' : 'msg info show';
+    msg.textContent = issues.length
+      ? '格式检查只提示、不判分。发现：\n· ' + issues.join('\n· ')
+      : '格式检查只提示、不判分。没发现常见格式问题，可以拿去 IDLE 运行了。';
+  }
+
+  function exportPy(ti, t) {
+    var code = $('code' + ti).value;
+    if (code.trim() === '') { toast('草稿是空的，先写点代码再导出'); return; }
+    var blob = new Blob([code], { type: 'text/plain;charset=utf-8' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = LV.id + '_' + t.id + '.py';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    toast('已导出 ' + LV.id + '_' + t.id + '.py');
+  }
+
+  function verifyOutput(ti) {
+    var t = LV.tasks[ti];
+    var pasted = $('out' + ti).value;
+    var msg = $('msg' + ti);
+    if (pasted.trim() === '') {
+      msg.className = 'msg info show';
+      msg.textContent = '先把 IDLE 里运行的输出整段粘贴到上面的框里，再点「核对输出」。';
+      return;
+    }
+    if (pasted.indexOf('Traceback') !== -1) {
+      msg.className = 'msg bad show';
+      msg.textContent = '你粘贴的是报错信息（Traceback），不是运行结果。\n回 IDLE 看红字最后一行：那是错误类型和行号；改正后再运行、再粘贴。拿不准就点「提示」。';
+      return;
+    }
+    if (normalize(pasted) === normalize(t.expect)) {
+      if (!prog.tasks[LV.id]) prog.tasks[LV.id] = {};
+      prog.tasks[LV.id][t.id] = true;
+      saveProg();
+      msg.className = 'msg ok show';
+      msg.textContent = '输出一致，这个任务通过了！';
+      updateGate();
+    } else {
+      msg.className = 'msg bad show';
+      msg.textContent = '还不一致。检查：文字是不是一模一样？行数对不对？标点是英文的吗？需要的话点「提示」。';
+    }
+  }
+
+  function tasksPassed() {
+    for (var ti = 0; ti < LV.tasks.length; ti++) {
+      var t = LV.tasks[ti];
+      if (t.optional) continue;
+      var st = prog.tasks[LV.id];
+      if (!st || !st[t.id]) return false;
+    }
+    return true;
+  }
+
+  /* -- 通关 -- */
+  function nextHref() {
+    if (LV.drill) return '../index.html';
+    var i = LV.index;
+    if (LV.id === 'FIN') return '../index.html';
+    if (i + 1 < 8) return 'level0' + (i + 2) + '.html';
+    return 'final.html';
+  }
+  function updateGate() {
+    var gate = $('gate');
+    var stamped = !!prog.stamps[LV.id];
+    var done = stamped || (objPassed() && tasksPassed());
+    if (done && !stamped) {
+      prog.stamps[LV.id] = true;
+      var nextIdx = LV.id === 'FIN' ? 9 : (LV.drill ? prog.unlocked : LV.index + 2);
+      if (nextIdx > prog.unlocked) prog.unlocked = nextIdx;
+      saveProg();
+    }
+    var stamp = $('stamp');
+    var next = $('next');
+    if (done) {
+      stamp.className = 'stamp show';
+      next.style.display = 'inline-block';
+      gate.style.display = 'block';
+      if (LV.id === 'FIN' || LV.drill) {
+        next.textContent = '返回地图';
+      } else {
+        next.textContent = stamped ? '继续 · 下一关' : '通关！进入下一关';
+      }
+      next.href = nextHref();
+    } else {
+      stamp.className = 'stamp';
+      next.style.display = 'none';
+    }
+  }
+
+  /* -- 模拟关计时 -- */
+  var timerId = null;
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+  function renderTimer(left) {
+    var m = Math.floor(left / 60);
+    var s = left % 60;
+    $('timer').textContent = pad2(m) + ':' + pad2(s);
+  }
+  function lockAll() {
+    var list = document.querySelectorAll('textarea, button, input');
+    for (var i = 0; i < list.length; i++) {
+      var e = list[i];
+      if (e.id === 'revealBtn' || e.id === 'newRoundBtn') continue;
+      e.disabled = true;
+    }
+    $('timeup').style.display = 'block';
+    $('revealBtn').style.display = 'inline-block';
+    $('newRoundBtn').style.display = 'inline-block';
+  }
+  function timerState() {
+    if (LV.id === 'FIN') return prog.final;
+    if (!prog.timers[LV.id]) prog.timers[LV.id] = { started: false, left: LV.timeLimitMin * 60 };
+    return prog.timers[LV.id];
+  }
+  function newRound() {
+    var ts = timerState();
+    ts.started = false;
+    ts.left = LV.timeLimitMin * 60;
+    saveProg();
+    window.location.reload();
+  }
+  function revealWhy() {
+    var whys = document.querySelectorAll('.why');
+    for (var i = 0; i < whys.length; i++) whys[i].className = 'why show';
+  }
+  function startTimer() {
+    var ts = timerState();
+    if (ts.started && ts.left <= 0) {
+      renderTimer(0);
+      lockAll();
+      return;
+    }
+    if (!ts.started) {
+      ts.started = true;
+      ts.left = LV.timeLimitMin * 60;
+      saveProg();
+    }
+    renderTimer(ts.left);
+    timerId = setInterval(function () {
+      ts.left--;
+      if (ts.left <= 0) {
+        ts.left = 0;
+        renderTimer(0);
+        saveProg();
+        clearInterval(timerId);
+        lockAll();
+        return;
+      }
+      renderTimer(ts.left);
+      saveProg();
+    }, 1000);
+  }
+
+  /* -- 启动 -- */
+  var prog = loadProg();
+  function init() {
+    if (!storeOK) showBanner();
+    if (LV.timeLimitMin) {
+      $('timerBox').style.display = 'inline-block';
+      startTimer();
+    }
+    buildTasks();
+    restoreAnswers();
+    var saved = prog.obj[LV.id];
+    if (saved) {
+      var score = 0;
+      for (var qi = 0; qi < LV.obj.length; qi++) {
+        if (saved['q' + qi] === LV.obj[qi].a) score++;
+        $('q' + qi).className = 'q ' + (saved['q' + qi] === LV.obj[qi].a ? 'correct' : 'wrong');
+        var why = $('q' + qi).querySelector('.why');
+        if (why) why.className = 'why show';
+      }
+      $('objScore').textContent = '上次成绩：' + score + ' / ' + LV.obj.length + '（可重做）';
+    }
+    updateGate();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+  /* 内联 onclick 用的函数暴露到全局 */
+  window.submitObj = submitObj;
+  window.redoObj = redoObj;
+  window.revealWhy = revealWhy;
+  window.newRound = newRound;
+})();
+
+</script>
+</body>
+</html>

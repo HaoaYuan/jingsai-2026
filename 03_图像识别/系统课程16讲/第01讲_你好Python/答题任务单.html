@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>第01讲 课后任务单 · 你好，Python</title>
+<style>
+  * { box-sizing: border-box; }
+  body { background: #525659; font-family: "Times New Roman", SimSun, serif; color: #000; margin: 0; padding: 26px 0 90px; }
+  .paper { width: 800px; margin: 0 auto; background: #fff; padding: 46px 56px 60px; box-shadow: 0 4px 24px rgba(0,0,0,.4); }
+
+  /* ===== 试卷抬头 ===== */
+  .school { text-align: center; font-family: SimHei, "Microsoft YaHei", sans-serif; font-size: 16px; letter-spacing: 2px; color: #333; }
+  h1 { text-align: center; font-family: SimHei, "Microsoft YaHei", sans-serif; font-size: 26px; letter-spacing: 3px; margin: 8px 0 6px; }
+  .sub { text-align: center; font-size: 14px; color: #444; margin-bottom: 14px; }
+  .info { font-size: 16px; display: flex; justify-content: space-between; margin: 12px 0 10px; }
+  .info span { flex: 1; }
+  .line { border-bottom: 1px solid #000; display: inline-block; min-width: 90px; }
+
+  /* 得分表 */
+  table.score { border-collapse: collapse; width: 100%; margin: 10px 0 4px; }
+  table.score th, table.score td { border: 1px solid #000; height: 30px; text-align: center; font-size: 15px; font-family: SimSun, serif; }
+  table.score th { font-family: SimHei, sans-serif; font-weight: normal; background: #f2f2f2; }
+  table.score td.fill { width: 82px; }
+
+  /* 大题与题干 */
+  .sec { margin-top: 22px; }
+  .sec-title { font-family: SimHei, "Microsoft YaHei", sans-serif; font-size: 17px; font-weight: bold; margin-bottom: 10px; }
+  .q { font-size: 16px; line-height: 2; margin-bottom: 4px; }
+  .q .no { font-family: SimHei, sans-serif; }
+  .opt { font-size: 16px; line-height: 1.95; padding-left: 2.2em; }
+  .blank { display: inline-block; border-bottom: 1px solid #000; min-width: 150px; text-align: center; font-family: Consolas, monospace; }
+  .code { font-family: Consolas, "Courier New", monospace; background: #f5f5f2; border: 1px solid #ddd; padding: 2px 8px; font-size: 15px; }
+  .codeblock { font-family: Consolas, monospace; font-size: 15px; background: #f7f7f4; border: 1px solid #ddd; padding: 10px 16px; margin: 6px 0; line-height: 1.7; white-space: pre-wrap; }
+  textarea.ans { width: 100%; height: 130px; border: 1px solid #999; font-family: Consolas, monospace; font-size: 15px; padding: 8px; background: #fffdf5; line-height: 1.7; }
+
+  /* 交互区（打印时隐藏） */
+  .ui { margin: 6px 0 14px; }
+  button { font-family: "Microsoft YaHei", sans-serif; font-size: 14px; padding: 5px 16px; margin-right: 8px; border: 1px solid #0b5fff; background: #0b5fff; color: #fff; border-radius: 4px; cursor: pointer; }
+  button.ghost { background: #fff; color: #0b5fff; }
+  .fb { font-family: "Microsoft YaHei", sans-serif; font-size: 14px; margin-top: 4px; }
+  .ok { color: #0a7d33; font-weight: bold; }
+  .no { color: #c0392b; font-weight: bold; }
+  .ans { display: none; font-family: "Microsoft YaHei", sans-serif; font-size: 14px; background: #f2f8f2; border: 1px dashed #8db98d; padding: 8px 12px; margin: 6px 0; white-space: pre-wrap; }
+  .toolbar { width: 800px; margin: 0 auto 14px; display: flex; gap: 10px; align-items: center; }
+  .toolbar .note { color: #e8eaed; font-family: "Microsoft YaHei", sans-serif; font-size: 14px; }
+  #total { font-family: "Microsoft YaHei", sans-serif; font-size: 15px; font-weight: bold; color: #ffd54a; }
+
+  /* ===== 打印：还原成纯净试卷 ===== */
+  @media print {
+    body { background: #fff; padding: 0; }
+    .paper { box-shadow: none; width: auto; padding: 10mm 12mm; }
+    .toolbar, .ui, .fb, .ans { display: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <button onclick="total()">统分</button>
+  <button class="ghost" onclick="window.print()">打印试卷</button>
+  <button class="ghost" onclick="location.reload()">重做</button>
+  <span id="total">在电脑上作答：写完每大题点「核对」，自动判分；点「打印」可印出空白卷手写。</span>
+</div>
+
+<div class="paper">
+  <div class="school">七年级 Python 零基础入门课程 · 校本讲义</div>
+  <h1>第 01 讲 课后任务单</h1>
+  <div class="sub">你好，Python ｜ 满分 100 分　时间 20 分钟｜ 2025—2026 学年第一学期</div>
+
+  <div class="info">
+    <span>班级：<span class="line" contenteditable="true" style="min-width:130px"></span></span>
+    <span>姓名：<span class="line" contenteditable="true" style="min-width:110px"></span></span>
+    <span>学号：<span class="line" contenteditable="true"></span></span>
+  </div>
+
+  <table class="score">
+    <tr><th>题　号</th><th>一</th><th>二</th><th>三</th><th>四</th><th>总　分</th></tr>
+    <tr><th>得　分</th><td class="fill" id="s1"></td><td class="fill" id="s2"></td><td class="fill" id="s3"></td><td class="fill" id="s4"></td><td class="fill" id="sT"></td></tr>
+  </table>
+
+  <!-- ================= 一、选择题 ================= -->
+  <div class="sec">
+    <div class="sec-title">一、选择题（每小题 10 分，共 20 分）</div>
+
+    <div class="q"><span class="no">1．</span>下面哪一行代码，能在屏幕上显示出：你好（　　）</div>
+    <div class="opt"><label><input type="radio" name="q1" value="A"> A．Print("你好")</label></div>
+    <div class="opt"><label><input type="radio" name="q1" value="B"> B．print("你好")</label></div>
+    <div class="opt"><label><input type="radio" name="q1" value="C"> C．print（你好）</label></div>
+    <div class="opt"><label><input type="radio" name="q1" value="D"> D．print(你好)</label></div>
+    <div class="ui">
+      <button onclick="check(1)">核对</button><button class="ghost" onclick="showAns(1)">看解析</button>
+      <div class="fb" id="fb1"></div>
+      <div class="ans" id="an1">答案：B。print 必须全小写；要说的话用英文引号包起来。A 大小写错；C 括号是中文的；D 的话没有引号包住。</div>
+    </div>
+
+    <div class="q"><span class="no">2．</span>小智写了下面一行代码，运行时报错 SyntaxError：</div>
+    <div class="codeblock">print("你好）</div>
+    <div class="q">他最先应该检查什么？（　　）</div>
+    <div class="opt"><label><input type="radio" name="q2" value="A"> A．print 是不是大写了</label></div>
+    <div class="opt"><label><input type="radio" name="q2" value="B"> B．引号是不是没成对（少了右引号）</label></div>
+    <div class="opt"><label><input type="radio" name="q2" value="C"> C．是不是忘了写注释</label></div>
+    <div class="ui">
+      <button onclick="check(2)">核对</button><button class="ghost" onclick="showAns(2)">看解析</button>
+      <div class="fb" id="fb2"></div>
+      <div class="ans" id="an2">答案：B。引号必须成对，) 前面少了一个英文引号 " 。</div>
+    </div>
+  </div>
+
+  <!-- ================= 二、填空题 ================= -->
+  <div class="sec">
+    <div class="sec-title">二、填空题（每小题 10 分，共 20 分）</div>
+
+    <div class="q"><span class="no">3．</span>想让屏幕显示：Python 真好玩，横线处应填（连引号一起填）：</div>
+    <div class="q" style="padding-left:2.2em">print( <span class="blank"><input type="text" id="in3" style="width:220px;border:none;outline:none;font-family:Consolas,monospace;font-size:15px;text-align:center;background:transparent"></span> )</div>
+    <div class="ui">
+      <button onclick="check(3)">核对</button><button class="ghost" onclick="showAns(3)">看解析</button>
+      <div class="fb" id="fb3"></div>
+      <div class="ans" id="an3">答案："Python 真好玩"（英文双引号或单引号均可）。引号告诉计算机：这是一句话，照原样显示。</div>
+    </div>
+
+    <div class="q"><span class="no">4．</span>给代码写"便条"（注释），要用的符号是：＿＿＿＿</div>
+    <div class="q" style="padding-left:2.2em">答：<span class="blank"><input type="text" id="in4" style="width:80px;border:none;outline:none;font-family:Consolas,monospace;font-size:15px;text-align:center;background:transparent"></span></div>
+    <div class="ui">
+      <button onclick="check(4)">核对</button><button class="ghost" onclick="showAns(4)">看解析</button>
+      <div class="fb" id="fb4"></div>
+      <div class="ans" id="an4">答案：#（英文输入法下按 Shift + 3）。# 后面的内容计算机会直接跳过。</div>
+    </div>
+  </div>
+
+  <!-- ================= 三、判断题 ================= -->
+  <div class="sec">
+    <div class="sec-title">三、判断题（每小题 10 分，共 10 分）</div>
+    <div class="q"><span class="no">5．</span>"# 开头的注释，计算机也会认真执行它。"这句话对吗？（　　）</div>
+    <div class="opt"><label><input type="radio" name="q5" value="T"> 对</label>　　　<label><input type="radio" name="q5" value="F"> 错</label></div>
+    <div class="ui">
+      <button onclick="check(5)">核对</button><button class="ghost" onclick="showAns(5)">看解析</button>
+      <div class="fb" id="fb5"></div>
+      <div class="ans" id="an5">答案：错。注释是写给人看的便条，计算机遇到 # 后面的内容会直接跳过。</div>
+    </div>
+  </div>
+
+  <!-- ================= 四、编程题 ================= -->
+  <div class="sec">
+    <div class="sec-title">四、编程题（共 50 分：用了至少 3 行 print 计 20 分；引号成对计 15 分；写出了自己的介绍计 15 分）</div>
+    <div class="q"><span class="no">6．</span>编写程序：用 3 行 print 输出你自己的自我介绍（名字、爱好、想对计算机说的话）。</div>
+    <textarea class="ans-area" id="in6" placeholder="在这里输入你的程序，例如：&#10;print(&quot;大家好！&quot;)"></textarea>
+    <div class="ui">
+      <button onclick="check(6)">核对</button><button class="ghost" onclick="showAns(6)">看参考程序</button>
+      <div class="fb" id="fb6"></div>
+      <div class="ans" id="an6">print("大家好！")
+print("我叫小智，今年 13 岁")
+print("很高兴认识 Python！")</div>
+    </div>
+  </div>
+
+  <div class="sub" style="margin-top:26px;border-top:1px solid #999;padding-top:10px">— 第 01 讲任务单结束 · 下一讲预告：变量——给数据"贴标签" —</div>
+</div>
+
+<script>
+  var KEY = { 1: 'B', 2: 'B', 5: 'F' };
+  var PTS = { 1: 10, 2: 10, 3: 10, 4: 10, 5: 10 };
+  var done = {};
+
+  function norm(s) { return s.replace(/\s+/g, ' ').trim(); }
+
+  function check(n) {
+    var fb = document.getElementById('fb' + n), ok = false, msg = '';
+    if (n === 1 || n === 2 || n === 5) {
+      var sel = document.querySelector('input[name=q' + n + ']:checked');
+      if (!sel) { fb.innerHTML = '<span class="no">请先作答</span>'; return; }
+      ok = sel.value === KEY[n];
+    } else if (n === 3) {
+      var v = norm(document.getElementById('in3').value).replace(/^["“”']|["“”']$/g, '');
+      ok = v === 'Python 真好玩' || v === 'Python真好玩';
+      msg = ' 引号要用英文的哦！';
+    } else if (n === 4) {
+      ok = norm(document.getElementById('in4').value) === '#';
+    } else if (n === 6) {
+      var code = document.getElementById('in6').value;
+      var cnt = (code.match(/print\s*\(/g) || []).length;
+      var paired = (code.match(/["']/g) || []).length % 2 === 0;
+      var filled = code.trim().length > 0 && !/大家好！.*我喜欢画画.*你好，Python/.test(code.replace(/\s+/g, ''));
+      var p1 = cnt >= 3 ? 20 : 0, p2 = paired ? 15 : 0, p3 = filled ? 15 : 0;
+      done[6] = (p1 + p2 + p3) >= 50;
+      document.getElementById('s4').textContent = p1 + p2 + p3;
+      fb.innerHTML = '<span class="' + (p1 + p2 + p3 >= 50 ? 'ok">🎉 满分 50！' : 'no">得分 ' + (p1 + p2 + p3) + '/50。') + '</span>' +
+        (p1 < 20 ? ' print 要写满 3 行（20分）。' : '') + (!paired ? ' 引号没有成对（15分）。' : '') + (!filled ? ' 要写出自己的介绍，别照抄示例（15分）。' : '');
+      return;
+    }
+    done[n] = ok;
+    var sec = { 1: 's1', 2: 's1', 3: 's2', 4: 's2', 5: 's3' }[n];
+    fb.innerHTML = ok ? '<span class="ok">✓ 正确（' + PTS[n] + ' 分）</span>'
+                      : '<span class="no">✗ 有问题' + msg + '，看看解析再改一改</span>';
+    if (ok) document.getElementById(sec).textContent = PTS[n];
+    document.getElementById('an' + n).style.display = 'block';
+  }
+
+  function showAns(n) { document.getElementById('an' + n).style.display = 'block'; }
+
+  function total() {
+    var s1 = 0, s2 = 0, s3 = 0, s4 = 0;
+    if (done[1]) s1 += 10; if (done[2]) s1 += 10;
+    if (done[3]) s2 += 10; if (done[4]) s2 += 10;
+    if (done[5]) s3 += 10;
+    s4 = parseInt(document.getElementById('s4').textContent) || 0;
+    document.getElementById('s1').textContent = s1;
+    document.getElementById('s2').textContent = s2;
+    document.getElementById('s3').textContent = s3;
+    var t = s1 + s2 + s3 + s4;
+    document.getElementById('sT').textContent = t;
+    document.getElementById('total').textContent = '总分 ' + t + ' / 100' + (t === 100 ? ' 🎉 全对！找老师登记吧' : '，错题看解析订正后可重新核对');
+  }
+</script>
+</body>
+</html>

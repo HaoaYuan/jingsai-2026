@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>02 大数分解 · 备赛主页</title>
+<style>
+  :root { --blue:#24466e; --blue2:#36649c; --ink:#24324a; --muted:#61718a; --line:#dce4ef; --bg:#eef2f7; --green:#2e8b57; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:"Microsoft YaHei","PingFang SC",sans-serif; background:var(--bg); color:var(--ink); line-height:1.6; font-size:16px; }
+  .wrap { max-width:1060px; margin:0 auto; padding:0 22px 44px; }
+  header.top { background:linear-gradient(135deg,#24466e 0%,#36649c 100%); color:#fff; padding:32px 0 26px; }
+  header.top a.back { color:rgba(255,255,255,.88); text-decoration:none; font-size:13.5px; }
+  h1 { margin:6px 0 6px; font-size:30px; }
+  .sub { margin:0; font-size:15px; opacity:.9; }
+  .banner-card { background:#fff; border:1px solid #bfd6ff; border-radius:12px; padding:14px 18px; margin:20px 0 10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; }
+  .sec { margin:24px 0 12px; font-size:19px; color:var(--blue); border-bottom:2px solid var(--line); padding-bottom:6px; }
+  .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  @media (max-width:860px) { .grid { grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:580px) { .grid { grid-template-columns:1fr; } }
+  .card { background:#fff; border:1px solid var(--line); border-radius:12px; padding:16px 18px; display:flex; flex-direction:column; box-shadow:0 4px 14px rgba(30,50,90,.05); }
+  .card h3 { margin:0 0 6px; font-size:17px; color:var(--blue); }
+  .card p { margin:0 0 14px; font-size:13.5px; color:var(--muted); flex:1; }
+  .actions { display:flex; flex-wrap:wrap; }
+  .actions > * + * { margin-left:8px; }
+  .btn { display:inline-block; padding:7px 14px; border-radius:8px; border:1px solid var(--blue); background:var(--blue); color:#fff; text-decoration:none; font-size:13.5px; }
+  .btn.ghost { background:#fff; color:var(--blue); }
+  footer { text-align:center; font-size:13px; color:var(--muted); padding:24px 0; }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="back" href="../index.html">← 返回三大赛项总入口</a>
+    <h1>02 大数分解 · 零基础 5 讲与模拟特训</h1>
+    <p class="sub">对准 2026 官方评分表：数字分解与处理（15 分）+ 算法设计（20 分）+ 效率探究（20 分）+ 报告与分享（35 分）</p>
+  </div>
+</header>
+<main class="wrap">
+  <div class="banner-card">
+    <span><b>单页全课程合集：</b>已将 5 讲课堂练习 + 60 分钟模拟卷一 + 拓展拔高卷整合在一个页面内，左侧一键切换。</span>
+    <a class="btn" href="大数分解全课程.html">打开「大数分解全课程.html」 →</a>
+  </div>
+  <h2 class="sec">一、赛前 60 分钟限时模拟与拓展</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>60 分钟全真模拟卷一</h3>
+      <p>12 道客观题（单选 + 填空）+ 3 道编程题（485100 分解统计 / 104729 双算法循环轮数对比 / 100 以内埃氏筛孪生质数）。</p>
+      <div class="actions"><a class="btn" href="练习与模拟/模拟卷01.html">进入模拟卷一 →</a></div>
+    </div>
+    <div class="card">
+      <h3>60 分钟拓展拔高卷</h3>
+      <p>12 道拓展客观题 + 3 道拓展编程题（活动团队分组 GCD 与 LCM / 区间完全数搜寻 / 无平方半质数统计）。</p>
+      <div class="actions"><a class="btn" href="练习与模拟/拓展卷01.html">进入拓展拔高卷 →</a></div>
+    </div>
+    <div class="card">
+      <h3>120 分钟赛场模拟与报告模板</h3>
+      <p>第 05 讲配套：120 分钟全真模拟卷、PPT 六页框架模板、标准流程图画法、5 分钟陈述脚本骨架与自评清单。</p>
+      <div class="actions"><a class="btn ghost" href="练习与模拟/第05讲_报告与全真模拟/数据/全真模拟卷.md">120分钟模拟卷</a><a class="btn ghost" href="练习与模拟/第05讲_报告与全真模拟/数据/PPT六页框架模板.md">PPT模板</a></div>
+    </div>
+  </div>
+  <h2 class="sec">二、零基础 5 讲系统课程</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>第 01 讲 · Python 基础速通</h3>
+      <p>从零掌握输出、变量、输入、判断、循环累加、函数六大句型（6 客观 + 3 编程）。</p>
+      <div class="actions"><a class="btn" href="练习与模拟/第01讲_Python基础速通/练习.html">进入练习</a><a class="btn ghost" href="练习与模拟/第01讲_Python基础速通/课件.pptx">PPTX课件</a></div>
+    </div>
+    <div class="card">
+      <h3>第 02 讲 · 因数分解实战</h3>
+      <p>全因数枚举、短除法质因数分解、偶因数/奇因数和/最大质因数统计与严格输出格式。</p>
+      <div class="actions"><a class="btn" href="练习与模拟/第02讲_因数分解实战/练习.html">进入练习</a><a class="btn ghost" href="练习与模拟/第02讲_因数分解实战/课件.pptx">PPTX课件</a></div>
+    </div>
+    <div class="card">
+      <h3>第 03 讲 · 双算法效率对比</h3>
+      <p>朴素试除、√N 跳偶试除、6k±1 试除逐版升级 + 实验一三档计时与记录表。</p>
+      <div class="actions"><a class="btn" href="练习与模拟/第03讲_双算法效率对比/练习.html">进入练习</a><a class="btn ghost" href="练习与模拟/第03讲_双算法效率对比/课件.pptx">PPTX课件</a></div>
+    </div>
+    <div class="card">
+      <h3>第 04 讲 · 埃氏筛与批处理加速</h3>
+      <p>手筛 30 → 埃氏筛五步 → 批处理先写对再加速 + 实验二对比与输出一致性护栏。</p>
+      <div class="actions"><a class="btn" href="练习与模拟/第04讲_埃氏筛与批处理加速/练习.html">进入练习</a><a class="btn ghost" href="练习与模拟/第04讲_埃氏筛与批处理加速/课件.pptx">PPTX课件</a></div>
+    </div>
+    <div class="card">
+      <h3>第 05 讲 · 报告与全真模拟</h3>
+      <p>问题描述 10 分 + 分析报告 20 分 + 成果分享 5 分：流程图规范、陈述话术与综合自检。</p>
+      <div class="actions"><a class="btn" href="练习与模拟/第05讲_报告与全真模拟/练习.html">进入练习</a><a class="btn ghost" href="练习与模拟/第05讲_报告与全真模拟/课件.pptx">PPTX课件</a></div>
+    </div>
+  </div>
+</main>
+<footer>02 大数分解备赛 · 离线练习 · 不联网、不上传</footer>
+</body>
+</html>

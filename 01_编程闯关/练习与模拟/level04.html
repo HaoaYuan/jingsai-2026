@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L04 输入与类型转换 · 编程闯关</title>
+<style>
+  :root { --blue:#0b5fff; --blue2:#2fa4ff; --ink:#1c2b3a; --muted:#6f8096;
+          --line:#e3ebf5; --bg:#eef3fa; --green:#18a058; --orange:#ff9800; --purple:#7c5cff; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+         background:var(--bg); color:var(--ink); line-height:1.6; font-size:16px; }
+  .wrap { max-width:900px; margin:0 auto; padding:0 20px 40px; }
+  header.top { background:linear-gradient(135deg,#0b5fff 0%,#2fa4ff 100%); color:#fff; padding:26px 0 22px; }
+  .crumb a { color:rgba(255,255,255,.85); font-size:13px; text-decoration:none; }
+  .badge { display:inline-block; background:rgba(255,255,255,.22); border-radius:999px;
+           padding:2px 12px; font-size:13px; margin:10px 0 6px; }
+  h1 { font-size:28px; margin:0 0 4px; }
+  .topic { font-size:15px; color:rgba(255,255,255,.9); margin:0; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:14px;
+          padding:18px 20px; margin-top:18px; box-shadow:0 8px 22px rgba(30,70,140,.06); }
+  .card h2 { font-size:19px; margin:0 0 4px; color:#14417e; }
+  .hintline { font-size:13px; color:var(--muted); margin:0 0 12px; }
+  .q { border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin:10px 0; }
+  .q .qt { white-space:pre-wrap; font-size:15px; margin:0 0 8px; }
+  .q label { display:block; padding:5px 10px; border-radius:8px; cursor:pointer; font-size:15px; }
+  .q label:hover { background:#f2f7ff; }
+  .q.correct { border-color:var(--green); background:#f2fbf6; }
+  .q.wrong { border-color:#e5484d; background:#fdf3f3; }
+  .why { display:none; font-size:13.5px; color:#8a5a00; background:#fff8ec;
+         border:1px solid #ffe0b0; border-radius:8px; padding:8px 12px; margin-top:8px; }
+  .why.show { display:block; }
+  .task-head { display:flex; align-items:center; margin:0 0 6px; }
+  .task-head > * + * { margin-left:10px; }
+  .task-head h3 { font-size:17px; margin:0; color:#14417e; }
+  .opt-tag { font-size:12px; color:var(--muted); background:#f5f8fc; border:1px solid var(--line);
+             border-radius:999px; padding:1px 9px; }
+  .desc { white-space:pre-wrap; font-size:15px; background:#f7fafd; border:1px solid var(--line);
+          border-radius:10px; padding:10px 14px; margin:8px 0; }
+  pre.starter { background:#f2f6fb; border:1px solid var(--line); border-radius:10px;
+                padding:10px 14px; font:14px/1.5 Consolas,monospace; white-space:pre-wrap; margin:8px 0; }
+  textarea { width:100%; min-height:110px; font:14px/1.55 Consolas,monospace; color:var(--ink);
+             border:1px solid #c9d8ea; border-radius:10px; padding:10px 12px; resize:vertical; }
+  textarea:focus { outline:2px solid #b9d4ff; }
+  .row { display:flex; flex-wrap:wrap; margin:10px 0 4px; }
+  .row > * + * { margin-left:8px; margin-top:4px; }
+  .btn { display:inline-block; border:1px solid var(--blue); background:var(--blue); color:#fff;
+         font-size:14px; padding:7px 16px; border-radius:9px; cursor:pointer; text-decoration:none; }
+  .btn:hover { background:#074fd6; }
+  .btn.ghost { background:#fff; color:var(--blue); }
+  .btn.ghost:hover { background:#eef5ff; }
+  .btn.gray { background:#fff; color:#3b4a5f; border-color:#c9d8ea; }
+  .btn.gray:hover { background:#f2f7ff; }
+  .btn:disabled { opacity:.45; cursor:not-allowed; }
+  .hintbox { background:#fff8ec; border:1px solid #ffe0b0; color:#8a5a00; border-radius:10px;
+             padding:8px 14px; font-size:14px; margin-top:8px; white-space:pre-wrap; }
+  .msg { font-size:14px; border-radius:10px; padding:8px 14px; margin-top:8px; display:none; white-space:pre-wrap; }
+  .msg.show { display:block; }
+  .msg.ok { background:#f2fbf6; border:1px solid #bfe6cf; color:#116a3c; }
+  .msg.bad { background:#fdf3f3; border:1px solid #f3c2c4; color:#a32629; }
+  .msg.info { background:#f2f7ff; border:1px solid #c9d8ea; color:#14417e; }
+  .gate { text-align:center; padding:8px 0 0; }
+  .stamp { display:none; font-size:22px; color:var(--green); font-weight:700; margin:6px 0; }
+  .stamp.show { display:block; }
+  .timer { font:700 26px/1 Consolas,monospace; letter-spacing:2px; color:#fff;
+           background:rgba(255,255,255,.22); border-radius:10px; padding:8px 18px; display:inline-block; }
+  .banner { display:none; background:#fff8ec; border:1px solid #ffe0b0; color:#8a5a00;
+            border-radius:10px; padding:10px 16px; font-size:14px; margin:14px 0 0; }
+  .banner.show { display:block; }
+  footer.foot { border-top:1px solid var(--line); background:#fff; color:var(--muted);
+                font-size:13px; padding:14px 0; margin-top:28px; text-align:center; }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <p class="crumb"><a href="../index.html">← 返回闯关地图</a></p>
+    <span class="badge">第 4 关</span>
+    <h1>输入与类型转换</h1>
+    <p class="topic">input() 与 int()<span id="timerBox" style="display:none;margin-left:16px;"><span class="timer" id="timer">40:00</span></span></p>
+  </div>
+</header>
+<main class="wrap">
+  <div class="banner" id="storeBanner">进度无法保存（浏览器禁用了本地存储），本页功能仍可用，但刷新后记录会丢失。</div>
+  <div class="hintbox" id="timeup" style="display:none;">时间到！输入已锁定，点下面「查看全部解析」对照自查；刷新不会解除锁定，想再练一轮点「开始新一轮模拟」。</div>
+  <div class="row"><button class="btn ghost" id="revealBtn" style="display:none;" onclick="revealWhy()">查看全部解析</button><button class="btn ghost" id="newRoundBtn" style="display:none;" onclick="newRound()">开始新一轮模拟</button></div>
+  <section class="card">
+    <h2>第一部分 · 客观题</h2>
+    <p class="hintline">全部作答后点「提交判分」，全对是盖章条件之一；做错会显示解析，可重做。</p>
+    <div id="objHost">
+<div class="q" id="q0">
+<p class="qt">1. 运行 n = input()，用户输入了 5，此时 n 是什么类型？</p>
+<label><input type="radio" name="q0" value="0"> A. 整数</label>
+<label><input type="radio" name="q0" value="1"> B. 字符串</label>
+<label><input type="radio" name="q0" value="2"> C. 小数</label>
+<label><input type="radio" name="q0" value="3"> D. 布尔值</label>
+<div class="why">解析：input() 拿到的永远是字符串，就算看起来像数字。</div>
+</div>
+<div class="q" id="q1">
+<p class="qt">2. 想让输入的 5 能参与加法运算，应该先做哪一步？</p>
+<label><input type="radio" name="q1" value="0"> A. int(n)</label>
+<label><input type="radio" name="q1" value="1"> B. str(n)</label>
+<label><input type="radio" name="q1" value="2"> C. print(n)</label>
+<label><input type="radio" name="q1" value="3"> D. 不用处理</label>
+<div class="why">解析：用 int() 把字符串转成整数后才能做数学运算。</div>
+</div>
+<div class="q" id="q2">
+<p class="qt">3. 运行 int(&quot;abc&quot;) 会发生什么？</p>
+<label><input type="radio" name="q2" value="0"> A. 得到 0</label>
+<label><input type="radio" name="q2" value="1"> B. 报错</label>
+<label><input type="radio" name="q2" value="2"> C. 得到 123</label>
+<label><input type="radio" name="q2" value="3"> D. 得到 &quot;abc&quot;</label>
+<div class="why">解析：&quot;abc&quot; 不是数字，int() 转不了，程序会报 ValueError。</div>
+</div>
+<div class="q" id="q3">
+<p class="qt">4. n = int(&quot;12&quot;)，那么 n + 3 的结果是？</p>
+<label><input type="radio" name="q3" value="0"> A. 15</label>
+<label><input type="radio" name="q3" value="1"> B. &quot;123&quot;</label>
+<label><input type="radio" name="q3" value="2"> C. 123</label>
+<label><input type="radio" name="q3" value="3"> D. 报错</label>
+<div class="why">解析：int(&quot;12&quot;) 已经是数字 12，加 3 得 15。</div>
+</div>
+<div class="q" id="q4">
+<p class="qt">5. input(&quot;请输入：&quot;) 括号里的文字会先显示在屏幕上提示用户。</p>
+<label><input type="radio" name="q4" value="true"> 对</label>
+<label><input type="radio" name="q4" value="false"> 错</label>
+<div class="why">解析：input 括号里的字符串是提示语，先显示再等用户输入。</div>
+</div>
+</div>
+    <div class="row">
+      <button class="btn" id="submitObj" onclick="submitObj()">提交判分</button>
+      <button class="btn ghost" id="redoObj" onclick="redoObj()">重做客观题</button>
+      <span class="hintline" id="objScore" style="margin:4px 0 0;"></span>
+    </div>
+  </section>
+  <section id="tasks"></section>
+  <section class="card gate" id="gate" style="display:none;">
+    <div class="stamp" id="stamp">✅ 本关通过，已盖章！</div>
+    <a class="btn" id="next" href="../index.html">继续</a>
+  </section>
+</main>
+<footer class="foot">编程闯关备赛 · 离线练习 · 不联网、不上传 · 进度只保存在本机</footer>
+<script>
+var PAGE_DATA = {"id": "L04", "file": "level04.html", "title": "输入与类型转换", "topic": "input() 与 int()", "obj": [{"t": "single", "q": "运行 n = input()，用户输入了 5，此时 n 是什么类型？", "opts": ["整数", "字符串", "小数", "布尔值"], "a": 1, "why": "input() 拿到的永远是字符串，就算看起来像数字。"}, {"t": "single", "q": "想让输入的 5 能参与加法运算，应该先做哪一步？", "opts": ["int(n)", "str(n)", "print(n)", "不用处理"], "a": 0, "why": "用 int() 把字符串转成整数后才能做数学运算。"}, {"t": "single", "q": "运行 int(\"abc\") 会发生什么？", "opts": ["得到 0", "报错", "得到 123", "得到 \"abc\""], "a": 1, "why": "\"abc\" 不是数字，int() 转不了，程序会报 ValueError。"}, {"t": "single", "q": "n = int(\"12\")，那么 n + 3 的结果是？", "opts": ["15", "\"123\"", "123", "报错"], "a": 0, "why": "int(\"12\") 已经是数字 12，加 3 得 15。"}, {"t": "judge", "q": "input(\"请输入：\") 括号里的文字会先显示在屏幕上提示用户。", "a": true, "why": "input 括号里的字符串是提示语，先显示再等用户输入。"}], "tasks": [{"id": "T1", "title": "求和与差", "input": "7\n3", "optional": false, "desc": "程序运行后分两行读入两个整数（运行时先输 7 回车，再输 3 回车）。\n输出下面两行：\n两个数的和是 10\n两个数的差是 4\n把输出结果整段粘贴到下面的框里核对。", "starter": "# 用两次 int(input()) 读入两个数\n# a = int(input())\n", "expect": "两个数的和是 10\n两个数的差是 4", "hints": ["思路：input 拿到的是字符串，必须先 int() 再做加减。", "步骤：读 a、b；一个 print 输出 a + b，一个输出 a - b。", "局部代码：a = int(input())"]}], "index": 3};
+</script>
+<script>
+
+(function () {
+  'use strict';
+  var LV = PAGE_DATA;
+  var KEY = 'ck_progress_v1';
+  var storeOK = true;
+  var DEF = { v: 1, unlocked: 1, stamps: {}, obj: {}, hints: {}, tasks: {}, final: { started: false, left: 2400 } };
+
+  function $(id) { return document.getElementById(id); }
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text !== undefined) e.textContent = text;
+    return e;
+  }
+
+  function loadProg() {
+    var p;
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (raw) p = JSON.parse(raw);
+    } catch (e) { storeOK = false; p = null; }
+    if (!p || typeof p !== 'object') p = {};
+    for (var k in DEF) { if (!(k in p)) p[k] = DEF[k]; }
+    if (!p.stamps) p.stamps = {};
+    if (!p.obj) p.obj = {};
+    if (!p.hints) p.hints = {};
+    if (!p.tasks) p.tasks = {};
+    if (!p.final) p.final = { started: false, left: 2400 };
+    return p;
+  }
+  function saveProg() {
+    try { localStorage.setItem(KEY, JSON.stringify(prog)); }
+    catch (e) { if (storeOK) { storeOK = false; showBanner(); } }
+  }
+  function showBanner() {
+    var b = $('storeBanner');
+    if (b) b.className = 'banner show';
+  }
+
+  /* -- 与教师脚本 --verify 同一套归一化规则 -- */
+  function normalize(s) {
+    var lines = s.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
+    var i;
+    for (i = 0; i < lines.length; i++) {
+      lines[i] = lines[i].replace(/^[\s　]+/, '').replace(/[\s　]+$/, '');
+    }
+    while (lines.length && lines[lines.length - 1] === '') lines.pop();
+    return lines.join('\n');
+  }
+
+  function draftKey(taskId) { return 'ck_draft_' + LV.id + '_' + taskId + '_v1'; }
+  function getDraft(taskId) {
+    try { return localStorage.getItem(draftKey(taskId)); } catch (e) { return null; }
+  }
+  function setDraft(taskId, text) {
+    try { localStorage.setItem(draftKey(taskId), text); } catch (e) {}
+  }
+
+  /* -- 客观题 -- */
+  function chosenAnswer(qi) {
+    var radios = document.getElementsByName('q' + qi);
+    for (var i = 0; i < radios.length; i++) { if (radios[i].checked) return radios[i].value; }
+    return null;
+  }
+  function restoreAnswers() {
+    var saved = prog.obj[LV.id];
+    if (!saved) return;
+    for (var qi = 0; qi < LV.obj.length; qi++) {
+      var v = saved['q' + qi];
+      if (v === undefined) continue;
+      var radios = document.getElementsByName('q' + qi);
+      for (var i = 0; i < radios.length; i++) {
+        var rv = radios[i].value;
+        if (rv === 'true') rv = true; else if (rv === 'false') rv = false; else rv = Number(rv);
+        if (rv === v) radios[i].checked = true;
+      }
+    }
+  }
+  function submitObj() {
+    var saved = {};
+    var score = 0;
+    for (var qi = 0; qi < LV.obj.length; qi++) {
+      var v = chosenAnswer(qi);
+      var card = $('q' + qi);
+      var why = card.querySelector('.why');
+      if (why) why.className = 'why show';
+      if (v === null) {
+        card.className = 'q wrong';
+        continue;
+      }
+      var ans = LV.obj[qi].a;
+      var norm = (v === 'true') ? true : (v === 'false') ? false : Number(v);
+      var ok = (norm === ans);
+      if (ok) score++;
+      card.className = 'q ' + (ok ? 'correct' : 'wrong');
+      saved['q' + qi] = norm;
+    }
+    prog.obj[LV.id] = saved;
+    saveProg();
+    $('objScore').textContent = '得分：' + score + ' / ' + LV.obj.length;
+    updateGate();
+  }
+  function redoObj() {
+    for (var qi = 0; qi < LV.obj.length; qi++) {
+      $('q' + qi).className = 'q';
+      var radios = document.getElementsByName('q' + qi);
+      for (var i = 0; i < radios.length; i++) radios[i].checked = false;
+      var why = $('q' + qi).querySelector('.why');
+      if (why) why.className = 'why';
+    }
+    delete prog.obj[LV.id];
+    saveProg();
+    $('objScore').textContent = '';
+    updateGate();
+  }
+
+  function objPassed() {
+    var saved = prog.obj[LV.id];
+    if (!saved) return false;
+    for (var qi = 0; qi < LV.obj.length; qi++) {
+      if (saved['q' + qi] !== LV.obj[qi].a) return false;
+    }
+    return true;
+  }
+
+  /* -- 编程任务 -- */
+  function buildTasks() {
+    var host = $('tasks');
+    for (var ti = 0; ti < LV.tasks.length; ti++) {
+      var t = LV.tasks[ti];
+      var card = el('div', 'card');
+      card.id = 'task' + ti;
+      var head = el('div', 'task-head');
+      head.appendChild(el('h3', null, '任务 ' + (ti + 1) + '：' + t.title));
+      head.appendChild(el('span', 'opt-tag', t.optional ? '选做 · 不影响盖章' : '必做'));
+      card.appendChild(head);
+      card.appendChild(el('div', 'desc', t.desc));
+      if (t.input !== '无') card.appendChild(el('p', 'hintline', '运行时的输入样例（一行一个回车）：' + t.input.replace(/\n/g, ' ↦ ')));
+      var pre = el('pre', 'starter');
+      pre.textContent = t.starter;
+      card.appendChild(pre);
+      var row1 = el('div', 'row');
+      var copyBtn = el('button', 'btn ghost', '复制起步代码');
+      copyBtn.onclick = (function (t2) { return function () { copyStarter(t2); }; })(t);
+      row1.appendChild(copyBtn);
+      card.appendChild(row1);
+      var lbl = el('p', 'hintline', '代码草稿（可在这里先写，复制到 IDLE 运行；自动保存）：');
+      card.appendChild(lbl);
+      var code = el('textarea');
+      code.id = 'code' + ti;
+      var d = getDraft(t.id);
+      code.value = (d === null || d === '') ? t.starter : d;
+      code.oninput = (function (t2) { return function () { setDraft(t2.id, this.value); }; })(t);
+      card.appendChild(code);
+      var row2 = el('div', 'row');
+      var fmtBtn = el('button', 'btn gray', '格式检查（不判分）');
+      fmtBtn.onclick = (function (ti2) { return function () { checkFormat(ti2); }; })(ti);
+      var expBtn = el('button', 'btn gray', '草稿导出 .py');
+      expBtn.onclick = (function (ti2, t2) { return function () { exportPy(ti2, t2); }; })(ti, t);
+      var hintBtn = el('button', 'btn ghost', '提示');
+      hintBtn.id = 'hintbtn' + ti;
+      hintBtn.onclick = (function (ti2) { return function () { revealHint(ti2); }; })(ti);
+      row2.appendChild(fmtBtn);
+      row2.appendChild(expBtn);
+      row2.appendChild(hintBtn);
+      card.appendChild(row2);
+      var hintHost = el('div');
+      hintHost.id = 'hints' + ti;
+      card.appendChild(hintHost);
+      card.appendChild(el('p', 'hintline', '把 IDLE 里运行后的输出整段粘贴到这里核对：'));
+      var out = el('textarea');
+      out.id = 'out' + ti;
+      out.placeholder = '粘贴运行结果…';
+      card.appendChild(out);
+      var row3 = el('div', 'row');
+      var chkBtn = el('button', 'btn', '核对输出');
+      chkBtn.onclick = (function (ti2) { return function () { verifyOutput(ti2); }; })(ti);
+      row3.appendChild(chkBtn);
+      card.appendChild(row3);
+      var msg = el('div', 'msg');
+      msg.id = 'msg' + ti;
+      card.appendChild(msg);
+      host.appendChild(card);
+      refreshHints(ti);
+    }
+  }
+
+  function copyStarter(t) {
+    copyText(t.starter, '起步代码已复制，去 IDLE 里粘贴');
+  }
+  function copyText(text, tip) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    toast(ok ? tip : '复制失败，请手动选择复制');
+  }
+  function toast(text) {
+    var m = el('div', 'msg info show');
+    m.textContent = text;
+    m.style.position = 'fixed';
+    m.style.left = '50%';
+    m.style.transform = 'translateX(-50%)';
+    m.style.bottom = '26px';
+    m.style.zIndex = '99';
+    m.style.boxShadow = '0 8px 22px rgba(30,70,140,.25)';
+    document.body.appendChild(m);
+    setTimeout(function () { document.body.removeChild(m); }, 1800);
+  }
+
+  function revealHint(ti) {
+    var t = LV.tasks[ti];
+    var used = prog.hints[LV.id] && prog.hints[LV.id][t.id] ? prog.hints[LV.id][t.id] : 0;
+    if (used >= t.hints.length) return;
+    used++;
+    if (!prog.hints[LV.id]) prog.hints[LV.id] = {};
+    prog.hints[LV.id][t.id] = used;
+    saveProg();
+    refreshHints(ti);
+  }
+  function refreshHints(ti) {
+    var t = LV.tasks[ti];
+    var used = prog.hints[LV.id] && prog.hints[LV.id][t.id] ? prog.hints[LV.id][t.id] : 0;
+    var btn = $('hintbtn' + ti);
+    if (btn) btn.textContent = '提示（已用 ' + used + '/3）';
+    var host = $('hints' + ti);
+    if (!host) return;
+    host.innerHTML = '';
+    for (var i = 0; i < used && i < t.hints.length; i++) {
+      var box = el('div', 'hintbox', '提示 ' + (i + 1) + '/3：' + t.hints[i]);
+      host.appendChild(box);
+    }
+  }
+
+  function checkFormat(ti) {
+    var code = $('code' + ti).value;
+    var msg = $('msg' + ti);
+    var issues = [];
+    if (code.trim() === '') {
+      msg.className = 'msg info show';
+      msg.textContent = '代码草稿是空的--先在「代码草稿」里写下或粘贴你的代码。';
+      return;
+    }
+    if (/[“”‘’]/.test(code)) issues.push('发现中文引号 “ ” ‘ ’：Python 只认英文引号 " 和 \'');
+    if (/&&|\|\|/.test(code)) issues.push('发现 && 或 ||：Python 里表示「并且/或者」用 and、or');
+    var lines = code.replace(/\r\n/g, '\n').split('\n');
+    var tabIndent = false, spaceIndent = false;
+    for (var i = 0; i < lines.length; i++) {
+      var raw = lines[i];
+      if (/^\t+/.test(raw)) tabIndent = true;
+      if (/^ {2,}/.test(raw)) spaceIndent = true;
+      var hashIdx = raw.indexOf('#');
+      var codePart = hashIdx === -1 ? raw : raw.slice(0, hashIdx);
+      var hasQuote = codePart.indexOf('"') !== -1 || codePart.indexOf("'") !== -1;
+      var t = codePart.replace(/[\s　]+$/, '');
+      if (!hasQuote && /^(if|elif|else|for|while)\b/.test(t) && t.charAt(t.length - 1) !== ':') {
+        issues.push('第 ' + (i + 1) + ' 行以 ' + t.split(' ')[0] + ' 开头，行尾缺英文冒号 :');
+      }
+    }
+    if (tabIndent && spaceIndent) issues.push('缩进混用了 Tab 和空格：统一只用 4 个空格');
+    var open = (code.match(/\(/g) || []).length;
+    var close = (code.match(/\)/g) || []).length;
+    if (open !== close) issues.push('圆括号不成对：( 有 ' + open + ' 个，) 有 ' + close + ' 个');
+    msg.className = issues.length ? 'msg bad show' : 'msg info show';
+    msg.textContent = issues.length
+      ? '格式检查只提示、不判分。发现：\n· ' + issues.join('\n· ')
+      : '格式检查只提示、不判分。没发现常见格式问题，可以拿去 IDLE 运行了。';
+  }
+
+  function exportPy(ti, t) {
+    var code = $('code' + ti).value;
+    if (code.trim() === '') { toast('草稿是空的，先写点代码再导出'); return; }
+    var blob = new Blob([code], { type: 'text/plain;charset=utf-8' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = LV.id + '_' + t.id + '.py';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    toast('已导出 ' + LV.id + '_' + t.id + '.py');
+  }
+
+  function verifyOutput(ti) {
+    var t = LV.tasks[ti];
+    var pasted = $('out' + ti).value;
+    var msg = $('msg' + ti);
+    if (pasted.trim() === '') {
+      msg.className = 'msg info show';
+      msg.textContent = '先把 IDLE 里运行的输出整段粘贴到上面的框里，再点「核对输出」。';
+      return;
+    }
+    if (pasted.indexOf('Traceback') !== -1) {
+      msg.className = 'msg bad show';
+      msg.textContent = '你粘贴的是报错信息（Traceback），不是运行结果。\n回 IDLE 看红字最后一行：那是错误类型和行号；改正后再运行、再粘贴。拿不准就点「提示」。';
+      return;
+    }
+    if (normalize(pasted) === normalize(t.expect)) {
+      if (!prog.tasks[LV.id]) prog.tasks[LV.id] = {};
+      prog.tasks[LV.id][t.id] = true;
+      saveProg();
+      msg.className = 'msg ok show';
+      msg.textContent = '输出一致，这个任务通过了！';
+      updateGate();
+    } else {
+      msg.className = 'msg bad show';
+      msg.textContent = '还不一致。检查：文字是不是一模一样？行数对不对？标点是英文的吗？需要的话点「提示」。';
+    }
+  }
+
+  function tasksPassed() {
+    for (var ti = 0; ti < LV.tasks.length; ti++) {
+      var t = LV.tasks[ti];
+      if (t.optional) continue;
+      var st = prog.tasks[LV.id];
+      if (!st || !st[t.id]) return false;
+    }
+    return true;
+  }
+
+  /* -- 通关 -- */
+  function nextHref() {
+    if (LV.drill) return '../index.html';
+    var i = LV.index;
+    if (LV.id === 'FIN') return '../index.html';
+    if (i + 1 < 8) return 'level0' + (i + 2) + '.html';
+    return 'final.html';
+  }
+  function updateGate() {
+    var gate = $('gate');
+    var stamped = !!prog.stamps[LV.id];
+    var done = stamped || (objPassed() && tasksPassed());
+    if (done && !stamped) {
+      prog.stamps[LV.id] = true;
+      var nextIdx = LV.id === 'FIN' ? 9 : (LV.drill ? prog.unlocked : LV.index + 2);
+      if (nextIdx > prog.unlocked) prog.unlocked = nextIdx;
+      saveProg();
+    }
+    var stamp = $('stamp');
+    var next = $('next');
+    if (done) {
+      stamp.className = 'stamp show';
+      next.style.display = 'inline-block';
+      gate.style.display = 'block';
+      if (LV.id === 'FIN' || LV.drill) {
+        next.textContent = '返回地图';
+      } else {
+        next.textContent = stamped ? '继续 · 下一关' : '通关！进入下一关';
+      }
+      next.href = nextHref();
+    } else {
+      stamp.className = 'stamp';
+      next.style.display = 'none';
+    }
+  }
+
+  /* -- 模拟关计时 -- */
+  var timerId = null;
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+  function renderTimer(left) {
+    var m = Math.floor(left / 60);
+    var s = left % 60;
+    $('timer').textContent = pad2(m) + ':' + pad2(s);
+  }
+  function lockAll() {
+    var list = document.querySelectorAll('textarea, button, input');
+    for (var i = 0; i < list.length; i++) {
+      var e = list[i];
+      if (e.id === 'revealBtn' || e.id === 'newRoundBtn') continue;
+      e.disabled = true;
+    }
+    $('timeup').style.display = 'block';
+    $('revealBtn').style.display = 'inline-block';
+    $('newRoundBtn').style.display = 'inline-block';
+  }
+  function timerState() {
+    if (LV.id === 'FIN') return prog.final;
+    if (!prog.timers[LV.id]) prog.timers[LV.id] = { started: false, left: LV.timeLimitMin * 60 };
+    return prog.timers[LV.id];
+  }
+  function newRound() {
+    var ts = timerState();
+    ts.started = false;
+    ts.left = LV.timeLimitMin * 60;
+    saveProg();
+    window.location.reload();
+  }
+  function revealWhy() {
+    var whys = document.querySelectorAll('.why');
+    for (var i = 0; i < whys.length; i++) whys[i].className = 'why show';
+  }
+  function startTimer() {
+    var ts = timerState();
+    if (ts.started && ts.left <= 0) {
+      renderTimer(0);
+      lockAll();
+      return;
+    }
+    if (!ts.started) {
+      ts.started = true;
+      ts.left = LV.timeLimitMin * 60;
+      saveProg();
+    }
+    renderTimer(ts.left);
+    timerId = setInterval(function () {
+      ts.left--;
+      if (ts.left <= 0) {
+        ts.left = 0;
+        renderTimer(0);
+        saveProg();
+        clearInterval(timerId);
+        lockAll();
+        return;
+      }
+      renderTimer(ts.left);
+      saveProg();
+    }, 1000);
+  }
+
+  /* -- 启动 -- */
+  var prog = loadProg();
+  function init() {
+    if (!storeOK) showBanner();
+    if (LV.timeLimitMin) {
+      $('timerBox').style.display = 'inline-block';
+      startTimer();
+    }
+    buildTasks();
+    restoreAnswers();
+    var saved = prog.obj[LV.id];
+    if (saved) {
+      var score = 0;
+      for (var qi = 0; qi < LV.obj.length; qi++) {
+        if (saved['q' + qi] === LV.obj[qi].a) score++;
+        $('q' + qi).className = 'q ' + (saved['q' + qi] === LV.obj[qi].a ? 'correct' : 'wrong');
+        var why = $('q' + qi).querySelector('.why');
+        if (why) why.className = 'why show';
+      }
+      $('objScore').textContent = '上次成绩：' + score + ' / ' + LV.obj.length + '（可重做）';
+    }
+    updateGate();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+  /* 内联 onclick 用的函数暴露到全局 */
+  window.submitObj = submitObj;
+  window.redoObj = redoObj;
+  window.revealWhy = revealWhy;
+  window.newRound = newRound;
+})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>客观题练习 · 图像识别新编题库（30 题）</title>
+<style>
+  :root { --ok:#137333; --okbg:#e6f4ea; --bad:#c5221f; --badbg:#fce8e6; --ink:#202124; --mut:#5f6368; --line:#dadce0; --brand:#1a56a0; --brandbg:#e8f0fe; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:"Microsoft YaHei","PingFang SC",sans-serif; color:var(--ink); background:#f6f7f9; line-height:1.65; }
+  header { background:var(--brand); color:#fff; padding:18px 20px 14px; }
+  header h1 { margin:0 0 4px; font-size:22px; }
+  header p { margin:2px 0; font-size:13px; opacity:.92; }
+  .bar-wrap { margin-top:10px; background:rgba(255,255,255,.25); border-radius:6px; height:10px; overflow:hidden; }
+  .bar { height:100%; width:0%; background:#8ab4f8; transition:width .3s; }
+  #stats { position:sticky; top:0; z-index:9; background:#fff; border-bottom:1px solid var(--line); padding:10px 20px; font-size:14px; color:var(--mut); display:flex; gap:18px; flex-wrap:wrap; align-items:center; }
+  #stats b { color:var(--ink); }
+  #stats .pct-ok { color:var(--ok); font-weight:bold; }
+  #stats .pct-bad { color:var(--bad); font-weight:bold; }
+  main { max-width:860px; margin:0 auto; padding:16px 16px 60px; }
+  .part { margin:26px 0 8px; font-size:17px; font-weight:bold; color:var(--brand); border-left:4px solid var(--brand); padding-left:10px; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:10px; padding:14px 16px; margin:12px 0; }
+  .qhead { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:6px; }
+  .qnum { font-weight:bold; color:var(--brand); }
+  .chip { font-size:12px; padding:1px 8px; border-radius:10px; background:var(--brandbg); color:var(--brand); }
+  .chip.tag { background:#f1f3f4; color:var(--mut); }
+  .stem { font-size:15px; }
+  pre.code { background:#1e1e1e; color:#d4d4d4; padding:10px 12px; border-radius:8px; overflow-x:auto; font-family:Consolas,monospace; font-size:13.5px; line-height:1.5; margin:8px 0; }
+  code { font-family:Consolas,monospace; background:#f1f3f4; padding:0 4px; border-radius:4px; font-size:13.5px; }
+  pre.code code { background:none; padding:0; color:inherit; }
+  .opts { margin-top:8px; display:grid; gap:6px; }
+  .opt { text-align:left; border:1px solid var(--line); background:#fff; border-radius:8px; padding:8px 12px; font-size:14.5px; cursor:pointer; font-family:inherit; color:var(--ink); }
+  .opt:hover:not(:disabled) { border-color:var(--brand); background:var(--brandbg); }
+  .opt:disabled { cursor:default; color:var(--mut); }
+  .opt.correct { border-color:var(--ok); background:var(--okbg); color:var(--ok); font-weight:bold; }
+  .opt.wrong { border-color:var(--bad); background:var(--badbg); color:var(--bad); font-weight:bold; }
+  .exp { display:none; margin-top:10px; border-radius:8px; padding:10px 12px; font-size:14px; }
+  .exp.ok { background:var(--okbg); border:1px solid var(--ok); }
+  .exp.bad { background:var(--badbg); border:1px solid var(--bad); }
+  .exp .verdict { font-weight:bold; }
+  .exp.ok .verdict { color:var(--ok); }
+  .exp.bad .verdict { color:var(--bad); }
+  .redo { display:none; margin-top:8px; font-size:13px; border:1px solid var(--line); background:#fff; border-radius:6px; padding:4px 10px; cursor:pointer; color:var(--mut); }
+  .redo:hover { color:var(--brand); border-color:var(--brand); }
+  .toolbar { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:26px; }
+  .toolbar button { border:1px solid var(--line); background:#fff; border-radius:8px; padding:8px 16px; font-size:14px; cursor:pointer; font-family:inherit; color:var(--ink); }
+  .toolbar button:hover { border-color:var(--brand); color:var(--brand); }
+  footer { text-align:center; color:var(--mut); font-size:12.5px; padding:18px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>客观题练习 · 图像识别新编题库</h1>
+  <p>30 道单选题 · 与往年原卷不重复 · 全部答案与代码追踪已实测（2026-11-17）</p>
+  <p>点选项即时判分并显示解析；记录保存在本机浏览器，可导出。离线可用，不联网、不上传。</p>
+  <div class="bar-wrap"><div class="bar" id="bar"></div></div>
+</header>
+<div id="stats">
+  <span>已答 <b id="s-ans">0</b>/30</span>
+  <span>正确 <b id="s-ok" class="pct-ok">0</b></span>
+  <span>错误 <b id="s-bad" class="pct-bad">0</b></span>
+  <span>正确率 <b id="s-pct">—</b></span>
+  <span style="flex:1"></span>
+  <button class="redo" id="btn-wrong" style="display:inline-block">错题重练</button>
+</div>
+<main id="main"></main>
+<div class="toolbar">
+  <button id="btn-redo-all">全部重做</button>
+  <button id="btn-export">导出记录 (.txt)</button>
+  <button id="btn-clear">清空记录</button>
+</div>
+<footer>配套《客观题新编题库.md》 · 图像识别六天冲刺材料 · 双击离线打开 · 记录键名 qbank_imgrec_v1</footer>
+
+<script>
+'use strict';
+var KEY = 'qbank_imgrec_v1';
+var PARTS = { 1: '第一部分 Python 与网格基础', 2: '第二部分 特征、规则与比赛文件', 3: '第三部分 算法思维：遍历、邻域与连通', 4: '第四部分 机器学习与计算思维情境' };
+
+var QS = [
+ {n:1, part:1, d:1, tag:'字符串下标',
+  stem:'已知一行像素 `row = "00111100001111000011110001100"`，执行 `print(row[5] + row[25])` 输出什么？',
+  opts:['`11`','`00`','`10`','报错'], ans:'A',
+  exp:'下标 5 和 25 处都是 `\'1\'`，`+` 把两个字符拼成 `"11"`。B 两个位置都不是 0；C 两处值不同才可能是 10；D 两下标都在 0–28 范围内，不会报错。'},
+ {n:2, part:1, d:1, tag:'整除取余',
+  stem:'100 列的网格中，一维下标 `k = 237`（从 0 开始数）的像素在第几行第几列？',
+  opts:['第 2 行第 37 列','第 3 行第 37 列','第 2 行第 63 列','第 237 行第 0 列'], ans:'A',
+  exp:'`237 // 100 = 2`、`237 % 100 = 37`。B 把整除算成进位；C 用减法算列但忘了列号从 0 数；D 混淆了“下标”和“行列”。'},
+ {n:3, part:1, d:2, tag:'边界 off-by-one',
+  stem:'小明想统计一行里 `\'0\'` 的个数，结果总比正确答案少 1。他的循环写的是 `for i in range(len(row) - 1):`。最可能的原因是？',
+  opts:['`range(len(row) - 1)` 漏掉了最后一个字符','计数器 `n` 的初值应该是 1','必须用 `while` 循环才能数全','`if` 的缩进多了一层'], ans:'A',
+  exp:'`range(len(row) - 1)` 产生的下标到 `len(row)-2` 为止，最后一个字符永远没被检查——最后一个字符恰好是 `\'0\'` 时就会少 1。B 计数器初值应为 0，设 1 是另一类错误；C 与数全与否无关；D 缩进错会语法报错或每次都加，不是“恰好少 1”。'},
+ {n:4, part:1, d:1, tag:'循环计数',
+  stem:'圆形的前 10 行行宽存在列表 `widths` 中。执行这段计数循环后 `m` 是多少？',
+  code:'widths = [1, 17, 23, 29, 33, 37, 39, 43, 45, 47]\n\nm = 0\nfor w in widths:\n    if w > 40:\n        m += 1\nprint(m)',
+  opts:['4','5','3','6'], ans:'C',
+  exp:'大于 40 的只有 43、45、47 三个。D 是数成“大于 37”的粗心项；A、B 是把别的阈值混了进来。'},
+ {n:5, part:1, d:2, tag:'错误类型',
+  stem:'某网格文件有 100 行（行号 0–99）。运行下面的代码会报什么错？',
+  code:'grid = load("图形1.txt")\nprint(grid[100][0])',
+  opts:['IndexError','NameError','SyntaxError','正常输出'], ans:'A',
+  exp:'100 行的合法下标是 0–99，`grid[100]` 越界。B 是变量没定义；C 是写法不合法（能运行说明语法没错）；D 越界不可能正常。'},
+ {n:6, part:1, d:2, tag:'文件读取副作用',
+  stem:'数据文件每行实际 100 个字符。小芳用 `f.readlines()` 读入后**没有 strip()**，直接 `len(lines[0])`，结果是？',
+  opts:['100','101','99','0'], ans:'B',
+  exp:'`readlines()` 保留行尾换行符 `\\n`，100 个字符 + 1 个换行 = 101。A 是 strip 之后的结果；C、D 都不符合 readlines 的行为。'},
+ {n:7, part:1, d:1, tag:'count 计算',
+  stem:'`print("0011100110".count("1") + "1010".count("0"))` 输出？',
+  opts:['6','7','5','报错'], ans:'B',
+  exp:'第一个串有 5 个 `\'1\'`，第二个串有 2 个 `\'0\'`，5 + 2 = 7。A 漏数第二个串的 0；C 漏数第一个串；两个串都是合法字符串，不会报错。'},
+ {n:8, part:1, d:2, tag:'条件表达',
+  stem:'`widths` 是行宽列表。想判断“行宽**一直在变宽**”（严格一行比一行宽），下面哪种写法是对的？',
+  opts:['`widths[0] < widths[-1]`（只看首尾）','`widths == sorted(widths)`（排序后不变）','逐对检查每一对相邻行，都满足 `widths[i] < widths[i + 1]`','`max(widths) == widths[0]`（最大值在最前面）'], ans:'C',
+  exp:'“一直变宽”是对每一对相邻行的要求，必须逐对检查。A 有反例 `[1, 50, 2]`：首小于尾但中途变小；B 有反例 `[1, 1, 2]`：不是严格变宽但排序后不变（它只保证“不减”，把“持平”也算进来）；D 检查的是“最大值在开头”，方向都反了。'},
+ {n:9, part:2, d:1, tag:'数据格式',
+  stem:'比赛数据文件的内容只有字符 `\'0\'` 和 `\'1\'`，没有空格分隔。正确的理解是？',
+  opts:['这是二进制文件，必须用 `"rb"` 二进制模式打开','这是纯文本文件，每个字符代表一个像素，按行读成字符串即可','必须先导入 Excel 才能处理','每行末尾没有换行符，不需要 strip'], ans:'B',
+  exp:'考核数据是 ASCII 文本，普通文本模式按行读就行。A 混淆了“字符 0/1”和“字节 0/1”；C 完全不需要；D 行末有换行符，必须 strip（见第 6 题）。'},
+ {n:10, part:2, d:1, tag:'特征计算',
+  stem:'某图形外接框 70 行 × 79 列，面积（1 的总数）2770。填充率约是？',
+  opts:['0.501','0.277','2.001','79 ÷ 70'], ans:'A',
+  exp:'填充率 = 面积 ÷ 外接框面积 = 2770 ÷ (70 × 79) ≈ 0.501（真题图形2 实测值）。B 拿面积直接除以 10000；C 是框面积÷面积，方向反了且大于 1 不可能是填充率；D 是宽高比，不是填充率。'},
+ {n:11, part:2, d:3, tag:'规则顺序扰动',
+  stem:'把三条规则改成“先判圆形（行宽变小过），再判五边形（顶宽 ≥ 10），最后三角形”。对真题三件套的判定结果是？（该情形已在真题上实测）',
+  opts:['全部不变','正五边形被误判成圆形，圆形和三角形不变','圆形被误判成五边形','三个全错'], ans:'B',
+  exp:'五边形的行宽“增减交错”，存在变小段，先判圆就先命中圆形；圆形本来就命中圆形（结果没变）；三角形只增不减，圆规则不触发、顶宽 1 过不了五边形规则，仍判三角形。A 没意识到顺序有影响；C 方向说反；D 只有五边形出错。'},
+ {n:12, part:2, d:2, tag:'输出模板找茬',
+  stem:'赛场上程序输出了一行：`图形1.txt 识别为: 圆形`。对照考核要求的模板，问题出在哪？',
+  opts:['类别字写错了','文件名后面少了一个空格（要求两个空格）','冒号应该用中文冒号','“圆形”两个字写重了'], ans:'B',
+  exp:'考核要求模板是 `图形1.txt  识别为: 圆形`——文件名后**两个空格**、**英文**冒号。A 类别正确；C 模板明确是英文冒号；D 无中生有。'},
+ {n:13, part:2, d:2, tag:'考场规则',
+  stem:'依据考核要求，下面哪件事是**允许**的？',
+  opts:['提前把写好的程序存进 U 盘带进考场','把代码保存为 队伍编号_姓名1_姓名2.py，用空白 U 盘拷给评委','流程图提前画好带进去','带手机进考场但不联网'], ans:'B',
+  exp:'这是考核要求原文规定。A 违反“代码不能提前保存”；C 流程图必须现场在评委草稿纸上画；D 通讯工具禁带，与联不联网无关。'},
+ {n:14, part:2, d:3, tag:'剖面认形',
+  stem:'某图形的行宽序列：首行宽 5，先持续变宽、中间有一段 61 的最宽平台、再对称变窄，末行宽 5。它最可能是？',
+  opts:['等腰三角形','圆形','正六边形','等腰梯形'], ans:'C',
+  exp:'这是高中组六边形真题的实测剖面（顶 5 → 最宽 61 → 底 5）：平顶说明顶上是一条短平边，长平台说明中部有竖直边，上下对称增减说明上下都有斜边。A 三角形不会变窄；B 圆的顶部行宽从 1 开始且变化平滑，没有长平台；D 梯形宽度只朝一个方向变。'},
+ {n:15, part:2, d:3, tag:'角数认形',
+  stem:'用轮廓转角计数法（教程第 17 章），某图形数出 **4** 个转角。它最可能是？',
+  opts:['圆形','等腰三角形','等腰梯形','正六边形'], ans:'C',
+  exp:'角数 ≈ 边数：圆 0、三角 3、四边 4、六边 6；真题里数出 4 角的正是高中组等腰梯形。A 圆没有转角；B 差一个角；D 多两个角。'},
+ {n:16, part:2, d:2, tag:'验证边界',
+  stem:'我们的规则在 36 个样例上全部判对。下面哪种图形**不在**验证范围内？',
+  opts:['平移 10 像素的正五边形','缩小到 0.8 倍的圆形','旋转 45° 的等腰三角形','原始大小的等腰三角形'], ans:'C',
+  exp:'36 样例 = 3 原图 + 6 个平移（±10）+ 5 个缩放（0.7–1.2），只覆盖正向摆放的实心图形；旋转从未测过。A、B、D 都在范围内。'},
+ {n:17, part:3, d:3, tag:'邻域语义',
+  stem:'程序判断图形是否“连成一片”时只走上下左右（4 邻域）。如果图形中有两块像素**仅通过对角线**接触，会怎样？',
+  opts:['程序把它们当成连在一起','程序认为它们不连通，而人的直觉是连着的','程序直接报错','程序会自动改用对角方向'], ans:'B',
+  exp:'4 邻域不包含对角方向，对角接触在程序眼里是断开的。A 方向说反；C 邻域判断不涉及越界，不会报错；D 程序不会自己改定义，要人改代码（换成 8 邻域）。'},
+ {n:18, part:3, d:2, tag:'越界检查细节',
+  stem:'网格共 `w` 列（合法列号 0 到 w−1）。访问右边邻居 `(r, c+1)` 前，正确的检查是？',
+  opts:['不用检查，直接 `grid[r][c+1]`','`if c + 1 < w:`','`if c + 1 <= w:`','`if r < w:`'], ans:'B',
+  exp:'合法列号最大是 `w − 1`，所以要保证 `c + 1 < w`。A 在最右列必越界崩溃；C 的 `<=` 恰好放行了越界的 `c = w − 1`；D 拿行变量去比列数，检查对象错了。'},
+ {n:19, part:3, d:2, tag:'推导式读码',
+  stem:'`rows = [r for r in range(len(g)) if "1" in g[r]]`。若 `g` 有 100 行，其中第 14 行到第 84 行有 1（其余行全是 0），`rows` 的内容是？',
+  opts:['100 个数','`[14, 84]`','14 到 84 的所有整数（含两端）','`[85, 14]`'], ans:'C',
+  exp:'推导式按行号顺序把每个满足条件的行号都放进列表，得到 `[14, 15, …, 84]`。A 那是 `g` 本身的行数；B 只留首尾是错误理解；D 顺序颠倒且多含 85。'},
+ {n:20, part:3, d:1, tag:'二维索引',
+  stem:'`grid = ["011", "110", "101"]`，`print(grid[2][0] + grid[0][2])` 输出？',
+  opts:['`11`','`00`','`1`','报错'], ans:'A',
+  exp:'`grid[2][0]` 是第 2 行第 0 列的 `\'1\'`，`grid[0][2]` 是第 0 行第 2 列的 `\'1\'`，拼接得 `"11"`。B 两个位置都不是 0；C 漏算一处；下标都合法不会报错。'},
+ {n:21, part:3, d:1, tag:'逐行计数',
+  stem:'下面程序输出什么？',
+  code:'g = ["110", "100", "001"]\n\ntotal = 0\nfor row in g:\n    total += row.count("1")\nprint(total)',
+  opts:['5','6','4','3'], ans:'C',
+  exp:'三行分别有 2、1、1 个 `\'1\'`，合计 4。A、B 是数错某一行或把 0 也数进去；D 只数了一行。'},
+ {n:22, part:3, d:2, tag:'记录变量',
+  stem:'想找最宽一行的**行号**：',
+  code:'widths = [3, 9, 5]\n\nbest = 0\nfor i in range(len(widths)):\n    if widths[i] > widths[best]:\n        best = i\nprint(best)',
+  opts:['0','1','2','9'], ans:'B',
+  exp:'`best` 存的是**下标**：9 在下标 1 处。D 是最大值的数值不是下标；C 把最大值的值当成了下标；A 是初值没被更新的情形。'},
+ {n:23, part:4, d:2, tag:'规则系统答辩',
+  stem:'评委问：“你们这个程序算人工智能吗？”最准确的回答是？',
+  opts:['不算，人工智能必须会自我学习','算，这是规则系统：人总结特征规律写成规则，机器执行','算，因为用了 Python','不算，只有深度学习才算人工智能'], ans:'B',
+  exp:'规则系统是人工智能最早的方法之一，不需要学习。A、D 把人工智能窄化成机器学习/深度学习；C 语言和是不是人工智能毫无关系。'},
+ {n:24, part:4, d:2, tag:'训练与测试',
+  stem:'规则参考 3 个原图设计出来，又在 33 个平移缩放变体上考核。这 33 个变体相当于机器学习流程里的什么角色？',
+  opts:['训练集','测试集','标签','特征'], ans:'B',
+  exp:'变体没参与规则设计，专门用来考核规则——这正是测试集的角色；3 个原图才类似训练集。C 标签是“正确答案”本身；D 特征是从数据里算出的量。'},
+ {n:25, part:4, d:3, tag:'KNN 直观',
+  stem:'KNN 的思路是“看特征最接近的 K 个已知样本，少数服从多数”。把我们的识别任务套进 KNN，“邻居”最合理的理解是？',
+  opts:['网格里上下左右相邻的像素','行宽序列等特征最接近的已知图形','同一队伍的队友','距离最近的文件夹'], ans:'B',
+  exp:'KNN 的“近”是在**特征空间**里算距离，比较的是整幅图的特征。A 是 flood-fill 的像素邻接，最容易混淆但完全不是一回事；C、D 是生活化干扰项。'},
+ {n:26, part:4, d:2, tag:'过拟合情境',
+  stem:'如果把三角形规则改成“行宽序列必须和图形2.txt **一模一样**才判三角形”，最大的风险是？',
+  opts:['程序运行变慢','过拟合：只会认这三个原图，稍微平移或缩放一点就全错','程序文件变大','没有风险，判得更准了'], ans:'B',
+  exp:'逐字比对等于把“记住答案”当成了“学会规律”，是过拟合的典型样子。A、C 就算发生也不是主要风险；D 恰恰说反——泛化能力归零。'},
+ {n:27, part:4, d:1, tag:'准确率计算',
+  stem:'规则在 36 个样例中判对 35 个，准确率约是？',
+  opts:['97.2%','35%','71%','100%'], ans:'A',
+  exp:'35 ÷ 36 ≈ 0.972。B 拿判对个数当百分比；C ≈ 26/36，数字张冠李戴；D 忽略了那 1 个判错的。'},
+ {n:28, part:4, d:2, tag:'无监督情境',
+  stem:'下面哪个任务属于无监督学习？',
+  opts:['用 300 张已标注“圆/三角”的图片训练分类器','把一批没有标签的图形按“行宽曲线相似度”自动分成三堆','用 if 规则判断是不是三角形','用测试集计算规则的准确率'], ans:'B',
+  exp:'无标签、自动分组 = 聚类 = 无监督学习。A 有标签，是监督学习；C 是规则系统，不学习；D 是评估环节，与学习范式无关。'},
+ {n:29, part:4, d:2, tag:'抽象',
+  stem:'把一幅 100×71 像素的图形总结成三个数——“首行宽 43、末行宽 3、行宽增减交错”。这个过程主要体现了计算思维中的？',
+  opts:['抽象：抓住关键特征、丢掉细节','搜索','排序','加密'], ans:'A',
+  exp:'七千多个像素压缩成三个数，保留对分类有用的信息、丢掉其余——正是抽象。B 搜索是在可能方案里找答案；C 排序是重排数据；D 加密是隐藏信息，都与“总结特征”无关。'},
+ {n:30, part:4, d:3, tag:'规则依据答辩',
+  stem:'评委追问：“为什么圆形的条件写成‘行宽变小过’，而不是‘行宽先增后减’？”最好的回答是？',
+  opts:['没有理由，当时随便定的','圆的行宽一定存在变小的一段，用这个必要特征代码最简单、也最容易解释；“先增后减”条件更复杂，还容易把边界情形漏掉或错杀','因为 Python 写不出“先增后减”','因为“先增后减”是三角形的特征'], ans:'B',
+  exp:'好规则 = 必要特征 + 简单实现 + 能解释，B 三条全占。A 的态度在答辩里直接丢分；C 错，教程第 4 章的记录变量就能写出来；D 错，三角形是“只增不减”，恰好相反。'}
+];
+
+var LETTERS = ['A', 'B', 'C', 'D'];
+function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+function fmt(s) { return esc(s).replace(/`([^`]+)`/g, '<code>$1</code>'); }
+function load() {
+  try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { return {}; }
+}
+function save(st) { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} }
+var state = load();
+
+function render() {
+  var main = document.getElementById('main');
+  var html = '';
+  var lastPart = 0;
+  QS.forEach(function (q) {
+    if (q.part !== lastPart) {
+      lastPart = q.part;
+      html += '<div class="part">' + PARTS[q.part] + '</div>';
+    }
+    var dStars = '★★★'.slice(0, q.d);
+    html += '<div class="card" id="q' + q.n + '">';
+    html += '<div class="qhead"><span class="qnum">第 ' + q.n + ' 题</span>';
+    html += '<span class="chip">' + dStars + '</span><span class="chip tag">' + esc(q.tag) + '</span></div>';
+    html += '<div class="stem">' + fmt(q.stem) + '</div>';
+    if (q.code) html += '<pre class="code">' + esc(q.code) + '</pre>';
+    html += '<div class="opts">';
+    q.opts.forEach(function (o, i) {
+      html += '<button class="opt" id="q' + q.n + 'o' + i + '">' + LETTERS[i] + '. ' + fmt(o) + '</button>';
+    });
+    html += '</div>';
+    html += '<div class="exp" id="q' + q.n + 'exp"></div>';
+    html += '<button class="redo" id="q' + q.n + 'redo">↺ 重做本题</button>';
+    html += '</div>';
+  });
+  main.innerHTML = html;
+
+  QS.forEach(function (q) {
+    q.opts.forEach(function (_, i) {
+      document.getElementById('q' + q.n + 'o' + i).addEventListener('click', function () { answer(q, i); });
+    });
+    document.getElementById('q' + q.n + 'redo').addEventListener('click', function () {
+      delete state[q.n]; save(state); paint(q);
+      refreshStats();
+    });
+    paint(q);
+  });
+  refreshStats();
+}
+
+function paint(q) {
+  var picked = state[q.n];
+  var answered = (typeof picked === 'number');
+  var correctIdx = LETTERS.indexOf(q.ans);
+  q.opts.forEach(function (_, i) {
+    var btn = document.getElementById('q' + q.n + 'o' + i);
+    btn.disabled = answered;
+    btn.classList.remove('correct', 'wrong');
+    if (answered) {
+      if (i === correctIdx) btn.classList.add('correct');
+      if (i === picked && picked !== correctIdx) btn.classList.add('wrong');
+    }
+  });
+  var exp = document.getElementById('q' + q.n + 'exp');
+  var redo = document.getElementById('q' + q.n + 'redo');
+  if (answered) {
+    var good = picked === correctIdx;
+    exp.className = 'exp ' + (good ? 'ok' : 'bad');
+    exp.innerHTML = '<span class="verdict">' + (good ? '✓ 回答正确' : '✗ 回答错误，正确答案是 ' + q.ans) + '</span><br>' + fmt(q.exp);
+    exp.style.display = 'block';
+    redo.style.display = 'inline-block';
+  } else {
+    exp.className = 'exp';
+    exp.style.display = 'none';
+    exp.innerHTML = '';
+    redo.style.display = 'none';
+  }
+}
+
+function answer(q, i) {
+  if (typeof state[q.n] === 'number') return;
+  state[q.n] = i;
+  save(state);
+  paint(q);
+  refreshStats();
+}
+
+function refreshStats() {
+  var ans = 0, ok = 0;
+  QS.forEach(function (q) {
+    var p = state[q.n];
+    if (typeof p === 'number') {
+      ans += 1;
+      if (p === LETTERS.indexOf(q.ans)) ok += 1;
+    }
+  });
+  document.getElementById('s-ans').textContent = ans;
+  document.getElementById('s-ok').textContent = ok;
+  document.getElementById('s-bad').textContent = ans - ok;
+  document.getElementById('s-pct').textContent = ans ? Math.round(ok / ans * 100) + '%' : '—';
+  document.getElementById('s-pct').className = ans ? (ok / ans >= 0.8 ? 'pct-ok' : 'pct-bad') : '';
+  document.getElementById('bar').style.width = (ans / QS.length * 100) + '%';
+  document.getElementById('btn-wrong').style.display = (ans - ok > 0) ? 'inline-block' : 'none';
+}
+
+document.getElementById('btn-wrong').addEventListener('click', function () {
+  QS.forEach(function (q) {
+    var p = state[q.n];
+    if (typeof p === 'number' && p !== LETTERS.indexOf(q.ans)) delete state[q.n];
+  });
+  save(state);
+  QS.forEach(paint);
+  refreshStats();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+document.getElementById('btn-redo-all').addEventListener('click', function () {
+  if (!confirm('确定全部重做？当前作答记录会被清空。')) return;
+  state = {};
+  save(state);
+  QS.forEach(paint);
+  refreshStats();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+document.getElementById('btn-clear').addEventListener('click', function () {
+  if (!confirm('确定清空本机保存的记录？')) return;
+  state = {};
+  save(state);
+  QS.forEach(paint);
+  refreshStats();
+});
+document.getElementById('btn-export').addEventListener('click', function () {
+  var lines = [];
+  lines.push('图像识别客观题练习 · 记录导出');
+  lines.push('日期：' + new Date().toLocaleString());
+  var ans = 0, ok = 0;
+  QS.forEach(function (q) {
+    var p = state[q.n];
+    var done = (typeof p === 'number');
+    if (done) { ans += 1; if (p === LETTERS.indexOf(q.ans)) ok += 1; }
+    lines.push('第' + q.n + '题 [' + q.tag + '] ' + (done ? (p === LETTERS.indexOf(q.ans) ? '正确' : '错误（选' + LETTERS[p] + '，应选' + q.ans + '）') : '未作答'));
+  });
+  lines.push('合计：已答 ' + ans + '/30，正确 ' + ok + '，正确率 ' + (ans ? Math.round(ok / ans * 100) + '%' : '—'));
+  var blob = new Blob([lines.join('\r\n')], { type: 'text/plain;charset=utf-8' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = '客观题练习记录.txt';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+});
+
+render();
+</script>
+</body>
+</html>

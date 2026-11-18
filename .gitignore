@@ -1,0 +1,30 @@
+# Temporary directory
+.tmp/
+**/.tmp/
+
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Office temporary lock files
+~$*.docx
+~$*.doc
+~$*.pptx
+~$*.ppt
+~$*.xlsx
+~$*.xls
+
+# Backup & logs
+*.bak
+*.tmp
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# IDE & editors
+.vscode/
+.idea/
