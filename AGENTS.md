@@ -35,6 +35,24 @@ python "02_大数分解/教师工具/生成练习页.py" --verify
 python "03_图像识别/教师工具/生成全课程网页.py"
 ```
 
+## Repository Completeness (Full Clone Guarantee)
+
+The repo must be fully usable from a fresh `git clone` on any machine. To guarantee that:
+
+- **Everything is version-controlled**: all deliverables — generated HTML, `图形N.txt` data files, `.doc`/`.docx` source materials, Python generators — must be tracked in git. `.gitignore` may only exclude caches/temp/log/lock/IDE files, never deliverables.
+- **Generators and their outputs are committed together**: after re-running any 生成*.py script, commit both the script changes and the regenerated HTML/data. Never leave generated files untracked ("regenerate later" is not acceptable — a fresh clone must work offline with zero build steps).
+- **Before finishing any task**: run `git status --short`. There must be no untracked deliverable files and no uncommitted changes to tracked ones; commit and push them. If a file exists only on one machine, it does not exist.
+- **Clone-completeness check** (use when a clone seems incomplete):
+
+```bash
+git fetch --all && git status          # must be "up to date" + clean
+git diff HEAD --stat                   # must be empty
+git ls-files | wc -l                   # compare with other machines if in doubt
+git fsck --no-progress                 # verify object store integrity
+```
+
+If all checks pass but files are still missing, the gap is on the remote itself — the files were never committed/pushed from the machine that has them; no amount of re-cloning fixes that.
+
 ## Conventions & Guardrails
 
 - **Offline single-file HTML**: all student-facing web pages must embed CSS/JS with zero external requests (`http://`, `https://`, `<script src=`, `<link `), and keep JS compatible with ES2017 (no `?.`, `??`, `.flat()`, `Object.fromEntries`).
