@@ -2144,6 +2144,10 @@ def generate():
     with io.open(OUT_ALL, "w", encoding="utf-8", newline="\n") as f:
         f.write(render_all_in_one())
     made.append(os.path.relpath(OUT_ALL, REPO))
+    import runpy
+    daily = runpy.run_path(os.path.join(REPO, "_工程文档", "生成每日训练.py"))
+    daily["write_track"](0)
+    daily["link_track_portal"](0)
     for m in made:
         print("生成 " + m)
     print("共生成 %d 个文件" % len(made))

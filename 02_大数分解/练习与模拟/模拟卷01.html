@@ -1,493 +1,72 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>第 M01 讲练习 · 大数分解备赛</title>
+<!doctype html>
+<html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>大数分解 · 第 04 天 · 核心任务模拟一</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: "Microsoft YaHei", "PingFang SC", sans-serif; background: #eef2f7; color: #24324a;
-       font-size: 16px; line-height: 1.65; }
-main { max-width: 860px; margin: 0 auto; padding: 16px 14px 48px; }
-header.site { background: #24466e; color: #fff; padding: 18px 16px 14px; }
-header.site h1 { font-size: 22px; }
-header.site .sub { font-size: 13px; opacity: .85; margin-top: 2px; }
-.banner { background: #b5453c; color: #fff; text-align: center; padding: 6px; font-size: 14px; display: none; }
-.card { background: #fff; border-radius: 10px; padding: 16px 18px; margin-top: 16px;
-        box-shadow: 0 1px 3px rgba(30, 50, 90, .12); }
-.card > h2 { font-size: 18px; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 2px solid #dce4ef; }
-.intro { font-size: 15px; color: #51607a; }
-.qcard { border: 1px solid #e2e8f2; border-radius: 8px; padding: 10px 12px; margin-top: 10px; }
-.qcard.right { border-color: #2e8b57; background: #f2fbf6; }
-.qcard.wrong { border-color: #c0392b; background: #fdf5f4; }
-.qnum { font-size: 13px; color: #7a879e; }
-.qtext { margin: 2px 0 6px; }
-label.opt { display: block; padding: 3px 6px; border-radius: 6px; cursor: pointer; }
-label.opt:hover { background: #f0f4fa; }
-.blank { font-size: 16px; padding: 6px 8px; border: 1px solid #c3cdde; border-radius: 6px; width: 100%;
-         font-family: Consolas, monospace; }
-.why { display: none; margin-top: 8px; padding: 8px 10px; background: #f4f7fc; border-radius: 6px;
-       font-size: 14px; color: #3b4a63; }
-.row { display: flex; align-items: center; margin-top: 12px; }
-.row > * + * { margin-left: 10px; }
-button { font-family: inherit; font-size: 15px; padding: 7px 14px; border: 1px solid #9db2cd;
-         border-radius: 7px; background: #f7f9fc; color: #24324a; cursor: pointer; }
-button:hover { background: #e9eff8; }
-button.primary { background: #24466e; border-color: #24466e; color: #fff; }
-button.primary:hover { background: #2d5685; }
-button.hint { font-size: 13px; padding: 4px 10px; }
-button:disabled { opacity: .5; cursor: default; }
-#objScore { font-size: 16px; font-weight: bold; color: #24466e; }
-.task { border: 1px solid #e2e8f2; border-radius: 8px; padding: 12px 14px; margin-top: 12px; }
-.task-head { display: flex; align-items: center; }
-.task-head > * + * { margin-left: 8px; }
-.task-head .tname { font-size: 16px; font-weight: bold; }
-.badge { font-size: 12px; padding: 1px 8px; border-radius: 9px; background: #e3eaf4; color: #51607a; }
-.badge.done { background: #2e8b57; color: #fff; }
-.badge.opt { background: #f0e6d2; color: #8a6d1a; }
-.tdesc { margin: 6px 0; }
-.meta { display: flex; flex-wrap: wrap; margin: 4px 0; }
-.meta > * + * { margin-left: 18px; }
-.meta .k { color: #7a879e; font-size: 14px; }
-pre.io { font-family: Consolas, monospace; font-size: 14px; background: #f4f7fc; padding: 6px 10px;
-         border-radius: 6px; white-space: pre-wrap; }
-textarea { width: 100%; min-height: 120px; font-family: Consolas, monospace; font-size: 14px;
-           padding: 8px; border: 1px solid #c3cdde; border-radius: 6px; margin-top: 6px; resize: vertical; }
-textarea.paste { min-height: 72px; }
-.hintbox { display: none; margin-top: 8px; padding: 8px 10px; background: #fff9ec; border-radius: 6px;
-           font-size: 14px; }
-.hintbox p { margin-top: 4px; }
-.msg { margin-top: 8px; font-size: 14px; white-space: pre-wrap; }
-.msg.ok { color: #2e8b57; font-weight: bold; }
-.msg.bad { color: #c0392b; }
-.msg.warn { color: #8a6d1a; }
-.done-stamp { display: none; margin-top: 14px; text-align: center; font-size: 20px; font-weight: bold;
-              color: #2e8b57; border: 2px dashed #2e8b57; border-radius: 10px; padding: 10px; }
-.timer-bar { display: none; margin-top: 8px; font-size: 15px; }
-.timer-digits { font-family: Consolas, monospace; font-size: 20px; font-weight: bold; background: rgba(255,255,255,.18);
-                padding: 2px 10px; border-radius: 6px; margin: 0 8px; }
-.timer-btn { font-size: 13px; padding: 3px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,.45);
-             background: rgba(255,255,255,.15); color: #fff; cursor: pointer; margin-left: 6px; }
-.timer-btn:hover { background: rgba(255,255,255,.28); }
-footer.page { margin-top: 20px; text-align: center; color: #7a879e; font-size: 13px; }
+body{margin:0;background:#f1f5f9;color:#18283d;font:16px/1.65 system-ui,sans-serif}
+main{max-width:54rem;margin:2rem auto;background:#fff;padding:clamp(1rem,4vw,2.5rem)}
+h1,h2{line-height:1.3}h2{margin-top:2rem}textarea,select{box-sizing:border-box;width:100%;font:inherit;padding:.5rem}
+label{display:block;margin:.8rem 0}button,a[download]{display:inline-block;background:#174f99;color:white;
+border:0;border-radius:.3rem;padding:.45rem .8rem;margin:.2rem;font:inherit;text-decoration:none;cursor:pointer}
+button:disabled{opacity:.55}#dailyClock{font-variant-numeric:tabular-nums}
 </style>
-</head>
-<body>
-<div id="banner" class="banner">进度无法保存，本页功能仍可用</div>
-<header class="site">
-  <div style="font-size:13px;opacity:.88;margin-bottom:4px;"><a href="../index.html" style="color:#fff;text-decoration:none;">← 返回大数分解主页</a></div>
-  <h1>大数分解 60 分钟全真模拟卷一</h1>
-  <div class="sub">大数分解备赛 · 限时 60 分钟模拟（记录只保存在本机浏览器）</div>
-  <div class="timer-bar" id="timerBar">
-    <span>剩余时间</span><span class="timer-digits" id="timerDigits">60:00</span>
-    <button class="timer-btn" id="timerToggleBtn">暂停</button>
-    <button class="timer-btn" id="timerResetBtn">重新计时</button>
-  </div>
-</header>
 <main>
-  <div class="card">
-    <h2>本页导引</h2>
-    <div class="intro" id="intro"></div>
-    <div class="done-stamp" id="doneStamp">&#9733; 本页全部完成</div>
-  </div>
-  <div class="card">
-    <h2 id="objHeading">客观题</h2>
-    <div id="objHost"></div>
-    <div class="row">
-      <button id="submitObjBtn" class="primary">提交判分</button>
-      <span id="objScore"></span>
-    </div>
-  </div>
-  <div class="card">
-    <h2>程序任务（在 IDLE 里写代码，运行后粘贴输出核对）</h2>
-    <div id="taskHost"></div>
-  </div>
-  <div class="card">
-    <h2>记录</h2>
-    <div class="row">
-      <button id="exportBtn">导出学习记录 .txt</button>
-      <button id="resetBtn">清空本页记录</button>
-    </div>
-  </div>
-  <footer class="page">本页由 工具/生成练习页.py 生成，请勿手改 · 数据不上传，只存本机</footer>
-</main>
-<script id="pageData" type="application/json">{"nn": "M01", "title": "大数分解 60 分钟全真模拟卷一", "intro": "限时 60 分钟，覆盖因数分解、效率对比、埃氏筛应用与报告规范。建议分配：客观题 15 分钟 + 编程三题 40 分钟 + 流程与自查 5 分钟。", "obj": [{"kind": "single", "q": "数字 1 属于哪一类？", "opts": ["质数", "既不是质数也不是合数", "合数", "最小偶质数"], "a": 1, "why": "质数要求「除了 1 和它本身以外没有别的因数」，且必须大于 1；1 只有一个因数，既不是质数也不是合数。埃氏筛也要把 flags[0] 和 flags[1] 设为 False。"}, {"kind": "single", "q": "用短除试除法分解质数 n = 29 时，外层 while i * i <= m: 循环结束时，m 的值是？", "opts": ["1", "0", "5", "29"], "a": 3, "why": "29 没有 2 到 5 之间的任何因数，所以内层循环一次都没执行，m 一直保持 29。正因如此，循环外必须写 if m > 1: 把剩下的质数 29 收进结果里。"}, {"kind": "single", "q": "已知 84 = 2 × 2 × 3 × 7，84 的全部因数（含 1 和 84）共有几个？", "opts": ["12", "6", "8", "24"], "a": 0, "why": "按因数个数定理：84 = 2² × 3¹ × 7¹，指数加 1 连乘得 (2+1) × (1+1) × (1+1) = 3 × 2 × 2 = 12 个。"}, {"kind": "single", "q": "在短除法外层循环中，误把 while i * i <= m: 写成了 while i * i < m:（少了一个等号），输入哪个数一定会出错？", "opts": ["12", "30", "49", "17"], "a": 2, "why": "49 = 7 × 7。i = 7 时正好 i * i == 49，写成 < 会提前停在 i = 6，把合数 49 原封不动当成质因数放进结果。12、30 在 i = 2、3 时已除小，17 本身是质数。"}, {"kind": "single", "q": "检验一个约 10^10 大小的质数，「从 2 试到 √n」大约需要试除多少次？", "opts": ["50 次左右", "10^5 次左右", "10^8 次左右", "10^10 次左右"], "a": 1, "why": "√(10^10) = 10^5 = 十万次。如果从 2 试到 n 则需要 10^10 次，两者相差十万倍。"}, {"kind": "single", "q": "用 6k±1 试除法检查 n = 35 是否质数，特判完 2 和 3 后，第一轮循环检查的两个除数 i 和 i + 2 分别是？", "opts": ["1 和 3", "3 和 5", "7 和 9", "5 和 7"], "a": 3, "why": "6k±1 试除从 i = 5 起步，每轮检查 i 和 i + 2（也就是 5 和 7），下一轮 i 加 6 检查 11 和 13。检查 35 时第一轮遇到 5 就发现 35 % 5 == 0 停下。"}, {"kind": "single", "q": "用埃氏筛求 100 以内的全部质数，外层循环变量 p 最大只需检查到多少？", "opts": ["10", "50", "99", "100"], "a": 0, "why": "外层条件是 p * p <= 100，即 p <= 10。任何不超过 100 的合数，必然有一个不超过 10 的质因子，所以 p 超过 10 后不会再划掉新数。"}, {"kind": "single", "q": "在比赛 PPT 六页报告框架中，「控制变量说明 + 实验记录表 + 算法耗时对比图」最适合放在哪一部分？", "opts": ["封面与标题页", "问题理解页", "实验设计与数据对比页", "创新与反思页"], "a": 2, "why": "控制变量属于实验设计，记录表与柱状/折线图属于数据与对比，是支撑「算法效率探究 20 分」的核心证据。"}, {"kind": "blank", "q": "埃氏筛划掉质数 p 的倍数时，为了跳过已被更小质数划掉的数，内层起始位置 multiple 应设为 ____（用字母 p 表示，不要空格）", "a": "p*p", "accept": ["p*p", "p**2"], "why": "2×p、3×p 等更小的倍数在筛 2、3 时已经划过，直接从 p * p 开始划既省时间又不遗漏。"}, {"kind": "blank", "q": "用短除法分解 n = 36，若误把内层 while m % i == 0: 写成了 if m % i == 0:（只除一次不反复除），最终分解结果里会混入一个合数因子 ____（填数字）", "a": "6", "accept": ["6"], "why": "手算追踪：i=2 除一次得 m=18，i=3 除一次得 m=6，接着 i=4 时 4×4>6 循环结束，剩下的 m=6 被当成质数放进结果（变成 2 × 3 × 6）。"}, {"kind": "blank", "q": "若一台电脑每秒可完成 5×10^7 次简单取余运算，估算执行 1.5×10^9 次取余大约需要 ____ 秒（填数字）", "a": "30", "accept": ["30"], "why": "总次数 ÷ 每秒次数 = (1.5 × 10^9) ÷ (5 × 10^7) = 30 秒。"}, {"kind": "blank", "q": "手绘比赛流程图时，表示「条件判断（如 n % i == 0?）」的图框形状名称是 ____（填两字）", "a": "菱形", "accept": ["菱形"], "why": "四种标准图框：起止用圆角矩形、输入输出用平行四边形、处理计算用矩形、条件判断用菱形（出口需标「是」「否」）。"}], "tasks": [{"id": "T1", "title": "数字分解与成分统计", "input": "485100", "desc": "读入整数 n（2 ≤ n ≤ 10^6），依次输出四行：\n第 1 行：质因数分解式（格式如 485100 = 2 × 2 × ...）\n第 2 行：全部因数的个数\n第 3 行：偶因数的个数\n第 4 行：最大质因数\n注意：不要死记硬背样例数字，程序要对任意合数/质数通用。", "starter": "n = int(input())\n# 第 1 部分：短除法求质因数列表 parts（存字符串），按格式打印分解式\n# 第 2 部分：枚举 1 到 n 统计全部因数个数 tot_cnt 与偶因数个数 even_cnt\n# 第 3 部分：最大质因数就是 parts 的最后一个元素 parts[-1]\n", "expect": "485100 = 2 × 2 × 3 × 3 × 5 × 5 × 7 × 7 × 11\n162\n108\n11", "hints": ["短除法所得因子是从小到大排列的，所以 parts[-1] 天然就是最大质因数（前提是循环后别忘了 if m > 1: 补最后一项）。", "统计全部因数与偶因数可以在同一个 while j <= n 循环里做：if n % j == 0: 时 tot_cnt 加 1，再套一层 if j % 2 == 0: 让 even_cnt 加 1。", "输出第 1 行用 print(str(n) + \" = \" + \" × \".join(parts))，后三行分别 print(tot_cnt)、print(even_cnt)、print(parts[-1])。"], "optional": false}, {"id": "T2", "title": "双算法循环次数对比（跳偶 vs 6k±1）", "input": "104729", "desc": "读入整数 n（n ≥ 2）。分别用「跳偶试除」和「6k±1 试除」判断 n 是否质数，并各自统计 while 循环执行了多少轮（记为 cnt1 和 cnt2）。输出三行：\n第 1 行：yes 或 no\n第 2 行：跳偶版循环次数 = cnt1\n第 3 行：6k±1版循环次数 = cnt2\n（比赛现场在此基础上套一层 time.perf_counter() 即可直接用于效率实验表。）", "starter": "n = int(input())\n# 算法一：跳偶试除（2 特判，偶数直接 no，否则 i 从 3 起每次 +2 到 i*i <= n），用 cnt1 记循环轮数\n# 算法二：6k±1 试除（2/3 特判，2 或 3 的倍数直接停，否则 i 从 5 起每次查 i 和 i+2、每次 +6），用 cnt2 记循环轮数\n", "expect": "yes\n跳偶版循环次数 = 161\n6k±1版循环次数 = 54", "hints": ["两种写法都先各自初始化 cnt1 = 0、cnt2 = 0，只要进了 while 循环体开头就把对应计数器加 1。", "跳偶版：while i * i <= n and not found: 里 cnt1 = cnt1 + 1；6k±1 版：while i * i <= n and not found: 里 cnt2 = cnt2 + 1。", "注意输出格式逗号拼接会自动加空格：print(\"跳偶版循环次数 =\", cnt1) 和 print(\"6k±1版循环次数 =\", cnt2)。"], "optional": false}, {"id": "T3", "title": "埃氏筛应用：区间孪生质数统计", "input": "100", "desc": "相差为 2 的两个质数称为「孪生质数」（例如 3 和 5、5 和 7、11 和 13）。读入整数 n（2 ≤ n ≤ 10^5），用埃氏筛找出 2 到 n 的全部质数存入列表 primes，然后统计孪生质数的对数，输出两行：\n质数个数 = ...\n孪生质数对数 = ...", "starter": "n = int(input())\n# 第 1 步：用埃氏筛造 flags 表，把 2 到 n 中 flags[v] 为 True 的数 append 进 primes\n# 第 2 步：遍历相邻两个质数 primes[k] 和 primes[k + 1]，若差等于 2 就计数\n", "expect": "质数个数 = 25\n孪生质数对数 = 8", "hints": ["先照第 04 讲 T2 写出埃氏筛得到 flags，然后用 v 从 2 到 n 收集所有 flags[v] 为 True 的数放进 primes。", "收集完 primes 后，写 k = 0，while k < len(primes) - 1:（注意减 1 防越界），判断 if primes[k + 1] - primes[k] == 2:。", "最后打印 print(\"质数个数 =\", len(primes)) 和 print(\"孪生质数对数 =\", twins)。输入 100 应得 25 和 8。"], "optional": false}], "timeLimitMin": 60}</script>
-<script>
-var D = JSON.parse(document.getElementById("pageData").textContent);
-var LS_KEY = "ds" + D.nn + "_practice_v1";
-var storageOK = true;
+<h1>大数分解 · 第 04 天 · 核心任务模拟一</h1><p>分解 20 分钟 · 实测 25 分钟 · 结论 10 分钟 · 自查 5 分钟</p>
+<p>编程任务请在 Python 3.9 的 IDLE 中运行。完成后把结果和复测记录填到本页，再导出提交。</p>
+<button id="dailyStart">开始计时</button> <strong id="dailyClock" role="timer">60:00</strong>
+<h2>任务</h2><p>对 360、9973、10007 输出有序质因数分解。比较逐整数试除与先除 2 后跳偶试除：同机、同数据、同重复次数，用 time.perf_counter() 计时并先确认输出一致。提交输入规模、次数、两列实测耗时和结论。</p><p><b>样例：</b>格式样例：18 → 2^1 3^2。耗时按实测填写。</p><p><b>复测：</b>追加 99991，核对两种算法结果是否一致。</p><p><b>交卷前检查：</b>用一张流程图解释跳偶版节省了什么。</p>
+<h2>作答与提交</h2>
+<label>完成情况<select id="dailyStatus"><option>未完成</option><option>主任务已完成</option><option>主任务及选做已完成</option></select></label>
+<label>代码草稿或流程说明<textarea id="dailyCode" rows="6"></textarea></label>
+<label>客观题答案、运行结果或实验数据<textarea id="dailyOutput" rows="5"></textarea></label>
+<label>复测结论或订正记录<textarea id="dailyReview" rows="3"></textarea></label>
+<button id="dailyExport">导出练习记录</button>
 
-function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { storageOK = false; return null; } }
-function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { storageOK = false; } showBanner(); }
-function lsDel(k) { try { localStorage.removeItem(k); } catch (e) { storageOK = false; } showBanner(); }
-function showBanner() { if (!storageOK) document.getElementById("banner").style.display = "block"; }
-
-function el(tag, cls) { var e = document.createElement(tag); if (cls) e.className = cls; return e; }
-function normOut(t) {
-  var lines = t.replace(/\r\n/g, "\n").split("\n");
-  var out = [];
-  for (var i = 0; i < lines.length; i++) {
-    out.push(lines[i].replace(/^[\s\u3000]+/, "").replace(/[\s\u3000]+$/, ""));
+</main><script>
+(function () {
+  "use strict";
+  var key = "dsdaily_training_04_v1";
+  var fields = ["dailyStatus", "dailyCode", "dailyOutput", "dailyReview"];
+  var end = 0;
+  var time = document.getElementById("dailyClock");
+  var start = document.getElementById("dailyStart");
+  function read(id) { return document.getElementById(id).value; }
+  function save() {
+    var saved = { end: end };
+    fields.forEach(function (id) { saved[id] = read(id); });
+    try { localStorage.setItem(key, JSON.stringify(saved)); } catch (error) {}
   }
-  while (out.length && out[out.length - 1] === "") out.pop();
-  return out.join("\n");
-}
-function detectTB(t) { return t.indexOf("Traceback (most recent call last)") !== -1; }
-function normBlank(s) {
-  s = s.replace(/^[\s\u3000]+/, "").replace(/[\s\u3000]+$/, "");
-  if (s.length >= 2 && s.charAt(0) === s.charAt(s.length - 1) &&
-      (s.charAt(0) === '"' || s.charAt(0) === "'")) {
-    s = s.substring(1, s.length - 1);
-  }
-  return s.replace(/[\s\u3000]+/g, "");
-}
-
-var state = { obj: {}, objScore: -1, tasks: {}, timerLeft: D.timeLimitMin ? D.timeLimitMin * 60 : 0 };
-D.tasks.forEach(function (t) {
-  if (!state.tasks[t.id]) state.tasks[t.id] = { done: false, hints: 0 };
-});
-
-function loadState() {
-  var raw = lsGet(LS_KEY);
-  if (!raw) return;
   try {
-    var s = JSON.parse(raw);
-    if (s && typeof s === "object") {
-      if (s.obj) state.obj = s.obj;
-      if (typeof s.objScore === "number") state.objScore = s.objScore;
-      if (typeof s.timerLeft === "number") state.timerLeft = s.timerLeft;
-      if (s.tasks) {
-        D.tasks.forEach(function (t) {
-          if (s.tasks[t.id]) state.tasks[t.id] = s.tasks[t.id];
-        });
-      }
-    }
-  } catch (e) { /* 记录损坏则从新开始 */ }
-}
-function saveState() { lsSet(LS_KEY, JSON.stringify(state)); updateBadge(); }
-
-function updateBadge() {
-  var allObj = state.objScore === D.obj.length;
-  var allTask = true;
-  D.tasks.forEach(function (t) {
-    if (!t.optional && !state.tasks[t.id].done) allTask = false;
-  });
-  document.getElementById("doneStamp").style.display = (allObj && allTask) ? "block" : "none";
-}
-
-function renderObj() {
-  var host = document.getElementById("objHost");
-  D.obj.forEach(function (q, qi) {
-    var card = el("div", "qcard"); card.id = "q" + qi;
-    var num = el("div", "qnum");
-    num.textContent = "第 " + (qi + 1) + " 题 · " + (q.kind === "single" ? "单选" : "填空");
-    var qt = el("div", "qtext"); qt.textContent = q.q;
-    card.appendChild(num); card.appendChild(qt);
-    if (q.kind === "single") {
-      for (var oi = 0; oi < q.opts.length; oi++) {
-        var lb = el("label", "opt");
-        var r = document.createElement("input");
-        r.type = "radio"; r.name = "q" + qi; r.value = String(oi);
-        lb.appendChild(r);
-        var sp = document.createElement("span");
-        sp.textContent = " " + "ABCD".charAt(oi) + ". " + q.opts[oi];
-        lb.appendChild(sp);
-        card.appendChild(lb);
-      }
-    } else {
-      var inp = document.createElement("input");
-      inp.type = "text"; inp.className = "blank"; inp.id = "b" + qi;
-      inp.placeholder = "在此填写答案";
-      card.appendChild(inp);
-    }
-    var why = el("div", "why"); why.id = "why" + qi;
-    card.appendChild(why);
-    host.appendChild(card);
-  });
-  // 恢复已答记录
-  D.obj.forEach(function (q, qi) {
-    var v = state.obj["q" + qi];
-    if (v === undefined || v === -1) return;
-    if (q.kind === "single") {
-      var radios = document.getElementsByName("q" + qi);
-      for (var i = 0; i < radios.length; i++) {
-        if (radios[i].value === String(v)) radios[i].checked = true;
-      }
-    } else {
-      document.getElementById("b" + qi).value = v;
-    }
-  });
-}
-
-function submitObj() {
-  var unanswered = [];
-  D.obj.forEach(function (q, qi) {
-    if (q.kind === "single") {
-      var picked = document.querySelector('input[name="q' + qi + '"]:checked');
-      if (!picked) { unanswered.push(qi + 1); state.obj["q" + qi] = -1; }
-      else state.obj["q" + qi] = Number(picked.value);
-    } else {
-      var v = document.getElementById("b" + qi).value;
-      if (!v.replace(/[\s\u3000]+/g, "")) { unanswered.push(qi + 1); state.obj["q" + qi] = ""; }
-      else state.obj["q" + qi] = v;
-    }
-  });
-  var scoreEl = document.getElementById("objScore");
-  if (unanswered.length) {
-    scoreEl.textContent = "还有 " + unanswered.length + " 题没作答：第 " + unanswered.join("、") + " 题";
-    return;
-  }
-  var score = 0;
-  D.obj.forEach(function (q, qi) {
-    var card = document.getElementById("q" + qi);
-    var why = document.getElementById("why" + qi);
-    var ok;
-    if (q.kind === "single") ok = state.obj["q" + qi] === q.a;
-    else ok = [q.a].concat(q.accept || []).some(function (v) { return normBlank(state.obj["q" + qi]) === normBlank(v); });
-    card.className = "qcard " + (ok ? "right" : "wrong");
-    var head = ok ? "答对了。" : "正确答案：" + (q.kind === "single" ? "ABCD".charAt(q.a) + ". " + q.opts[q.a] : q.a) + " ";
-    why.textContent = (ok ? "\u221A " : "\u00D7 ") + head + q.why;
-    why.style.display = "block";
-    if (ok) score++;
-  });
-  state.objScore = score;
-  scoreEl.textContent = "得分：" + score + " / " + D.obj.length + (score === D.obj.length ? "　全对！" : "　可修改后重新提交");
-  saveState();
-}
-
-function renderTasks() {
-  var host = document.getElementById("taskHost");
-  D.tasks.forEach(function (t, ti) {
-    var box = el("div", "task"); box.id = "task" + t.id;
-    var head = el("div", "task-head");
-    var nm = el("span", "tname"); nm.textContent = t.id + " · " + t.title;
-    head.appendChild(nm);
-    if (t.optional) { var ob = el("span", "badge opt"); ob.textContent = "选做"; head.appendChild(ob); }
-    var db = el("span", "badge"); db.id = "done" + t.id; db.textContent = "未通过";
-    head.appendChild(db);
-    box.appendChild(head);
-
-    var d = el("div", "tdesc"); d.textContent = t.desc; box.appendChild(d);
-    var m = el("div", "meta");
-    var k1 = el("span", "k"); k1.textContent = "输入样例："; m.appendChild(k1);
-    var v1 = el("pre", "io"); v1.textContent = t.input; m.appendChild(v1);
-    var k2 = el("span", "k"); k2.textContent = "预期输出："; m.appendChild(k2);
-    var v2 = el("pre", "io"); v2.textContent = t.expect; m.appendChild(v2);
-    box.appendChild(m);
-
-    var ta = document.createElement("textarea");
-    ta.id = "code" + t.id; ta.spellcheck = false;
-    ta.value = lsGet("ds" + D.nn + "_draft_" + t.id + "_v1") || t.starter;
-    box.appendChild(ta);
-    ta.addEventListener("input", function () {
-      lsSet("ds" + D.nn + "_draft_" + t.id + "_v1", ta.value);
+    var saved = JSON.parse(localStorage.getItem(key) || "{}");
+    end = saved.end || 0;
+    fields.forEach(function (id) {
+      if (typeof saved[id] === "string") document.getElementById(id).value = saved[id];
     });
-
-    var hr1 = el("div", "row");
-    for (var h = 1; h <= 3; h++) {
-      (function (level) {
-        var b = el("button", "hint");
-        b.textContent = "提示 " + level;
-        b.addEventListener("click", function () { showHint(t, level); });
-        hr1.appendChild(b);
-      })(h);
-    }
-    var fb = el("button"); fb.textContent = "格式检查（不判分）";
-    fb.addEventListener("click", function () { checkFormat(t); });
-    hr1.appendChild(fb);
-    var ex = el("button"); ex.textContent = "导出 .py";
-    ex.addEventListener("click", function () { exportPy(t); });
-    hr1.appendChild(ex);
-    box.appendChild(hr1);
-
-    var hint = el("div", "hintbox"); hint.id = "hint" + t.id;
-    box.appendChild(hint);
-    var msg = el("div", "msg"); msg.id = "msg" + t.id;
-    box.appendChild(msg);
-
-    var ta2 = document.createElement("textarea");
-    ta2.className = "paste"; ta2.id = "paste" + t.id; ta2.spellcheck = false;
-    ta2.placeholder = "把程序运行结果的全部输出粘贴到这里（贴 Traceback 也行，会给你专门提示）";
-    box.appendChild(ta2);
-    var hr2 = el("div", "row");
-    var cb = el("button", "primary"); cb.textContent = "核对输出";
-    cb.addEventListener("click", function () { checkOut(t); });
-    hr2.appendChild(cb);
-    box.appendChild(hr2);
-
-    host.appendChild(box);
-    refreshTask(t);
-  });
-}
-
-function showHint(t, level) {
-  if (state.tasks[t.id].hints < level) { state.tasks[t.id].hints = level; saveState(); }
-  refreshHint(t);
-}
-function refreshHint(t) {
-  var n = state.tasks[t.id].hints;
-  var box = document.getElementById("hint" + t.id);
-  if (!n) { box.style.display = "none"; return; }
-  box.style.display = "block";
-  var parts = [];
-  for (var i = 0; i < n && i < t.hints.length; i++) parts.push("提示" + (i + 1) + "：" + t.hints[i]);
-  box.textContent = parts.join("\n");
-}
-
-function checkFormat(t) {
-  var code = document.getElementById("code" + t.id).value;
-  var issues = [];
-  var lines = code.split("\n");
-  var openP = 0, closeP = 0;
-  for (var i = 0; i < lines.length; i++) {
-    var ln = lines[i];
-    var t2 = ln.replace(/^[\s\u3000]+/, "");
-    if (!t2) continue;
-    var no = i + 1;
-    if (ln.indexOf("\t") >= 0 && /^ +/.test(ln)) issues.push("第 " + no + " 行：Tab 与空格混用，统一用 4 个空格缩进");
-    if (t2.indexOf("&&") >= 0 || t2.indexOf("||") >= 0) issues.push("第 " + no + " 行：Python 用 and / or，不是 && / ||");
-    if (t2.indexOf("\u201c") >= 0 || t2.indexOf("\u201d") >= 0 || t2.indexOf("\u2018") >= 0 || t2.indexOf("\u2019") >= 0)
-      issues.push("第 " + no + " 行：字符串的引号要用英文的（半角），不能用中文引号");
-    if (!/["']/.test(t2) && /^(if|elif|else|for|while)\b/.test(t2)) {
-      var body = t2.split("#")[0].replace(/[\s\u3000]+$/, "");
-      if (body.indexOf(":") === -1) issues.push("第 " + no + " 行：缺英文冒号 :");
-    }
-    openP += (ln.match(/\(/g) || []).length;
-    closeP += (ln.match(/\)/g) || []).length;
+  } catch (error) {}
+  fields.forEach(function (id) { document.getElementById(id).addEventListener("input", save); });
+  function tick() {
+    if (!end || !start) return;
+    var left = Math.max(0, Math.ceil((end - Date.now()) / 1000));
+    time.textContent = left ? Math.floor(left / 60) + ":" + ("0" + left % 60).slice(-2) : "时间到，请导出记录";
+    start.disabled = true;
   }
-  if (code.indexOf("\uff08") >= 0 || code.indexOf("\uff09") >= 0) issues.push("代码里出现了中文括号（），应使用英文括号 ( )");
-  if (openP !== closeP) issues.push("圆括号不配对：( 有 " + openP + " 个，) 有 " + closeP + " 个");
-  var msg = document.getElementById("msg" + t.id);
-  if (!issues.length) { msg.className = "msg ok"; msg.textContent = "格式检查：没发现常见问题（只查格式，不判断对错）"; }
-  else { msg.className = "msg warn"; msg.textContent = "格式检查发现 " + issues.length + " 处：\n" + issues.join("\n"); }
-}
-
-function checkOut(t) {
-  var pasted = document.getElementById("paste" + t.id).value;
-  var msg = document.getElementById("msg" + t.id);
-  var db = document.getElementById("done" + t.id);
-  if (!pasted.replace(/[\s\u3000]+/g, "")) {
-    msg.className = "msg warn"; msg.textContent = "先在 IDLE 里运行程序，把全部输出粘贴到上面的框里。";
-    return;
-  }
-  if (detectTB(pasted)) {
-    msg.className = "msg bad";
-    msg.textContent = "粘贴的内容里有 Traceback，说明程序报错了。把报错的最后一行复制去查：常见原因是缺少 int() 转换、冒号、缩进。";
-    db.textContent = "未通过"; db.className = "badge";
-    state.tasks[t.id].done = false; saveState();
-    return;
-  }
-  if (normOut(pasted) === normOut(t.expect)) {
-    state.tasks[t.id].done = true; saveState();
-    refreshTask(t);
-    msg.className = "msg ok";
-    msg.textContent = "核对通过，输出一致！" + (t.optional ? "（选做任务，不占必做进度）" : "");
-  } else {
-    state.tasks[t.id].done = false; saveState();
-    refreshTask(t);
-    msg.className = "msg bad";
-    msg.textContent = "输出不一致。左边是你的，右边是预期的，逐行对照：\n你的：\n" + normOut(pasted) + "\n预期：\n" + normOut(t.expect);
-  }
-}
-
-function refreshTask(t) {
-  var db = document.getElementById("done" + t.id);
-  if (state.tasks[t.id].done) { db.textContent = "已通过 \u2713"; db.className = "badge done"; }
-  else { db.textContent = "未通过"; db.className = "badge"; }
-  refreshHint(t);
-}
-
-function exportPy(t) {
-  var code = document.getElementById("code" + t.id).value;
-  var blob = new Blob([code], { type: "text/plain" });
-  var a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "ds" + D.nn + "_" + t.id + ".py";
-  a.click();
-  URL.revokeObjectURL(a.href);
-}
-
-function exportTxt() {
-  var blob = new Blob([JSON.stringify(state, null, 2)], { type: "text/plain" });
-  var a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "ds" + D.nn + "_练习记录.txt";
-  a.click();
-  URL.revokeObjectURL(a.href);
-}
-
-function resetAll() {
-  if (!confirm("将清空本页全部答题与草稿记录，确定清空吗？")) return;
-  var dead = [];
-  try {
-    for (var i = 0; i < localStorage.length; i++) {
-      var k = localStorage.key(i);
-      if (k && k.indexOf("ds" + D.nn + "_") === 0) dead.push(k);
-    }
-  } catch (e) { storageOK = false; }
-  for (var j = 0; j < dead.length; j++) lsDel(dead[j]);
-  location.reload();
-}
-
-document.getElementById("intro").textContent = D.intro;
-var singleCnt = 0, blankCnt = 0;
-D.obj.forEach(function (q) { if (q.kind === "single") singleCnt++; else blankCnt++; });
-document.getElementById("objHeading").textContent = "客观题（" + singleCnt + " 单选 + " + blankCnt + " 填空）";
-document.getElementById("submitObjBtn").addEventListener("click", submitObj);
-document.getElementById("exportBtn").addEventListener("click", exportTxt);
-document.getElementById("resetBtn").addEventListener("click", resetAll);
-loadState();
-renderObj();
-renderTasks();
-var scoreEl = document.getElementById("objScore");
-if (state.objScore >= 0) scoreEl.textContent = "上次得分：" + state.objScore + " / " + D.obj.length + "（可重新提交）";
-showBanner();
-updateBadge();
-
-if (D.timeLimitMin) {
-  var tBar = document.getElementById("timerBar");
-  var tDigits = document.getElementById("timerDigits");
-  var tToggle = document.getElementById("timerToggleBtn");
-  var tReset = document.getElementById("timerResetBtn");
-  tBar.style.display = "block";
-  var tRunning = true;
-  var tId = null;
-  function pad2(x) { return (x < 10 ? "0" : "") + x; }
-  function paintTimer() {
-    var sec = state.timerLeft > 0 ? state.timerLeft : 0;
-    tDigits.textContent = pad2(Math.floor(sec / 60)) + ":" + pad2(sec % 60);
-  }
-  function startMockTimer() {
-    if (tId) clearInterval(tId);
-    paintTimer();
-    tId = setInterval(function () {
-      if (!tRunning) return;
-      if (state.timerLeft > 0) {
-        state.timerLeft--;
-        paintTimer();
-        saveState();
-      } else {
-        clearInterval(tId);
-        tToggle.disabled = true;
-        tToggle.textContent = "已结束";
-      }
-    }, 1000);
-  }
-  tToggle.addEventListener("click", function () {
-    tRunning = !tRunning;
-    tToggle.textContent = tRunning ? "暂停" : "继续";
-  });
-  tReset.addEventListener("click", function () {
-    if (!confirm("重新开始 " + D.timeLimitMin + " 分钟倒计时？")) return;
-    state.timerLeft = D.timeLimitMin * 60;
-    tRunning = true;
-    tToggle.disabled = false;
-    tToggle.textContent = "暂停";
-    saveState();
-    startMockTimer();
-  });
-  startMockTimer();
-}
-</script>
-</body>
-</html>
+  if (start) start.onclick = function () {
+    end = Date.now() + 3600000;
+    save();
+    tick();
+  };
+  tick();
+  if (start) setInterval(tick, 1000);
+  document.getElementById("dailyExport").onclick = function () {
+    var text = ["大数分解 · 第 04 天 · 核心任务模拟一", "完成情况：" + read("dailyStatus"), "代码或流程：", read("dailyCode"),
+      "答案、运行结果或实验数据：", read("dailyOutput"), "复测或订正：", read("dailyReview")].join("\r\n");
+    var a = document.createElement("a");
+    var url = URL.createObjectURL(new Blob(["\ufeff", text], { type: "text/plain;charset=utf-8" }));
+    a.href = url;
+    a.download = "大数分解 · 第 04 天 · 核心任务模拟一" + "练习记录.txt";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  };
+}());
+</script></html>

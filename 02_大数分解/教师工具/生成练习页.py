@@ -2231,6 +2231,10 @@ def generate_all():
     with open(all_out, "w", encoding="utf-8", newline="\n") as fh:
         fh.write(DS_ALL_IN_ONE_HTML.replace("__ALL_DATA__", all_data))
     pages.append(all_out)
+    import runpy
+    daily = runpy.run_path(str(TRACK_ROOT.parent / "_工程文档" / "生成每日训练.py"))
+    daily["write_track"](1)
+    daily["link_track_portal"](1)
     return pages
 
 

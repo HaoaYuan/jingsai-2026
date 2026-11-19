@@ -72,9 +72,13 @@
 </style>
 </head>
 <body>
+<!-- daily training mock -->
+<section style='max-width:900px;margin:20px auto;padding:16px'>
+<h1>编程闯关 · 第 04 天 · 阶段模拟一</h1><p>客观题 15 分钟 · 编程 40 分钟 · 自查 5 分钟</p>
+<p>编程任务请在 Python 3.9 的 IDLE 中运行。完成后把结果和复测记录填到本页，再导出提交。</p>
+</section>
 <header class="top">
   <div class="wrap">
-    <p class="crumb"><a href="../index.html">← 返回闯关地图</a></p>
     <span class="badge">每日模拟 · 限时 60 分钟</span>
     <h1>每日模拟一 · 60 分钟综合卷</h1>
     <p class="topic">限时 60 分钟 · 15 道客观题 + 4 道编程题（覆盖 L1–L8，零重复）<span id="timerBox" style="display:none;margin-left:16px;"><span class="timer" id="timer">40:00</span></span></p>
@@ -249,7 +253,7 @@ print(c)
   <section id="tasks"></section>
   <section class="card gate" id="gate" style="display:none;">
     <div class="stamp" id="stamp">✅ 本关通过，已盖章！</div>
-    <a class="btn" id="next" href="../index.html">继续</a>
+    <a class="btn" id="next" href="#dailyExport">填写练习记录</a>
   </section>
 </main>
 <footer class="foot">编程闯关备赛 · 离线练习 · 不联网、不上传 · 进度只保存在本机</footer>
@@ -611,7 +615,7 @@ var PAGE_DATA = {"id": "MK1", "file": "mock01.html", "title": "每日模拟一 �
       } else {
         next.textContent = stamped ? '继续 · 下一关' : '通关！进入下一关';
       }
-      next.href = nextHref();
+      next.href = "#dailyExport";
     } else {
       stamp.className = 'stamp';
       next.style.display = 'none';
@@ -716,6 +720,62 @@ var PAGE_DATA = {"id": "MK1", "file": "mock01.html", "title": "每日模拟一 �
   window.newRound = newRound;
 })();
 
+</script>
+<section style='max-width:900px;margin:20px auto;padding:16px'><h2>导出与复盘</h2></h2>
+<label>完成情况<select id="dailyStatus"><option>未完成</option><option>主任务已完成</option><option>主任务及选做已完成</option></select></label>
+<label>代码草稿或流程说明<textarea id="dailyCode" rows="6"></textarea></label>
+<label>客观题答案、运行结果或实验数据<textarea id="dailyOutput" rows="5"></textarea></label>
+<label>复测结论或订正记录<textarea id="dailyReview" rows="3"></textarea></label>
+<button id="dailyExport">导出练习记录</button>
+
+</section><script>
+(function () {
+  "use strict";
+  var key = "ck_daily_training_04_v1";
+  var fields = ["dailyStatus", "dailyCode", "dailyOutput", "dailyReview"];
+  var end = 0;
+  var time = document.getElementById("dailyClock");
+  var start = document.getElementById("dailyStart");
+  function read(id) { return document.getElementById(id).value; }
+  function save() {
+    var saved = { end: end };
+    fields.forEach(function (id) { saved[id] = read(id); });
+    try { localStorage.setItem(key, JSON.stringify(saved)); } catch (error) {}
+  }
+  try {
+    var saved = JSON.parse(localStorage.getItem(key) || "{}");
+    end = saved.end || 0;
+    fields.forEach(function (id) {
+      if (typeof saved[id] === "string") document.getElementById(id).value = saved[id];
+    });
+  } catch (error) {}
+  fields.forEach(function (id) { document.getElementById(id).addEventListener("input", save); });
+  function tick() {
+    if (!end || !start) return;
+    var left = Math.max(0, Math.ceil((end - Date.now()) / 1000));
+    time.textContent = left ? Math.floor(left / 60) + ":" + ("0" + left % 60).slice(-2) : "时间到，请导出记录";
+    start.disabled = true;
+  }
+  if (start) start.onclick = function () {
+    end = Date.now() + 3600000;
+    save();
+    tick();
+  };
+  tick();
+  if (start) setInterval(tick, 1000);
+  document.getElementById("dailyExport").onclick = function () {
+    var text = ["编程闯关 · 第 04 天 · 阶段模拟一", "完成情况：" + read("dailyStatus"), "代码或流程：", read("dailyCode"),
+      "答案、运行结果或实验数据：", read("dailyOutput"), "复测或订正：", read("dailyReview")].join("\r\n");
+    var a = document.createElement("a");
+    var url = URL.createObjectURL(new Blob(["\ufeff", text], { type: "text/plain;charset=utf-8" }));
+    a.href = url;
+    a.download = "编程闯关 · 第 04 天 · 阶段模拟一" + "练习记录.txt";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  };
+}());
 </script>
 </body>
 </html>
