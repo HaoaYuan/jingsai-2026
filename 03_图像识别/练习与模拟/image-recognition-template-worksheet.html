@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#173c2e">
+  <title>NumPy 点阵识别 · 逐段读代码</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f4f2e9; --card: #fffdfa; --ink: #1c2b25; --muted: #53665c;
+      --green: #1f5f49; --deep: #173c2e; --lime: #a5c976; --line: #d6ded0; --soft: #eef5e6;
+      --code: #1f332a; --code-ink: #edf5e3; --hl: #c9e697;
+      --math: #fff6e1; --math-edge: #d9a441; --math-ink: #7a5210;
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.75 "Microsoft YaHei UI", "PingFang SC", "Noto Sans SC", sans-serif; -webkit-font-smoothing: antialiased; }
+    .wrap { width: calc(100% - 32px); max-width: 1080px; margin: auto; }
+    h1, h2, h3, p { margin: 0; }
+    h1, h2 { text-wrap: balance; }
+    p { text-wrap: pretty; }
+    a { color: var(--green); text-underline-offset: 3px; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+    :focus-visible { outline: 3px solid #3d8055; outline-offset: 3px; }
+    .skip { position: absolute; left: 8px; top: -60px; z-index: 10; padding: 8px 14px; background: #fff; color: var(--deep); border-radius: 6px; }
+    .skip:focus { top: 8px; }
+
+    header { padding: 36px 0 28px; background: var(--deep); color: #fffcf0; border-bottom: 4px solid var(--lime); }
+    .kicker { font-size: .85rem; letter-spacing: .12em; color: #ceeaa9; }
+    h1 { margin: 6px 0 10px; font-size: clamp(1.8rem, 4vw, 2.6rem); line-height: 1.2; }
+    .lead { max-width: 40em; color: #e6eedb; }
+    .legend { display: flex; flex-wrap: wrap; gap: 8px 10px; margin: 18px 0 0; padding: 0; list-style: none; font-size: .88rem; }
+    .legend li { display: inline-flex; align-items: center; gap: 8px; padding: 5px 12px 5px 9px; background: rgba(255, 255, 255, .07); border: 1px solid rgba(255, 255, 255, .18); border-radius: 999px; }
+    .legend .n { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: rgba(255, 255, 255, .18); color: #fffcf0; font: 700 .72rem/1 "Segoe UI", sans-serif; }
+    .sw { width: 12px; height: 12px; border-radius: 3px; }
+    .sw-code { background: var(--code); border: 1px solid #4d6b5d; }
+    .sw-note { background: var(--card); }
+    .sw-math { background: var(--math); border: 1px solid var(--math-edge); }
+
+    main { padding-bottom: 48px; }
+    .steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 20px 0 4px; }
+    .steps a { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--card); color: var(--ink); font-weight: 600; text-decoration: none; border: 1px solid var(--line); border-radius: 10px; transition: background-color .15s, border-color .15s; }
+    .steps a:hover { background: var(--soft); border-color: var(--green); }
+    .steps b { flex: none; display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--green); color: #fff; font: 700 .85rem/1 "Segoe UI", sans-serif; }
+
+    section { margin-top: 20px; padding: 24px 28px 26px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 1px 2px rgba(23, 60, 46, .05); scroll-margin-top: 16px; }
+    h2 { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; font-size: 1.3rem; line-height: 1.35; color: var(--deep); }
+    .no { flex: none; display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 10px; background: var(--lime); color: var(--deep); font: 800 1.05rem/1 "Segoe UI", sans-serif; }
+    h3.explain { margin: 18px 0 8px; font-size: .98rem; color: var(--green); }
+    h3.explain::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 8px; border-radius: 50%; background: var(--green); vertical-align: .15em; }
+    section > p { max-width: 72em; }
+    section > p + p, .math > p + p { margin-top: 8px; }
+    .task { margin-top: 10px; padding: 10px 14px; background: #f6f8f1; border-left: 3px solid #9dbf84; border-radius: 0 8px 8px 0; font-size: .96rem; }
+
+    code, pre { font-family: Consolas, "Cascadia Mono", "Microsoft YaHei UI", monospace; }
+    :not(pre) > code { padding: .08em .4em; background: #eef3e7; border-radius: 4px; font-size: .92em; color: #17402f; }
+    pre.code { display: block; margin: 0 0 16px; padding: 10px 0 14px; background: var(--code); color: var(--code-ink); border-radius: 10px; font-size: 14.5px; line-height: 1.7; white-space: normal; overflow-x: auto; counter-reset: line; }
+    pre.code::before { content: "代码  ·  " attr(data-title); display: block; margin-bottom: 8px; padding: 0 16px 8px; border-bottom: 1px solid rgba(255, 255, 255, .12); color: #a9cdb8; font: 600 12px/1.6 "Microsoft YaHei UI", sans-serif; letter-spacing: .06em; }
+    pre.code code { display: block; }
+    .cl { display: block; white-space: pre; min-height: 1.7em; padding: 0 16px 0 3.4em; border-left: 3px solid transparent; }
+    .cl::before { content: counter(line); counter-increment: line; display: inline-block; width: 2.4em; margin: 0 1em 0 -3.4em; text-align: right; color: #6f9a85; user-select: none; }
+    .reading-code [data-line][aria-current] { color: #17301f; background: var(--hl); }
+    .reading-code .cl:has([aria-current]) { background: var(--hl); color: #17301f; border-left-color: #17301f; }
+    .reading-code .cl:has([aria-current])::before { color: #17301f; font-weight: 700; }
+
+    .controls { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+    button { font: inherit; font-weight: 600; color: var(--green); background: #fff; border: 1px solid #b9ccbb; border-radius: 8px; padding: 6px 14px; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; transition: background-color .15s, border-color .15s, color .15s; }
+    button:hover { background: var(--soft); border-color: var(--green); }
+    button:active { background: #dfead6; }
+    button.primary, button[aria-pressed="true"] { color: #fff; background: var(--green); border-color: var(--green); }
+    button.primary:hover, button[aria-pressed="true"]:hover { background: #174a39; }
+    button[aria-disabled="true"] { opacity: .45; cursor: default; }
+    button[aria-disabled="true"]:hover { background: #fff; border-color: #b9ccbb; }
+    button.primary[aria-disabled="true"]:hover { background: var(--green); border-color: var(--green); }
+    .seg button { border-radius: 0; }
+    .seg button:first-child { border-radius: 8px 0 0 8px; }
+    .seg button + button { margin-left: -1px; }
+    .seg button:last-child { border-radius: 0 8px 8px 0; }
+    .step { font-size: .9rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+    .experiment { display: flex; flex-direction: column; margin-top: 10px; padding: 12px 14px; background: var(--soft); border: 1px solid #d3e3c6; border-radius: 10px; overflow-wrap: anywhere; }
+    dl { margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; }
+    dt { font-size: .92rem; color: var(--muted); }
+    dd { margin: 0; }
+    .experiment dd code { padding: 0; background: none; font-weight: 600; }
+    #read-note { margin-top: auto; padding-top: 10px; border-top: 1px dashed #c5d8b6; font-size: .95rem; }
+
+    .math { margin-top: 20px; padding: 14px 18px 16px; background: var(--math); border: 1px solid #f0dcae; border-radius: 12px; overflow-wrap: anywhere; }
+    .math h3 { margin: 0 0 8px; font-size: 1rem; color: var(--math-ink); }
+    .math .task { background: rgba(255, 255, 255, .6); border-left-color: var(--math-edge); }
+    .math .result { margin-top: 0; background: #fff; font-weight: 600; }
+    .split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 12px; margin-top: 12px; }
+    .panel { padding: 12px 14px; background: #fff; border: 1px solid #f0dcae; border-radius: 10px; }
+    .panel h3 { margin: 0 0 8px; font-size: .95rem; color: var(--ink); }
+    .widths { margin: 0; padding: 0; list-style: none; font-size: .92rem; font-variant-numeric: tabular-nums; }
+    .widths li { display: grid; grid-template-columns: 3.5em minmax(0, 1fr) 4em; align-items: center; gap: 10px; margin: 7px 0; }
+    .widths .bar { height: 14px; width: var(--width); border-radius: 3px; background: linear-gradient(90deg, #5f8f4a, #8fb96e); }
+    .widths .drop { background: #c8742f; }
+    .calc p { display: grid; grid-template-columns: 6.5em minmax(0, 1fr) auto; align-items: baseline; gap: 10px; padding: 6px 0; border-bottom: 1px dashed #e6d7b5; font-size: .95rem; }
+    .calc p:last-child { border-bottom: 0; }
+    .calc .k { font-weight: 600; }
+    .calc strong { color: var(--math-ink); font-size: 1.05rem; font-variant-numeric: tabular-nums; }
+    table { width: 100%; margin: 10px 0 6px; border-collapse: collapse; background: #fff; font-size: .95rem; font-variant-numeric: tabular-nums; }
+    th, td { padding: 7px 12px; text-align: left; border-bottom: 1px solid #f0e4c6; }
+    thead th { background: #fdf3dc; font-size: .85rem; font-weight: 600; color: var(--muted); }
+    tbody th { font-weight: 600; }
+    th:first-child { width: 34%; }
+    td:last-child { font-weight: 700; color: var(--math-ink); }
+
+    details { margin-top: 12px; padding: 0 14px; background: #fff; border: 1px solid var(--line); border-radius: 10px; }
+    .math details { background: rgba(255, 255, 255, .7); border-color: #f0dcae; }
+    summary { padding: 9px 0; color: var(--green); font-weight: 600; list-style: none; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+    summary::-webkit-details-marker { display: none; }
+    summary::before { content: "▸"; display: inline-block; margin-right: 8px; transition: transform .15s; }
+    details[open] > summary::before { transform: rotate(90deg); }
+    details > p { padding: 0 0 10px 20px; }
+
+    .package { margin-top: 18px; padding: 14px 18px 16px; background: var(--soft); border: 1px solid #cfe0c4; border-radius: 12px; }
+    .package h3.explain { margin-top: 0; }
+    .package .task { background: #fff; }
+    .package .controls { margin: 12px 0 6px; }
+    .hint { font-size: .88rem; color: var(--muted); }
+
+    @media (min-width: 900px) {
+      #read { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); grid-template-rows: auto auto auto auto minmax(0, 1fr); column-gap: 20px; }
+      #read > h2 { grid-column: 1 / -1; }
+      #read > pre { grid-column: 1; grid-row: 2 / 6; }
+      #read > h3 { grid-column: 2; grid-row: 2; align-self: end; margin-top: 0; }
+      #read > h3 + p { grid-column: 2; grid-row: 3; }
+      #read > .controls { grid-column: 2; grid-row: 4; }
+      #read > .experiment { grid-column: 2; grid-row: 5; margin-top: 0; }
+      #read > p, #read > .math, #read > details { grid-column: 1 / -1; }
+    }
+    @media (max-width: 899px) {
+      .experiment { margin-top: 0; }
+    }
+    @media (max-width: 720px) {
+      header { padding: 24px 0 20px; }
+      .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      section { padding: 16px 14px 18px; }
+      h2 { font-size: 1.15rem; }
+      pre.code { font-size: 13.5px; }
+      .cl { white-space: pre-wrap; }
+      .split { grid-template-columns: minmax(0, 1fr); }
+      th, td { padding: 6px 8px; }
+    }
+    @media (max-width: 480px) {
+      .calc p { grid-template-columns: minmax(0, 1fr); gap: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      button, .steps a, summary::before { transition: none; }
+    }
+    @media print {
+      header { padding: 12px 0; background: #fff; color: #000; border-bottom: 2px solid #000; }
+      .kicker, .lead { color: #333; }
+      .legend, .steps, .controls, .skip { display: none; }
+      body { background: #fff; }
+      section { box-shadow: none; border-color: #bbb; }
+      pre.code { background: #f1f1f1; color: #000; border: 1px solid #ccc; }
+      pre.code::before { color: #333; border-color: #bbb; }
+      .cl::before { color: #888; }
+      .math, pre.code, table, .split { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">跳到正文</a>
+  <header>
+    <div class="wrap">
+      <p class="kicker">图像识别 · 学生练习</p>
+      <h1>从一行字符到图形识别</h1>
+      <p class="lead">用 NumPy 读取点阵、数像素、算特征、找模板。</p>
+      <ul class="legend" aria-label="每一段的阅读顺序">
+        <li><b class="n" aria-hidden="true">1</b><i class="sw sw-code" aria-hidden="true"></i>先看代码</li>
+        <li><b class="n" aria-hidden="true">2</b><i class="sw sw-note" aria-hidden="true"></i>代码解析</li>
+        <li><b class="n" aria-hidden="true">3</b><i class="sw sw-math" aria-hidden="true"></i>数学原理</li>
+      </ul>
+    </div>
+  </header>
+  <main class="wrap" id="main">
+    <nav class="steps" aria-label="学习步骤">
+      <a href="#read"><b aria-hidden="true">1</b>读取点阵</a>
+      <a href="#features"><b aria-hidden="true">2</b>计算特征</a>
+      <a href="#match"><b aria-hidden="true">3</b>比对模板</a>
+      <a href="#run"><b aria-hidden="true">4</b>运行程序</a>
+    </nav>
+
+    <section id="read">
+      <h2><span class="no" aria-hidden="true">1</span>读取点阵 · 先存一行，再存整张图</h2>
+      <pre class="code reading-code" data-title="read_grid(path)"><code><span class="cl">import numpy as np</span>
+<span class="cl"></span>
+<span class="cl"></span>
+<span class="cl">def read_grid(path):</span>
+<span class="cl">    grid = []</span>
+<span class="cl">    with open(path, encoding="utf-8") as file:</span>
+<span class="cl">        for line in file:</span>
+<span class="cl">            <span data-line="0">line = line.strip()</span></span>
+<span class="cl">            if line:</span>
+<span class="cl">                <span data-line="1">row = []</span></span>
+<span class="cl">                <span data-line="2">for pixel in line:</span></span>
+<span class="cl">                    <span data-line="2">row.append(int(pixel))</span></span>
+<span class="cl">                <span data-line="3">grid.append(row)</span></span>
+<span class="cl">    <span data-line="4">return np.array(grid, dtype=int)</span></span></code></pre>
+      <h3 class="explain">代码解析</h3>
+      <p><code>grid.append([int(pixel) for pixel in line])</code> 是上面三步的短写法。方括号里先做出一行整数，外面的 <code>grid.append()</code> 再把这一行存起来。点「下一步」，看 <code>line</code>、<code>row</code> 和 <code>grid</code> 各在什么时候变化。</p>
+      <div class="controls" role="group" aria-label="阅读演示步骤">
+        <button type="button" id="back" aria-disabled="true">上一步</button>
+        <button type="button" id="next" class="primary">下一步</button>
+        <button type="button" id="reset">重来</button>
+        <span class="step" id="progress"></span>
+      </div>
+      <div class="experiment" role="status" aria-atomic="true">
+        <dl>
+          <dt><code>line</code></dt><dd><code id="value-line"></code></dd>
+          <dt><code>pixel</code></dt><dd><code id="value-pixel"></code></dd>
+          <dt><code>row</code></dt><dd><code id="value-row"></code></dd>
+          <dt><code>grid</code></dt><dd><code id="value-grid"></code></dd>
+        </dl>
+        <p id="read-note"></p>
+      </div>
+      <p class="task"><code>row = []</code> 每读一行都要重新创建。<code>grid.append(row)</code> 放在内层循环后面，等这一行的像素都转完，才添加一次。</p>
+      <p class="task">完整的 <code>read_grid()</code> 用 <code>with open(...)</code> 打开文本，读完后自动关闭。<code>if line</code> 检查清理后的文本是否有内容，最后用 <code>return</code> 把读好的数组交给调用者。</p>
+      <div class="math">
+        <h3>数学原理 · 像素的行列坐标</h3>
+        <p>把图像看成一个由 0、1 组成的矩形表格。每个像素的位置用「行下标，列下标」表示，第一个下标是行，第二个是列。</p>
+        <p>示例读完后有 2 行、3 列，记作 <code>(2, 3)</code>。因为下标从 0 开始，<code>grid[1, 1]</code> 取的是第 2 行、第 2 列，值为 1。沿固定顺序存数据，才能根据坐标找回原来的像素。</p>
+      </div>
+      <details><summary>自测：只含 0 的一行会被跳过吗？</summary><p><code>strip()</code> 去掉换行和两端空白。空行会变成空字符串，但 <code>"000"</code> 仍有三个字符，表示三个背景像素，应存入点阵。</p></details>
+    </section>
+
+    <section id="features">
+      <h2><span class="no" aria-hidden="true">2</span>计算特征 · 数一数每行有几个 1</h2>
+      <pre class="code" data-title="features(grid)"><code><span class="cl">def features(grid):</span>
+<span class="cl">    widths = []</span>
+<span class="cl">    for row in grid:</span>
+<span class="cl">        width = np.count_nonzero(row)</span>
+<span class="cl">        if width &gt; 0:</span>
+<span class="cl">            widths.append(width)</span>
+<span class="cl">    if not widths:</span>
+<span class="cl">        return None</span>
+<span class="cl"></span>
+<span class="cl">    widest = max(widths)</span>
+<span class="cl">    drops = 0</span>
+<span class="cl">    for i in range(1, len(widths)):</span>
+<span class="cl">        if widths[i] &lt; widths[i - 1]:</span>
+<span class="cl">            drops += 1</span>
+<span class="cl"></span>
+<span class="cl">    # TODO 1：算出三个比例，再按顺序返回。</span>
+<span class="cl">    # return [top_ratio, average_ratio, drop_ratio]</span></code></pre>
+      <h3 class="explain">代码解析</h3>
+      <p>点阵只含整数 0、1，所以 <code>np.count_nonzero(row)</code> 就是在数这一行的 1。这段程序跳过宽为 0 的行，留下本题图形的有效行。</p>
+      <p>从下标 1 开始才能和上一行比较。四行只有三对相邻行，相等时不算变窄。分母用 <code>max(1, len(widths) - 1)</code>，是为了只有一行时仍能算出 0。</p>
+      <p class="task"><strong>动手</strong>　先打印 <code>widths</code>，再写三个比例。遇到全背景点阵时，先用 <code>return None</code> 表示没有可用特征。</p>
+      <div class="math">
+        <h3>数学原理 · 用比例描述形状</h3>
+        <p>一行里每个前景像素贡献 1，把这一行的 0、1 加起来，就得到前景像素数。本程序把这个数记作行宽，再用最宽一行作分母，把像素数量换成比例。</p>
+        <div class="split">
+          <div class="panel">
+            <h3>手算示例 <code>widths = [2, 4, 4, 3]</code></h3>
+            <ol class="widths" aria-label="四行的图形宽度">
+              <li><span>第 1 行</span><span class="bar" style="--width:50%"></span><span>2</span></li>
+              <li><span>第 2 行</span><span class="bar" style="--width:100%"></span><span>4</span></li>
+              <li><span>第 3 行</span><span class="bar" style="--width:100%"></span><span>4</span></li>
+              <li><span>第 4 行</span><span class="bar drop" style="--width:75%"></span><span>3，变窄</span></li>
+            </ol>
+          </div>
+          <div class="calc panel">
+            <p><span class="k">顶行宽度比例</span><span class="f">顶行 ÷ 最宽行 = 2 ÷ 4</span><strong>= 0.5</strong></p>
+            <p><span class="k">平均宽度比例</span><span class="f">平均行宽 ÷ 最宽行 = 13 ÷ (4 × 4)</span><strong>= 0.8125</strong></p>
+            <p><span class="k">变窄比例</span><span class="f">变窄次数 ÷ 比较次数 = 1 ÷ 3</span><strong>≈ 0.333</strong></p>
+          </div>
+        </div>
+        <details><summary>想一想：每个像素横向展开成两格，三个比例会变吗？</summary>
+          <p>行宽变成 <code>[4, 8, 8, 6]</code>。顶行、平均行宽和最宽行都乘了 2，前两个比例保持相同。相邻行的大小关系也一样，因此变窄比例仍是 1 ÷ 3。</p>
+        </details>
+      </div>
+    </section>
+
+    <section id="match">
+      <h2><span class="no" aria-hidden="true">3</span>比对模板 · 差值越小，特征越接近</h2>
+      <pre class="code" data-title="identify(grid, library)"><code><span class="cl">def identify(grid, library):</span>
+<span class="cl">    target = features(grid)</span>
+<span class="cl">    if target is None:</span>
+<span class="cl">        return "无法识别"</span>
+<span class="cl"></span>
+<span class="cl">    best_name = "无法识别"</span>
+<span class="cl">    best_distance = float("inf")</span>
+<span class="cl">    for name in library:</span>
+<span class="cl">        sample = features(library[name])</span>
+<span class="cl">        if sample is None:</span>
+<span class="cl">            continue</span>
+<span class="cl"></span>
+<span class="cl">        distance = 0</span>
+<span class="cl">        for i in range(len(target)):</span>
+<span class="cl">            distance += abs(target[i] - sample[i])</span>
+<span class="cl"></span>
+<span class="cl">        # TODO 2：如果距离更小，就更新最小差值和模板名。</span>
+<span class="cl"></span>
+<span class="cl">    return best_name</span></code></pre>
+      <h3 class="explain">代码解析</h3>
+      <p><code>library</code> 是「模板名称 → 点阵」的字典。待测图提取一次特征，然后依次与每个模板比较。</p>
+      <p class="task"><code>abs()</code> 取绝对值，让正差和负差都按实际差距累加。每比一个模板，<code>distance</code> 都要重新从 0 开始。</p>
+      <p class="task">先用 <code>float("inf")</code> 把最小差值设成正无穷，第一个有效模板就能更新它。以后只要找到更小的差值，就同时记下差值和模板名。如果某个模板的特征是 <code>None</code>，用 <code>continue</code> 去比较下一个。</p>
+      <div class="math">
+        <h3>数学原理 · 把三项距离加起来</h3>
+        <p>三项特征的范围都是 0 到 1。比较时，每一项都做「待测值减模板值」并取绝对值，再把三项相加。这样，偏大和偏小的差距都计入总分。</p>
+        <div class="controls seg" role="group" aria-label="选择对照模板">
+          <button type="button" data-example="0" aria-pressed="true">比较模板 A</button>
+          <button type="button" data-example="1" aria-pressed="false">比较模板 B</button>
+        </div>
+        <table aria-label="逐项比较待测图与模板">
+          <thead><tr><th scope="col">特征</th><th scope="col">待测图</th><th scope="col" id="template-title">模板 A</th><th scope="col">相差</th></tr></thead>
+          <tbody id="distance-table"></tbody>
+        </table>
+        <p class="task result" id="distance-result" role="status"></p>
+        <p class="task">试着比较模板 B：第一项差值是 0.5 − 0.75 = −0.25，计入总分的是 0.25。切回模板 A，比较两个总差值，找出更接近的模板。</p>
+      </div>
+    </section>
+
+    <section id="run">
+      <h2><span class="no" aria-hidden="true">4</span>运行程序 · 先建图库，再读待测图</h2>
+      <pre class="code" data-title="主程序"><code><span class="cl">library = {</span>
+<span class="cl">    "圆形": read_grid("data/图形1.txt"),</span>
+<span class="cl">    "等腰三角形": read_grid("data/图形2.txt"),</span>
+<span class="cl">    "正五边形": read_grid("data/图形3.txt"),</span>
+<span class="cl">}</span>
+<span class="cl"></span>
+<span class="cl">for i in range(1, 4):</span>
+<span class="cl">    name = f"图形{i}.txt"</span>
+<span class="cl">    grid = read_grid("data_mock2/" + name)</span>
+<span class="cl">    label = identify(grid, library)</span>
+<span class="cl">    print(f"{name}  识别为: {label}")</span></code></pre>
+      <h3 class="explain">代码解析</h3>
+      <p><code>data</code> 放已知类别的模板，<code>data_mock2</code> 放待识别的点阵。主程序里的 <code>range(1, 4)</code> 依次给出 1、2、3，<code>f"图形{i}.txt"</code> 用当前编号拼出对应的文件名。</p>
+      <p class="task"><code>def</code> 先定义函数。读文件和识别从末尾的主程序开始，每次按「读取 → 算特征 → 比模板 → 输出」执行。</p>
+      <div class="math">
+        <h3>数学原理 · 根据特征做分类</h3>
+        <p>三个比例把一张图压成三个数字。每个模板都得到一个总差值，程序找其中最小的一个，并输出它对应的类别。不同图形可能碰巧得到相同的特征，这时仅靠这三个数无法分开它们。</p>
+      </div>
+      <div class="package">
+        <h3 class="explain">动手练习</h3>
+        <p class="task"><strong>先读入，再补写。</strong>下载后解压，按第 2、3 段完成两个 <code>TODO</code>，删去各自的 <code>raise NotImplementedError(...)</code>。再从解压后的文件夹运行 <code>python image_recognition.py</code>。</p>
+        <div class="controls"><button type="button" class="primary" id="download">下载练习骨架和点阵</button></div>
+        <p class="hint">网页可直接离线观看。运行 Python 练习时，需要已安装 NumPy。</p>
+        <details><summary>查看调试顺序和结果核对</summary><p>先打印 <code>grid.shape</code>，确认行列数。再打印 <code>widths</code>、三个比例和每个模板的差值。三份待测点阵应依次识别为等腰三角形、正五边形、圆形。</p></details>
+      </div>
+    </section>
+  </main>
+  <script type="text/plain" id="package">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</script>
+  <script>
+    'use strict';
+
+    const frames = [
+      { code: -1, line: '010\n', row: null, grid: [[1, 0, 1]], note: '已经读完第一行。现在读到第二行，行尾还有换行符。' },
+      { code: 0, line: '010', row: null, grid: [[1, 0, 1]], note: 'strip() 去掉换行符，留下像素字符。' },
+      { code: 1, line: '010', row: [], grid: [[1, 0, 1]], note: '为第二行创建一个新的空列表。' },
+      { code: 2, line: '010', pixel: '0', row: [0], grid: [[1, 0, 1]], note: 'int("0") 得到整数 0，添加到 row。' },
+      { code: 2, line: '010', pixel: '1', row: [0, 1], grid: [[1, 0, 1]], note: 'int("1") 得到整数 1。grid 仍只有已经读完的第一行。' },
+      { code: 2, line: '010', pixel: '0', row: [0, 1, 0], grid: [[1, 0, 1]], note: '第三个字符转成整数后，第二行读完了。' },
+      { code: 3, line: '010', row: [0, 1, 0], grid: [[1, 0, 1], [0, 1, 0]], note: 'grid.append(row) 一次添加整行。现在 grid[1] 取到第二行。' },
+      { code: 4, line: '010', row: [0, 1, 0], grid: [[1, 0, 1], [0, 1, 0]], note: '两行都读完后，np.array() 把列表的列表转成 NumPy 二维数组，形状为 (2, 3)。' }
+    ];
+    const markers = document.querySelectorAll('[data-line]');
+    const back = document.getElementById('back');
+    const next = document.getElementById('next');
+    const reset = document.getElementById('reset');
+    let step = 0;
+
+    function showReading(index) {
+      if (index < 0 || index >= frames.length) return;
+      step = index;
+      const frame = frames[index];
+      markers.forEach(function (marker) {
+        if (Number(marker.dataset.line) === frame.code) marker.setAttribute('aria-current', 'step');
+        else marker.removeAttribute('aria-current');
+      });
+      document.getElementById('value-line').textContent = JSON.stringify(frame.line);
+      document.getElementById('value-pixel').textContent = frame.pixel ? JSON.stringify(frame.pixel) : '--';
+      document.getElementById('value-row').textContent = frame.row === null ? '待创建' : JSON.stringify(frame.row);
+      document.getElementById('value-grid').textContent = JSON.stringify(frame.grid);
+      document.getElementById('read-note').textContent = frame.note;
+      document.getElementById('progress').textContent = '第 ' + step + ' / ' + (frames.length - 1) + ' 步';
+      back.setAttribute('aria-disabled', String(step === 0));
+      reset.setAttribute('aria-disabled', String(step === 0));
+      next.setAttribute('aria-disabled', String(step === frames.length - 1));
+    }
+
+    const target = [0.5, 0.8125, 1 / 3];
+    const examples = [[0.5, 0.75, 0.25], [0.75, 0.5, 0]];
+    const traits = ['顶行比例', '平均比例', '变窄比例'];
+    const matchButtons = document.querySelectorAll('[data-example]');
+    function showDistance(index) {
+      const label = index === 0 ? '模板 A' : '模板 B';
+      const table = document.getElementById('distance-table');
+      document.getElementById('template-title').textContent = label;
+      table.textContent = '';
+      let sum = 0;
+      traits.forEach(function (name, i) {
+        const row = table.insertRow();
+        const heading = document.createElement('th');
+        heading.scope = 'row';
+        heading.textContent = name;
+        row.appendChild(heading);
+        const gap = Math.abs(target[i] - examples[index][i]);
+        [target[i], examples[index][i], gap].forEach(function (value) {
+          row.insertCell().textContent = value.toFixed(3);
+        });
+        sum += gap;
+      });
+      document.getElementById('distance-result').textContent = label + '的总差值约为 ' + sum.toFixed(3) + '。表格显示三位小数。';
+      matchButtons.forEach(function (button) { button.setAttribute('aria-pressed', String(Number(button.dataset.example) === index)); });
+    }
+
+    back.addEventListener('click', function () { showReading(step - 1); });
+    next.addEventListener('click', function () { showReading(step + 1); });
+    reset.addEventListener('click', function () { if (step) showReading(0); });
+    matchButtons.forEach(function (button) {
+      button.addEventListener('click', function () { showDistance(Number(button.dataset.example)); });
+    });
+    document.getElementById('download').addEventListener('click', function () {
+      const encoded = document.getElementById('package').textContent.trim();
+      const bytes = Uint8Array.from(atob(encoded), function (character) { return character.charCodeAt(0); });
+      const url = URL.createObjectURL(new Blob([bytes], { type: 'application/zip' }));
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'image-recognition-template-practice.zip';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    });
+    showReading(0);
+    showDistance(0);
+  </script>
+</body>
+</html>
