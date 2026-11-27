@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#183b2e">
+  <title>图像识别专项客观题 · 第三套 · 字典图库与特征匹配 · 初中组</title>
+  <style>
+    :root { color-scheme: light; --paper: #f7f5ec; --ink: #182c25; --green: #216149; --line: #cdd8ca; --muted: #4c6257; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.65 "Microsoft YaHei UI", "PingFang SC", sans-serif; }
+    .wrap { width: calc(100% - 36px); max-width: 880px; margin: auto; }
+    header { background: #183b2e; color: #fffdf0; border-bottom: 4px solid #a5c976; padding: 28px 0; }
+    h1, h2, p { margin: 0; }
+    h1 { margin: 4px 0 8px; font-size: clamp(1.65rem, 4vw, 2.65rem); line-height: 1.2; text-wrap: balance; }
+    .intro { color: #cfebaa; font-size: .9rem; }
+    nav { display: flex; flex-wrap: wrap; gap: 8px 20px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+    a { color: var(--green); text-underline-offset: 3px; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+    section { margin-top: 24px; scroll-margin-top: 12px; }
+    h2 { color: var(--green); font-size: 1.2rem; margin-bottom: 10px; }
+    .question { background: #fffefa; border: 1px solid var(--line); border-radius: 8px; margin: 0 0 12px; padding: 12px 15px; scroll-margin-bottom: 112px; }
+    fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+    legend { font-weight: bold; margin-bottom: 8px; padding: 0; }
+    pre { margin: 0 0 10px; padding: 10px 12px; background: #20382d; color: #f8fbef; border-radius: 6px; font: 14px/1.6 Consolas, "Microsoft YaHei UI", monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .options { display: grid; gap: 5px; }
+    .options label { display: flex; align-items: baseline; gap: 7px; padding: 5px 8px; border: 1px solid transparent; border-radius: 4px; cursor: pointer; }
+    .options label:hover, .options label:focus-within { background: #edf4e6; }
+    .options input { margin: 0; accent-color: var(--green); }
+    .options .correct { background: #e7f1df; border-color: #6e965a; }
+    .options .incorrect { background: #f8ebe3; border-color: #b2795e; }
+    .explanation { margin-top: 10px; padding: 8px 10px; font-size: .94rem; background: #edf4e6; border-left: 3px solid #78a858; }
+    .samples { display: flex; flex-wrap: wrap; gap: 10px 20px; margin: 4px 0 9px; }
+    figure { margin: 0; }
+    figcaption { font-size: .88rem; color: var(--muted); }
+    .pixels { display: grid; grid-template-columns: repeat(4, 1.1rem); gap: 2px; }
+    .pixel { min-height: 1.1rem; text-align: center; line-height: 1.1rem; font: .78rem/1.1rem Consolas, monospace; background: #e9eee6; border-radius: 2px; }
+    .filled { background: #27563f; color: #fff; }
+    .actions { position: sticky; bottom: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 14px; background: #fffefa; border-top: 1px solid var(--line); padding: 10px 0; }
+    .progress { font-weight: bold; }
+    .status { color: var(--muted); font-size: .9rem; }
+    .note { margin-top: 18px; }
+    button { border: 1px solid var(--green); border-radius: 5px; background: var(--green); color: #fff; padding: 7px 15px; font: inherit; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; transition: background-color .15s; }
+    button:hover { background: #184b38; }
+    button.secondary { background: #fffefa; color: var(--green); }
+    button.secondary:hover { background: #edf4e6; }
+    .buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+    :focus-visible { outline: 3px solid #3d8055; outline-offset: 3px; }
+    @media (max-width: 520px) {
+      .wrap { width: calc(100% - 24px); }
+      header { padding: 22px 0; }
+      .question { padding: 10px 12px; }
+    }
+    @media (prefers-reduced-motion: reduce) { button { transition: none; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <p class="intro">初中组 · 40 道新编单选题</p>
+      <h1>图像识别专项客观题 · 第三套</h1>
+      <p>字典图库、二维点阵列表、特征编码与图库匹配。每题选一项，答完后提交，查看得分与逐题解析。</p>
+    </div>
+  </header>
+  <main class="wrap">
+    <nav aria-label="题目分组">
+      <a href="#load">载入图库与预处理</a>
+      <a href="#features">像素统计与特征计算</a>
+      <a href="#search">图库搜索与匹配</a>
+      <a href="#framework">表示、推理与搜索</a>
+    </nav>
+    <form id="quiz">
+      <div id="questions"></div>
+      <div class="actions">
+        <div>
+          <p class="progress" id="progress">已答 0 / 40</p>
+          <p class="status" id="status" role="status">作答保存在当前浏览器。</p>
+        </div>
+        <div class="buttons">
+          <button type="button" class="secondary" id="reset">清空重做</button>
+          <button type="submit">提交并查看解析</button>
+        </div>
+      </div>
+    </form>
+    <p class="status note">本套按 2026 年规则的素材格式命题：图库用字典给出，点阵是二维列表。题干中的代码只使用 Python 基础语法与基础模块。内容与第一套、进阶训练、冲刺题库不重复。</p>
+  </main>
+  <script>
+    'use strict';
+
+    const groups = [{"id": "load", "title": "一、载入图库与预处理点阵", "count": 10}, {"id": "features", "title": "二、像素统计与特征计算", "count": 10}, {"id": "search", "title": "三、图库搜索与匹配", "count": 10}, {"id": "framework", "title": "四、表示、推理与搜索", "count": 10}];
+    const questions = [{"text": "比赛用字典给出图库：library = {\"圆形\": 圆形点阵, \"正五边形\": 五边形点阵, \"等腰三角形\": 三角形点阵}，三个值都是二维列表。len(library) 的结果是什么？", "options": ["3，表示图库里有 3 个模板", "3，表示每个点阵有 3 行", "100，表示点阵的像素总数", "报错，字典不能用 len"], "answer": "A", "why": "len 作用于字典时返回键的个数，这里的键是三个类别名。点阵的行列数要对某个值（二维列表）再取 len。"}, {"text": "下面程序输出什么？", "options": ["4 3", "3 4", "7 7", "3 3"], "answer": "B", "why": "len(grid) 是行数 3，len(grid[0]) 是第一行的列数 4。点阵的形状先说行数，再说列数。", "code": "grid = [[1, 1, 0, 0], [0, 1, 1, 0], [0, 0, 0, 1]]\nprint(len(grid), len(grid[0]))"}, {"text": "下面程序输出什么？", "options": ["[[1, 0, 0], [0, 0, 0]]", "[[0, 0, 0], [0, 0, 0]]", "[[1, 0, 0], [1, 0, 0]]", "报错，列表创建后不能修改"], "answer": "C", "why": "grid 里的两个元素是同一个列表。改第一行就是改第二行。要让各行互相独立，每一行都要单独创建。", "code": "row = [0, 0, 0]\ngrid = [row, row]\ngrid[0][0] = 1\nprint(grid)"}, {"text": "要创建 3 行 4 列、全是 0 的点阵，并且修改某一行时不影响其他行。哪种写法正确？", "options": ["[[0] * 4] * 3", "[[0] * 3 for _ in range(4)]", "[0] * 12", "[[0] * 4 for _ in range(3)]"], "answer": "D", "why": "推导式每一轮都新建一个列表，三行互不影响。第一个错误写法的三行是同一个列表；第二个是 4 行 3 列；最后一个是一维列表。"}, {"text": "从文件读入的一行是字符串 \"1101\"。要得到整数列表 [1, 1, 0, 1]，哪种写法正确？", "options": ["[int(ch) for ch in \"1101\"]", "list(\"1101\")", "int(\"1101\")", "[1] * len(\"1101\")"], "answer": "A", "why": "逐个字符用 int 转换。list(\"1101\") 得到的是字符串 ['1', '1', '0', '1']；int(\"1101\") 得到整数一千一百零一；最后一个写法全是 1。"}, {"text": "下面程序运行结果是什么？", "options": ["输出 2", "报错：sum 的初始值 0 不能和字符串相加", "输出 \"101\"", "输出 101"], "answer": "B", "why": "文件读入的每一行由字符组成，要先转成整数才能求和。否则会抛出 TypeError，程序中断。", "code": "print(sum([\"1\", \"0\", \"1\"]))"}, {"text": "在 5 行 6 列的点阵中，对哪个位置 (r, c) 执行下面这段代码，程序不会报错，却取到了错误的一行？", "options": ["(2, 0)：最左列的像素，一定报 IndexError", "(4, 5)：右下角的像素，两个方向都越界，所以不会出错", "(0, 2)：第一行的像素，r + dr 等于 -1，负下标会绕到最后一行", "(2, 3)：中间的像素，四个邻居都不存在"], "answer": "C", "why": "Python 允许负下标，grid[-1] 表示最后一行。所以第一行访问「上方邻居」时不报错，而是悄悄取到错误的数据。越界检查要在访问之前完成：0 <= r + dr < 行数。", "code": "neighbors = []\nfor dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:\n    neighbors.append(grid[r + dr][c + dc])"}, {"text": "逐行读取点阵文件时，文件末尾多出一个空行。执行 line = line.strip() 之后，怎样处理这个空行最合适？", "options": ["把空行转成一行 0 加入点阵", "读到空行就报错，停止程序", "空行会自动变成 \"0\"，不需要处理", "用 if line: 判断，空行直接跳过，不加入点阵"], "answer": "D", "why": "strip() 之后空行是空字符串，if line 为 False。如果把它加进点阵，就会多出一个空列表，各行长度不再一致。"}, {"text": "程序里写 open(\"data/图形1.txt\")，在程序所在的文件夹里运行很正常，换一个文件夹执行 python 命令就报 FileNotFoundError。原因是什么？", "options": ["相对路径从当前工作目录算起，换目录后找不到 data 文件夹", "文件名里有中文，Python 不能打开", "图形1.txt 只能在双击运行时读取", "点阵文件被系统自动删除了"], "answer": "A", "why": "相对路径是相对于「从哪里运行」，而不是相对于程序文件的位置。在题目要求的目录下运行，或者先确认当前工作目录。"}, {"text": "下面程序输出什么？", "options": ["True，说明每个像素都是 1", "False，说明各行长度不一致", "2，说明有两个模板", "报错，集合里不能放整数"], "answer": "B", "why": "len(row) for row in grid 得到每行的长度 5 和 4，set 去重后还剩 2 个数，不等于 1。这是载入后检查「每行等宽」的一种写法。", "code": "grid = [[1, 1, 1, 1, 1], [1, 1, 1, 1]]\nprint(len(set(len(row) for row in grid)) == 1)"}, {"text": "下面点阵中，全是 0 的行（空行）有几行？", "options": ["1 行", "3 行", "4 行", "2 行"], "answer": "D", "why": "第 2 行和第 4 行没有 1。计算行宽前通常先去掉空行，外接框也只数有前景的行。", "grids": [["00100", "00000", "00110", "00000"]]}, {"text": "在 3 行 3 列的点阵中，像素 (1, 1) 的四个邻居（上、下、左、右）分别是哪些位置？", "options": ["(0, 1)、(2, 1)、(1, 0)、(1, 2)", "(0, 0)、(0, 2)、(2, 0)、(2, 2)", "(0, 0)、(2, 2)、(1, 1)、(0, 1)", "(-1, 1)、(1, -1)、(3, 1)、(1, 3)"], "answer": "A", "why": "行号 r 向下增大，列号 c 向右增大。上、下只改变行号，左、右只改变列号。第一组是四个斜角，属于八邻域，不属于四邻域。", "grids": [["010", "111", "010"]]}, {"text": "一行像素是 1101110。其中连续的 1 分成几段？", "options": ["1 段", "2 段", "3 段", "5 段"], "answer": "B", "why": "11 和 111 是两段，中间的 0 把它们隔开。空心图形的中间一行常会出现左右两段，分开数比只数 1 的个数多保留了一层信息。"}, {"text": "下面程序输出什么？", "options": ["[3, 1, 3]", "[0, 1, 0]", "[1, 3, 1]", "[1, 1, 1]"], "answer": "C", "why": "row.count(1) 数的是这一行里 1 的个数，三行依次是 1、3、1。第一个干扰项是按列数出来的结果。", "code": "grid = [[0, 1, 0], [1, 1, 1], [0, 1, 0]]\nwidths = [row.count(1) for row in grid]\nprint(widths)"}, {"text": "顶行宽 top = 2，最宽行宽 widest = 5。要得到顶行宽度比例 0.4，应使用哪个表达式？", "options": ["top // widest", "top % widest", "top * 100 // widest", "top / widest"], "answer": "D", "why": "/ 是普通除法，保留小数。// 是整除，2 // 5 得 0，比例信息就丢了；% 得到余数 2；最后一个表达式得到的是百分数 40。"}, {"text": "下面程序输出什么？", "options": ["False，浮点数计算有微小的舍入误差", "True，两边都是 0.3", "报错，浮点数不能用 == 比较", "0.30000000000000004"], "answer": "A", "why": "0.1 + 0.2 的实际结果约是 0.30000000000000004，并不精确等于 0.3。判断两个比例或距离是否「相等」时，应该看差的绝对值是否小于一个很小的数。", "code": "print(0.1 + 0.2 == 0.3)"}, {"text": "widths = [2, 5, 5, 4, 1]。规定某一行比上一行窄（widths[i] < widths[i - 1]）记一次「变窄」。变窄一共几次？", "options": ["1 次", "2 次", "3 次", "4 次"], "answer": "B", "why": "5 到 4、4 到 1 各一次。5 到 5 相等，不算变窄。"}, {"text": "接上题，widths 有 5 个数。变窄比例 = 变窄次数 ÷ 相邻比较次数，结果是多少？", "options": ["0.4", "约 0.67", "0.5", "2"], "answer": "C", "why": "5 行只有 4 对相邻行，所以是 2 ÷ 4 = 0.5。分母要用比较次数 4，不是行数 5。"}, {"text": "widths = [1, 3, 6, 6, 2]，最宽行是 6。平均宽度比例 = 平均行宽 ÷ 最宽行宽，结果是多少？", "options": ["0.75", "0.3", "0.9", "0.6"], "answer": "D", "why": "总和是 18，平均行宽 18 ÷ 5 = 3.6，再除以最宽行 6，得到 0.6。"}, {"text": "运行下面程序，d 的值约是多少？", "options": ["0.3", "0.1", "0.2", "-0.3"], "answer": "A", "why": "三项差值的绝对值分别是 0.1、0、0.2，相加约为 0.3。这是待测图与模板之间的「距离」：越小越接近。", "code": "a = [0.5, 0.8, 0.3]\nb = [0.6, 0.8, 0.5]\nd = 0\nfor i in range(len(a)):\n    d += abs(a[i] - b[i])\nprint(d)"}, {"text": "library 是「类别名 → 点阵」的字典。执行 for name in library: 时，name 依次取到的是什么？", "options": ["值，也就是点阵", "由类别名和点阵组成的元组", "键，也就是类别名", "点阵的第一行"], "answer": "C", "why": "直接遍历字典，得到的是键。要同时得到键和值，需要用 library.items()。"}, {"text": "要在循环里同时拿到类别名和它对应的点阵，哪种写法正确？", "options": ["for name, sample in library:", "for name, sample in library.keys():", "for name, sample in list(library):", "for name, sample in library.items():"], "answer": "D", "why": "items() 每次给出一对（键, 值），可以分别赋给两个变量。其余三种写法每次只得到键，没法拆成两个变量。"}, {"text": "待测图与某模板的两项特征分别相差 -0.2 和 +0.2。计算距离时如果漏写 abs()，直接把两个差值相加，会怎样？", "options": ["两项正负抵消，总距离接近 0，实际差距 0.4 被严重低估", "结果不变，仍是 0.4", "结果变成 -0.4，再取一次绝对值即可", "程序报错，负数不能相加"], "answer": "A", "why": "距离只关心差距的大小，不关心谁大谁小，所以每一项都要先取绝对值再相加。"}, {"text": "程序一开始写 best_distance = float(\"inf\")。这样写的目的是什么？", "options": ["让所有模板的距离都变成无穷大", "正无穷比任何实际距离都大，第一个模板一定能更新它", "表示第一个模板一定是正确答案", "让程序跳过第一个模板"], "answer": "B", "why": "如果初值写成 0，没有任何距离比 0 更小，best_name 就永远不会被更新。"}, {"text": "distance = 0 这一行应该写在哪里？", "options": ["模板循环外面，整个程序只写一次", "写在读取文件之前", "模板循环里面，每换一个模板就从 0 重新累加", "不需要这一行，Python 会自动清零"], "answer": "C", "why": "写在外面会把前面模板的差值累加到后面的模板上，排在后面的模板距离虚高，比较不公平。"}, {"text": "更新最优模板时写的是 if distance < best_distance:。如果改成 <=，距离相同的情况下结果会怎样？", "options": ["保留先遍历到的模板，与原来相同", "两个模板的类别会同时输出", "程序报错", "保留后遍历到的模板"], "answer": "D", "why": "用 < 时只有严格更小才更新，距离相同的保留先遍历到的；用 <= 时相同的也会再更新一次，变成保留后遍历到的。"}, {"text": "图库里有 5 个模板，要识别 3 个待测图形。每个待测图形都和全部模板比较一次，一共要计算多少次距离？", "options": ["15 次", "5 次", "8 次", "125 次"], "answer": "A", "why": "每个待测图形比较 5 次，3 × 5 = 15。这叫线性搜索：逐个比较，比较次数等于待测数乘以模板数。"}, {"text": "有的程序先用一个容易计算的特征（例如顶行比例）筛掉明显不符的模板，再用全部特征细比。这样做的主要好处是什么？", "options": ["保证识别结果一定正确", "减少需要完整比较的模板，节省计算", "让结果与图库的遍历顺序无关", "之后就不需要计算距离了"], "answer": "B", "why": "这叫多级匹配：粗筛便宜，细比准确。它不能保证结果一定正确，但能少做很多无用功。"}, {"text": "待测点阵全是 0，features() 返回 None。identify() 中负责处理这种情况的是哪一行？", "options": ["最后的 return best_name", "循环里的 if distance < best_distance:", "开头的 if target is None: return \"无法识别\"", "循环里的 distance += abs(target[i] - sample[i])"], "answer": "C", "why": "没有前景就没有特征，后面的比较没有意义。开头直接返回，循环一次也不执行，这是「特殊情况先处理」的常见写法。", "code": "def identify(grid, library):\n    target = features(grid)\n    if target is None:\n        return \"无法识别\"\n    best_name = \"无法识别\"\n    best_distance = float(\"inf\")\n    for name in library:\n        ...\n    return best_name"}, {"text": "下面哪项工作应该在提取特征之前完成？", "options": ["计算待测图与每个模板的距离", "选出距离最小的模板名", "把识别结果打印出来", "检查读入的每一行长度是否相同、是否只含 0 和 1"], "answer": "D", "why": "载入、校验、像素统计等预处理在特征提取之前。各行长度不一的数据直接拿去算特征，结果不可信。"}, {"text": "程序把一个图形总结成 [顶行比例, 平均比例, 变窄比例]，例如 [0.5, 0.8, 0.3]。在「表示—推理—搜索」框架中，这一步属于什么？", "options": ["推理：根据规则得出结论", "表示：把图形的特征量化编码成数值", "搜索：在图库里查找", "可视化：把数据画成图"], "answer": "B", "why": "用一组数表达图形的关键性质，这是「表示」，也叫特征编码。后面的推理和搜索都建立在这组数上。"}, {"text": "「变窄比例大于 0，且顶行比例小于 0.2，所以判为圆形。」这条判断属于「表示—推理—搜索」中的哪一步？", "options": ["表示：把图形编码成数值", "搜索：在图库里逐个比较", "推理：依据规则，从已知特征得出结论", "预处理：检查数据格式"], "answer": "C", "why": "已知特征是前提，规则把前提和结论连起来，这是推理。"}, {"text": "遍历字典图库里的每个模板，找出与待测图特征距离最小的那个。这一步属于什么？", "options": ["表示：把图形编码成数值", "推理：按规则判断类别", "预处理：清理数据", "搜索：在候选答案中找出满足条件的一个"], "answer": "D", "why": "图库是候选答案的集合，逐个比较并找出最小的，这是搜索。"}, {"text": "一个图形的三个特征要存进图库，以后还要逐项比较。哪种数据结构最合适？", "options": ["由 3 个数组成的列表，例如 [0.5, 0.8, 0.3]", "一个集合，例如 {0.5, 0.8, 0.3}", "一个整数，例如 5803", "一个字符串，例如 \"圆形\""], "answer": "A", "why": "列表有顺序，可以按位置逐项比较，也允许重复值。集合没有顺序，重复的值还会被合并，例如 {0.5, 0.5, 0.2} 只剩两个元素。"}, {"text": "下面哪种情况，人工编写规则的识别程序最难处理？", "options": ["只有 3 类，每一类都有明显不同的行宽特点", "类别很多，而且各类的特征互相重叠，人很难写出明确的判断条件", "每个图形都能转成 0、1 点阵", "图库里每个模板都有名字"], "answer": "B", "why": "规则系统靠人总结特征、写条件。类别少、特征清晰时很有效；特征重叠时规则会互相冲突。这正是机器学习方法想解决的问题。"}, {"text": "答辩时评委问：「为什么把这张图判成圆形？」与直接给出答案的黑盒模型相比，规则系统在回答这个问题上有什么优势？", "options": ["规则系统一定比黑盒模型识别得更准", "规则系统不需要任何数据", "每一步判断都有对应的条件和数值，可以逐条说明理由", "规则系统运行一定更快"], "answer": "C", "why": "这叫可解释性。规则系统可以指出「变窄比例是 0.5，大于 0，所以……」，便于检查、纠错和向别人说明。"}, {"text": "比赛要求现场画程序流程图。表示「待测图有没有前景？」这一判断步骤，应使用哪种图形符号？", "options": ["矩形", "平行四边形", "圆角矩形", "菱形"], "answer": "D", "why": "菱形表示判断，有一个入口和两个出口（是 / 否）。矩形表示处理步骤，平行四边形表示输入或输出，圆角矩形表示开始或结束。"}, {"text": "原来的说法是「三角形的顶行很窄」，程序里写成「顶行比例 < 0.2」。把定性的描述变成可以计算的条件，这个过程叫什么？", "options": ["量化", "加密", "压缩", "排序"], "answer": "A", "why": "量化是用数值表达程度的高低。写成数值之后，规则才能被程序执行，也便于用样本验证。"}, {"text": "按照 2026 年图像识别项目规则，下面哪种做法符合要求？", "options": ["用 OpenCV 的函数直接找出轮廓", "使用 Python 3.9 的基础语法和基础模块，不调用 OpenCV、PIL 等图像处理库", "用 PIL 把图形裁到外接框", "必须使用图形化编程工具"], "answer": "B", "why": "规则写明：仅可使用 Python 基础内置语法与基础模块，全程禁止调用 OpenCV、PIL 等第三方图像处理库。初中组使用 Python 语言编程。"}, {"text": "点阵用 grid[r][c] 表示，r 是行号，c 是列号，都从 0 开始。r 增加 1，表示向哪个方向移动一格？", "options": ["向上", "向右", "向下", "向左"], "answer": "C", "why": "行号从上往下增大，列号从左往右增大。它和数学里「y 向上」的习惯不同，计算邻居时很容易弄反。"}];
+    const key = 'imgrec_quiz_03_v1';
+    const letters = 'ABCD';
+    const list = document.getElementById('questions');
+    const form = document.getElementById('quiz');
+    const progress = document.getElementById('progress');
+    const status = document.getElementById('status');
+    const resetButton = document.getElementById('reset');
+    let storageAvailable = true;
+    let saved = {};
+    try {
+      saved = JSON.parse(localStorage.getItem(key) || '{}') || {};
+    } catch (error) {
+      storageAvailable = false;
+    }
+    const choices = questions.map(function (_, index) {
+      const value = Array.isArray(saved.choices) ? saved.choices[index] : '';
+      return typeof value === 'string' && /^[A-D]$/.test(value) ? value : '';
+    });
+    let graded = saved.graded === true && choices.every(Boolean);
+    const cards = [];
+
+    function element(tag, text) {
+      const node = document.createElement(tag);
+      node.textContent = text || '';
+      return node;
+    }
+
+    function drawGrids(grids) {
+      const container = element('div');
+      container.className = 'samples';
+      grids.forEach(function (grid, index) {
+        const figure = element('figure');
+        const pixels = element('div');
+        pixels.className = 'pixels';
+        pixels.style.gridTemplateColumns = 'repeat(' + grid[0].length + ', 1.1rem)';
+        pixels.setAttribute('role', 'img');
+        pixels.setAttribute('aria-label', '点阵各行，' + grid.join('、'));
+        grid.join('').split('').forEach(function (digit) {
+          const pixel = element('span', digit);
+          pixel.className = digit === '1' ? 'pixel filled' : 'pixel';
+          pixels.appendChild(pixel);
+        });
+        figure.appendChild(element('figcaption', grids.length === 1 ? '示意点阵' : '图 ' + letters[index]));
+        figure.appendChild(pixels);
+        container.appendChild(figure);
+      });
+      return container;
+    }
+
+    let offset = 0;
+    groups.forEach(function (group) {
+      const section = element('section');
+      section.id = group.id;
+      section.appendChild(element('h2', group.title));
+      questions.slice(offset, offset + group.count).forEach(function (question, localIndex) {
+        const index = offset + localIndex;
+        const card = element('div');
+        card.className = 'question';
+        const field = element('fieldset');
+        field.appendChild(element('legend', (index + 1) + '. ' + question.text));
+        if (question.code) field.appendChild(element('pre', question.code));
+        if (question.grids) field.appendChild(drawGrids(question.grids));
+        const options = element('div');
+        options.className = 'options';
+        const labels = question.options.map(function (option, optionIndex) {
+          const letter = letters[optionIndex];
+          const label = element('label');
+          const input = element('input');
+          input.type = 'radio';
+          input.name = 'q' + index;
+          input.value = letter;
+          input.checked = choices[index] === letter;
+          label.appendChild(input);
+          label.appendChild(element('span', letter + '. ' + option));
+          options.appendChild(label);
+          return label;
+        });
+        field.appendChild(options);
+        card.appendChild(field);
+        const explanation = element('p');
+        explanation.className = 'explanation';
+        explanation.hidden = true;
+        card.appendChild(explanation);
+        cards.push({ card: card, labels: labels, explanation: explanation });
+        section.appendChild(card);
+      });
+      list.appendChild(section);
+      offset += group.count;
+    });
+
+    function render() {
+      const complete = choices.filter(Boolean).length;
+      if (graded) {
+        const score = questions.filter(function (question, index) { return question.answer === choices[index]; }).length;
+        progress.textContent = '得分 ' + score + ' / ' + questions.length;
+      } else {
+        progress.textContent = '已答 ' + complete + ' / ' + questions.length;
+      }
+      cards.forEach(function (item, index) {
+        const question = questions[index];
+        item.explanation.hidden = !graded;
+        if (graded) {
+          const outcome = choices[index] === question.answer ? '答对' : '答错';
+          item.explanation.textContent = outcome + '。正确选项 ' + question.answer + '。' + question.why;
+        }
+        item.labels.forEach(function (label, optionIndex) {
+          const letter = letters[optionIndex];
+          label.classList.toggle('correct', graded && letter === question.answer);
+          label.classList.toggle('incorrect', graded && letter === choices[index] && letter !== question.answer);
+        });
+      });
+    }
+
+    function save() {
+      if (!storageAvailable) return;
+      try {
+        localStorage.setItem(key, JSON.stringify({ choices: choices, graded: graded }));
+      } catch (error) {
+        storageAvailable = false;
+      }
+    }
+
+    function report(message) {
+      status.textContent = storageAvailable ? message : message + ' 当前浏览器无法保存作答。';
+    }
+
+    form.addEventListener('change', function (event) {
+      const input = event.target;
+      if (input.type !== 'radio') return;
+      choices[Number(input.name.slice(1))] = input.value;
+      const wasGraded = graded;
+      graded = false;
+      render();
+      save();
+      report(wasGraded ? '已修改答案，可重新提交。' : '已记录本次作答。');
+    });
+
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      const firstMissing = choices.indexOf('');
+      if (firstMissing !== -1) {
+        report('还有题目未作答，已定位到第 ' + (firstMissing + 1) + ' 题。');
+        cards[firstMissing].card.scrollIntoView({ block: 'center' });
+        cards[firstMissing].card.querySelector('input').focus({ preventScroll: true });
+        return;
+      }
+      graded = true;
+      render();
+      save();
+      report(progress.textContent + '。每题下方已显示解析。');
+    });
+
+    resetButton.addEventListener('click', function () {
+      if (!choices.some(Boolean)) {
+        report('还没有作答记录。');
+        return;
+      }
+      if (!window.confirm('清空本套 40 题的全部作答和解析，重新开始？')) return;
+      for (let index = 0; index < choices.length; index++) choices[index] = '';
+      graded = false;
+      cards.forEach(function (item) {
+        item.labels.forEach(function (label) { label.querySelector('input').checked = false; });
+      });
+      render();
+      save();
+      report('已清空，可以重新作答。');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    render();
+    if (graded) report('每题下方已显示解析。');
+    else if (!storageAvailable) report('请选择每题的答案。');
+  </script>
+</body>
+</html>
